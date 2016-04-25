@@ -199,6 +199,9 @@ public class DesignationTree extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(tableDesignationRank);
+        if (tableDesignationRank.getColumnModel().getColumnCount() > 0) {
+            tableDesignationRank.getColumnModel().getColumn(1).setPreferredWidth(20);
+        }
 
         panel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 840, 220));
 
