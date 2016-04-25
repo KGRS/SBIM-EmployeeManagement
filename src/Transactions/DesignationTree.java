@@ -75,8 +75,9 @@ public class DesignationTree extends javax.swing.JInternalFrame {
         textRankCode = new javax.swing.JTextField();
         lbl_accountType5 = new javax.swing.JLabel();
 
+        setIconifiable(true);
         setTitle("Designation tree");
-        setPreferredSize(new java.awt.Dimension(901, 688));
+        setPreferredSize(new java.awt.Dimension(901, 674));
 
         panel1.setBackground(new java.awt.Color(255, 255, 255));
         panel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.TRAILING, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Calibri", 1, 14), new java.awt.Color(153, 153, 153))); // NOI18N
@@ -292,7 +293,7 @@ public class DesignationTree extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
+            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
         );
 
         pack();

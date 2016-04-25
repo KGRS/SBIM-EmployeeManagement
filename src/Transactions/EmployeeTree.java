@@ -71,7 +71,7 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
 
         setIconifiable(true);
         setTitle("Employee tree");
-        setPreferredSize(new java.awt.Dimension(990, 688));
+        setPreferredSize(new java.awt.Dimension(990, 679));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -322,7 +322,7 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
+            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
         );
 
         pack();
