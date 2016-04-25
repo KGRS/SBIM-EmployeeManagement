@@ -174,14 +174,14 @@ public class DesignationTree extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Rank code", "Designation code", "Designation name"
+                "Rank code", "Rank level", "Designation code", "Designation name", "Department", "Sub department"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
