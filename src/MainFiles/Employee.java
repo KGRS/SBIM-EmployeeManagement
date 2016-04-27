@@ -62,22 +62,22 @@ public class Employee extends javax.swing.JInternalFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         panel1 = new javax.swing.JPanel();
-        JPanel panel1 = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics grphcs) {
-                super.paintComponent(grphcs);
-                Color color1 = Color.white;
-                Color color2 = Color.GREEN;
-                Graphics2D g2d = (Graphics2D) grphcs;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(0, 473,
-                    color1.brighter().brighter().brighter(), getWidth(), getHeight(),
-                    color2.darker());
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 473, getWidth(), getHeight());
-            }
-        };
+        //        JPanel panel1 = new JPanel() {
+            //        @Override
+            //        protected void paintComponent(Graphics grphcs) {
+                //            super.paintComponent(grphcs);
+                //            Color color1 = Color.white;
+                //            Color color2 = Color.GREEN;
+                //            Graphics2D g2d = (Graphics2D) grphcs;
+                //            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    //                    RenderingHints.VALUE_ANTIALIAS_ON);
+                //            GradientPaint gp = new GradientPaint(0, 473,
+                    //                    color1.brighter().brighter().brighter(), getWidth(), getHeight(),
+                    //                    color2.darker());
+                //            g2d.setPaint(gp);
+                //            g2d.fillRect(0, 473, getWidth(), getHeight());
+                //        }
+            //    };
         lbl_category = new javax.swing.JLabel();
         txtStaffMemCode = new javax.swing.JTextField();
         txtFirstName = new javax.swing.JTextField();
