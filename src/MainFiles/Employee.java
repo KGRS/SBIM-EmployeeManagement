@@ -101,7 +101,7 @@ public class Employee extends javax.swing.JInternalFrame {
         lbl_accountType5 = new javax.swing.JLabel();
         txtContactLand = new javax.swing.JTextField();
         txtContactMobile = new javax.swing.JTextField();
-        txtEmail = new javax.swing.JTextField();
+        txtCallName = new javax.swing.JTextField();
         lbl_accountType6 = new javax.swing.JLabel();
         Fax = new javax.swing.JLabel();
         lbl_description1 = new javax.swing.JLabel();
@@ -112,6 +112,8 @@ public class Employee extends javax.swing.JInternalFrame {
         lbl_accountType7 = new javax.swing.JLabel();
         Fax1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
+        lbl_accountType8 = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
 
         setIconifiable(true);
         setTitle("Employee");
@@ -144,7 +146,7 @@ public class Employee extends javax.swing.JInternalFrame {
         panel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl_category.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_category.setText("Employee code");
+        lbl_category.setText("Employee code *");
         panel1.add(lbl_category, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 60, 90, 20));
 
         txtStaffMemCode.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -314,15 +316,15 @@ public class Employee extends javax.swing.JInternalFrame {
         panel1.add(lbl_accountType3, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 220, 90, 20));
 
         lbl_accountType4.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType4.setText("Contact land");
-        panel1.add(lbl_accountType4, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 340, 90, 20));
+        lbl_accountType4.setText("E-mail(@) *");
+        panel1.add(lbl_accountType4, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 380, 90, 20));
 
         lbl_accountType5.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType5.setText("Contact mobile");
-        panel1.add(lbl_accountType5, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 380, 90, 20));
+        lbl_accountType5.setText("Con. mobile");
+        panel1.add(lbl_accountType5, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 340, 70, 20));
         panel1.add(txtContactLand, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 340, 120, -1));
-        panel1.add(txtContactMobile, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 380, 120, -1));
-        panel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 180, 120, -1));
+        panel1.add(txtContactMobile, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 340, 130, -1));
+        panel1.add(txtCallName, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 180, 120, -1));
 
         lbl_accountType6.setForeground(new java.awt.Color(102, 102, 102));
         lbl_accountType6.setText("Call name *");
@@ -356,6 +358,11 @@ public class Employee extends javax.swing.JInternalFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Intern", "Probation", "Contract", "Permenent" }));
         panel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 300, 120, -1));
+
+        lbl_accountType8.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_accountType8.setText("Contact land");
+        panel1.add(lbl_accountType8, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 340, 90, 20));
+        panel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 380, 210, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -451,7 +458,7 @@ public class Employee extends javax.swing.JInternalFrame {
         NameWithIni = txtNameWithIni.getText();
         String department[] = cmbDepartment.getSelectedItem().toString().split("--");
         String checkDepartment = cmbDepartment.getSelectedItem().toString();
-        Email = txtEmail.getText();
+        Email = txtCallName.getText();
         ContactLand = txtContactLand.getText();
         ContactMobile = txtContactMobile.getText();
         DESIGNATION = cmbDesignation.getSelectedItem().toString();
@@ -701,7 +708,7 @@ public class Employee extends javax.swing.JInternalFrame {
         txtSurName.setText(SurName);
         txtNameWithIni.setText(NameWithIni);
         cmbDepartment.setSelectedItem(departmentName + "--" + departmentCode);
-        txtEmail.setText(Email);
+        txtCallName.setText(Email);
         txtContactLand.setText(ContactLand);
         txtContactMobile.setText(ContactMobile);
         cmbDesignation.setSelectedItem(DESIGNATION);
@@ -799,7 +806,7 @@ public class Employee extends javax.swing.JInternalFrame {
         txtNameWithIni.setText("");
         txtContactLand.setText("");
         txtContactMobile.setText("");
-        txtEmail.setText("");
+        txtCallName.setText("");
         txtSearch.setText("");
 
         cmbActive.setSelectedIndex(0);
@@ -877,6 +884,7 @@ public class Employee extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbl_accountType5;
     private javax.swing.JLabel lbl_accountType6;
     private javax.swing.JLabel lbl_accountType7;
+    private javax.swing.JLabel lbl_accountType8;
     private javax.swing.JLabel lbl_category;
     private javax.swing.JLabel lbl_description;
     private javax.swing.JLabel lbl_description1;
@@ -885,6 +893,7 @@ public class Employee extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton rBtnCode;
     private javax.swing.JRadioButton rBtnName;
     private javax.swing.JTable tableViewDetails;
+    private javax.swing.JTextField txtCallName;
     private javax.swing.JTextField txtContactLand;
     private javax.swing.JTextField txtContactMobile;
     private javax.swing.JTextField txtEmail;
