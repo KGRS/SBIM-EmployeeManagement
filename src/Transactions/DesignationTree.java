@@ -489,7 +489,7 @@ public class DesignationTree extends javax.swing.JInternalFrame {
                 rankForGenerate = tableDesignationRank.getValueAt(i, 0).toString();
                 rank = Integer.parseInt(tableDesignationRank.getValueAt(i, 1).toString());
                 designationCode = tableDesignationRank.getValueAt(i, 2).toString();
-                String getSubDepartmentCode[] = tableDesignationRank.getValueAt(i, 1).toString().split(spliter);
+                String getSubDepartmentCode[] = tableDesignationRank.getValueAt(i, 0).toString().split(spliter);
                 subDepartmentCode = getSubDepartmentCode[3];
 
                 String ItemInsertQuery = "INSERT INTO [EmployeeDesignationTree]\n"
@@ -659,7 +659,7 @@ public class DesignationTree extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Please contact for support.");
         }
     }
-    
+
     private void RefreshDesignationRankTable() {
         try {
             int row = model_tableDesignationRank.getRowCount();
@@ -727,11 +727,16 @@ public class DesignationTree extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_buttonAddSelectedActionPerformed
 
     private void buttonRemoveSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveSelectedActionPerformed
-        int x = JOptionPane.showConfirmDialog(this, "Are you sure To remove this?", "Remove rank?", JOptionPane.YES_NO_OPTION);
-        if (x == JOptionPane.YES_OPTION) {
-            int i = tableDesignationRank.getSelectedRow();
-            model_tableDesignationRank.removeRow(i);
-            countItemsInSecondTable();
+        selectedRowOfTableDesignationRank = tableDesignationRank.getSelectedRowCount();
+        if (selectedRowOfTableDesignationRank == 1) {
+            int x = JOptionPane.showConfirmDialog(this, "Are you sure To remove this?", "Remove rank?", JOptionPane.YES_NO_OPTION);
+            if (x == JOptionPane.YES_OPTION) {
+                int i = tableDesignationRank.getSelectedRow();
+                model_tableDesignationRank.removeRow(i);
+                countItemsInSecondTable();
+            }
+        }else if (selectedRowOfTableDesignationRank != 1) {
+            JOptionPane.showMessageDialog(this, "Rank code is not selected.", "Not selected.", JOptionPane.OK_OPTION);
         }
     }//GEN-LAST:event_buttonRemoveSelectedActionPerformed
 
