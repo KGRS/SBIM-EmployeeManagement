@@ -432,7 +432,7 @@ public class Department extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void CheckBeforeSave() {
-        String CategoryCode = txtCode.getText();
+        String CategoryCode = txtCode.getText().toUpperCase();
         String CategoryName = txtCategoryName.getText();
         String Type = cmbTypes.getSelectedItem().toString();
         String BranchCode[] = cmbBranch.getSelectedItem().toString().split("--");

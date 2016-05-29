@@ -60,7 +60,7 @@ public class IndexPage extends javax.swing.JFrame {
     public static Employee employee = null;
     public static EmployeeDesignation employeeDesignation = null;
 
-    public static DesignationTree createStudentEventGroup = null;
+    public static DesignationTree designationTree = null;
     public static EmployeeTree allocateStudentsForEventGroup = null;
     public static UserPrivilege userPrivilege = null;
     public static UserLogins userLogins = null;
@@ -1244,14 +1244,14 @@ private void TabMenuMainFilesActionPerformed(java.awt.event.ActionEvent evt) {//
     }//GEN-LAST:event_menuEmployeeDesignationActionPerformed
 
     private void MenuCreateStudentEventGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuCreateStudentEventGroupActionPerformed
-        if (createStudentEventGroup != null) {
-            if (!createStudentEventGroup.isVisible()) {
-                createStudentEventGroup.setVisible(true);
+        if (designationTree != null) {
+            if (!designationTree.isVisible()) {
+                designationTree.setVisible(true);
             }
         } else {
-            createStudentEventGroup = new DesignationTree();
-            dskPane_RightPanel.add(createStudentEventGroup);
-            createStudentEventGroup.setVisible(true);
+            designationTree = new DesignationTree();
+            dskPane_RightPanel.add(designationTree);
+            designationTree.setVisible(true);
         }
 
     }//GEN-LAST:event_MenuCreateStudentEventGroupActionPerformed
