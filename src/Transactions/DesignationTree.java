@@ -459,9 +459,12 @@ public class DesignationTree extends javax.swing.JInternalFrame {
     private void firstCheckBeforeSave() {
         rowCountOfTableDesignationRank = tableDesignationRank.getRowCount();
         if (rowCountOfTableDesignationRank != 0) {
-            deleteExsistsRecordsBeforeSave();
+            int x = JOptionPane.showConfirmDialog(this, "Are you sure to save?", "Save?", JOptionPane.YES_NO_OPTION);
+            if (x == JOptionPane.YES_OPTION) {
+                deleteExsistsRecordsBeforeSave();
+            }
         } else if (rowCountOfTableDesignationRank == 0) {
-
+            JOptionPane.showMessageDialog(this, "Data is not available to save.", "Not available.", JOptionPane.OK_OPTION);
         }
     }
 

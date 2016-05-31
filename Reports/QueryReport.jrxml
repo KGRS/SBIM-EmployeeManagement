@@ -5,25 +5,23 @@
 	<property name="ireport.y" value="0"/>
 	<queryString>
 		<![CDATA[SELECT
-     EmployeeDesignationTree."RANK_CODE" AS EmployeeDesignationTree_RANK_CODE,
-     EmployeeDesignationTree."RANK_LEVEL" AS EmployeeDesignationTree_RANK_LEVEL,
      EmployeeDesignationTree."EMPLOYEE_DESIGNATION_CODE" AS EmployeeDesignationTree_EMPLOYEE_DESIGNATION_CODE,
-     EmployeeDesignationTree."SUB_DEPARTMENT_CODE" AS EmployeeDesignationTree_SUB_DEPARTMENT_CODE,
      EmployeeDesignation."EMPLOYEE_DESIGNATION_NAME" AS EmployeeDesignation_EMPLOYEE_DESIGNATION_NAME,
-     SubDepartments."SUB_DEPARTMENT_NAME" AS SubDepartments_SUB_DEPARTMENT_NAME,
-     Departments."DepartmentName" AS Departments_DepartmentName
+     EmployeeTree."EMPLOYEE_CODE" AS EmployeeTree_EMPLOYEE_CODE,
+     EmployeeTree."RANK_CODE" AS EmployeeTree_RANK_CODE,
+     Employees."FIRST_NAME" AS Employees_FIRST_NAME,
+     Employees."CALL_NAME" AS Employees_CALL_NAME
 FROM
      "dbo"."EmployeeDesignation" EmployeeDesignation INNER JOIN "dbo"."EmployeeDesignationTree" EmployeeDesignationTree ON EmployeeDesignation."EMPLOYEE_DESIGNATION_CODE" = EmployeeDesignationTree."EMPLOYEE_DESIGNATION_CODE"
-     INNER JOIN "dbo"."SubDepartments" SubDepartments ON EmployeeDesignationTree."SUB_DEPARTMENT_CODE" = SubDepartments."SUB_DEPARTMENT_CODE"
-     INNER JOIN "dbo"."Departments" Departments ON SubDepartments."DepartmentCode" = Departments."DepartmentCode"]]>
+     INNER JOIN "dbo"."EmployeeTree" EmployeeTree ON EmployeeDesignationTree."RANK_CODE" = EmployeeTree."RANK_CODE"
+     INNER JOIN "dbo"."Employees" Employees ON EmployeeTree."EMPLOYEE_CODE" = Employees."EMPLOYEE_CODE"]]>
 	</queryString>
-	<field name="EmployeeDesignationTree_RANK_CODE" class="java.lang.String"/>
-	<field name="EmployeeDesignationTree_RANK_LEVEL" class="java.lang.Integer"/>
 	<field name="EmployeeDesignationTree_EMPLOYEE_DESIGNATION_CODE" class="java.lang.String"/>
-	<field name="EmployeeDesignationTree_SUB_DEPARTMENT_CODE" class="java.lang.String"/>
 	<field name="EmployeeDesignation_EMPLOYEE_DESIGNATION_NAME" class="java.lang.String"/>
-	<field name="SubDepartments_SUB_DEPARTMENT_NAME" class="java.lang.String"/>
-	<field name="Departments_DepartmentName" class="java.lang.String"/>
+	<field name="EmployeeTree_EMPLOYEE_CODE" class="java.lang.String"/>
+	<field name="EmployeeTree_RANK_CODE" class="java.lang.String"/>
+	<field name="Employees_FIRST_NAME" class="java.lang.String"/>
+	<field name="Employees_CALL_NAME" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

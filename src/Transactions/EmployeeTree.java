@@ -454,6 +454,7 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
             String subDepartmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
             loadSelectedSubDepartmentEmployeesToTable(subDepartmentCodeByArray[1]);
             LoadDesignationRanks(subDepartmentCodeByArray[1]);
+            LoadEmployeeRanks();
         } else if (subDepartmentCode.equals(select)) {
             JOptionPane.showMessageDialog(this, "Sub department is not selected.", "Not selected", JOptionPane.OK_OPTION);
             comboSubDepartment.requestFocus();
@@ -490,6 +491,45 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
                 rowCount++;
             }
             reset.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
+
+    private void LoadEmployeeRanks() {
+        try {
+            model_tableRankedEmployee.setRowCount(0);
+            ResultSet reset;
+            Statement stmt;
+            String query;
+            int rowCount = 0;
+            query = "SELECT\n"
+                    + "     EmployeeDesignationTree.\"EMPLOYEE_DESIGNATION_CODE\" AS EmployeeDesignationTree_EMPLOYEE_DESIGNATION_CODE,\n"
+                    + "     EmployeeDesignation.\"EMPLOYEE_DESIGNATION_NAME\" AS EmployeeDesignation_EMPLOYEE_DESIGNATION_NAME,\n"
+                    + "     EmployeeTree.\"EMPLOYEE_CODE\" AS EmployeeTree_EMPLOYEE_CODE,\n"
+                    + "     EmployeeTree.\"RANK_CODE\" AS EmployeeTree_RANK_CODE,\n"
+                    + "     Employees.\"FIRST_NAME\" AS Employees_FIRST_NAME,\n"
+                    + "     Employees.\"CALL_NAME\" AS Employees_CALL_NAME\n"
+                    + "FROM\n"
+                    + "     \"dbo\".\"EmployeeDesignation\" EmployeeDesignation INNER JOIN \"dbo\".\"EmployeeDesignationTree\" EmployeeDesignationTree ON EmployeeDesignation.\"EMPLOYEE_DESIGNATION_CODE\" = EmployeeDesignationTree.\"EMPLOYEE_DESIGNATION_CODE\"\n"
+                    + "     INNER JOIN \"dbo\".\"EmployeeTree\" EmployeeTree ON EmployeeDesignationTree.\"RANK_CODE\" = EmployeeTree.\"RANK_CODE\"\n"
+                    + "     INNER JOIN \"dbo\".\"Employees\" Employees ON EmployeeTree.\"EMPLOYEE_CODE\" = Employees.\"EMPLOYEE_CODE\"";
+            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            reset = stmt.executeQuery(query);
+
+            while (reset.next()) {
+                model_tableRankedEmployee.addRow(new Object[model_tableRankedEmployee.getColumnCount()]);
+                tableRankedEmployee.setValueAt(reset.getString("EmployeeTree_RANK_CODE"), rowCount, 0);
+                tableRankedEmployee.setValueAt(reset.getString("EmployeeDesignationTree_EMPLOYEE_DESIGNATION_CODE"), rowCount, 1);
+                tableRankedEmployee.setValueAt(reset.getString("EmployeeDesignation_EMPLOYEE_DESIGNATION_NAME"), rowCount, 2);
+                tableRankedEmployee.setValueAt(reset.getString("EmployeeTree_EMPLOYEE_CODE"), rowCount, 3);
+                tableRankedEmployee.setValueAt(reset.getString("Employees_FIRST_NAME"), rowCount, 4);
+                tableRankedEmployee.setValueAt(reset.getString("Employees_CALL_NAME"), rowCount, 5);
+                rowCount++;
+            }
+            reset.close();
+            countItemsInSecondTable();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(this, "Please contact for support.");
@@ -555,9 +595,9 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
         try {
             rankForGenerate = tableDesignationRank.getValueAt(selectedRowOfTableDesignationRank, 0).toString();
             designationCode = tableDesignationRank.getValueAt(selectedRowOfTableDesignationRank, 1).toString();
-            designationName = tableDesignationRank.getValueAt(selectedRowOfTableDesignationRank, 2).toString();     
+            designationName = tableDesignationRank.getValueAt(selectedRowOfTableDesignationRank, 2).toString();
             empFirstName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 1).toString();
-            empCallingName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 3).toString();            
+            empCallingName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 3).toString();
 
             model_tableRankedEmployee.addRow(new Object[]{rankForGenerate, designationCode, designationName, empCode, empFirstName, empCallingName});
             countItemsInSecondTable();
@@ -567,11 +607,11 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Please contact for support.");
         }
     }
-    
+
     private void countItemsInSecondTable() {
         TextNumberOfEmpRanked.setText(model_tableRankedEmployee.getRowCount() + "");
     }
-        
+
     private void formInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameIconified
         allocateStudentsForEventGroup.toFront();
     }//GEN-LAST:event_formInternalFrameIconified
@@ -585,7 +625,7 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
                 model_tableRankedEmployee.removeRow(i);
                 countItemsInSecondTable();
             }
-        }else if (selectedRowOfTableRankedEmployee != 1) {
+        } else if (selectedRowOfTableRankedEmployee != 1) {
             JOptionPane.showMessageDialog(this, "Employee is not selected.", "Not selected.", JOptionPane.OK_OPTION);
         }
     }//GEN-LAST:event_ButtonRemoveSelectedActionPerformed
@@ -653,74 +693,54 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
 
     private void CheckBeforeSave() {
         int RowCount = tableRankedEmployee.getRowCount();
-        String Batch = comboDepartment.getSelectedItem().toString();
-        String group = comboSubDepartment.getSelectedItem().toString();
-
-        if (Batch.equals(select) || group.equals(select)) {
-            JOptionPane.showMessageDialog(this, "Batch or group is not selected.", "Not selected", JOptionPane.OK_OPTION);
-        } else if (RowCount <= 0) {
-            JOptionPane.showMessageDialog(this, "Students are not available at table.", "No students", JOptionPane.OK_OPTION);
-        } else if (!Batch.equals(select) && RowCount > 0 && !group.equals(select)) {
-            int x = JOptionPane.showConfirmDialog(this, "Are you sure to allocate these stduents?", "Save?", JOptionPane.YES_NO_OPTION);
+        if (RowCount <= 0) {
+            JOptionPane.showMessageDialog(this, "Employees are not available at table.", "No employees", JOptionPane.OK_OPTION);
+        } else if (RowCount > 0) {
+            int x = JOptionPane.showConfirmDialog(this, "Are you sure to allocate ranks to these employees?", "Save?", JOptionPane.YES_NO_OPTION);
             if (x == JOptionPane.YES_OPTION) {
-                allocateStudents();
+                deleteExsistsRecordsBeforeSave();
             }
         }
     }
 
-    private void allocateStudents() {
-        String studentID, event;
-        int RowCount = tableRankedEmployee.getRowCount();
-        String groupID[] = comboSubDepartment.getSelectedItem().toString().split("--");
-        String eventCode[] = comboSubDepartment.getSelectedItem().toString().split("--");
-        event = "";
-        String SENT_TO_STUDENT = "No";
-
+    private void deleteExsistsRecordsBeforeSave() {
         try {
-            java.sql.Statement stmtMain = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            java.sql.Statement stmtDeleteExist = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            java.sql.Statement stmtIfExist = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String Checkquery = "select * From event_student_attendees where GROUP_ID = '" + groupID[1] + "'";
-            ResultSet IfExistRset = stmtIfExist.executeQuery(Checkquery);
+            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query = "delete From EmployeeTree";
+            stmt.execute(query);
+            stmt.close();
+            saveData();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        } catch (HeadlessException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
 
-            for (int i = 0; i < RowCount; i++) {
-                studentID = tableRankedEmployee.getValueAt(i, 0).toString();
+    private void saveData() {
+        try {
+            rowCountOfTableRankedEmployee = tableRankedEmployee.getRowCount();
+            java.sql.Statement stmtItems = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            for (int i = 0; i < rowCountOfTableRankedEmployee; i++) {
+                rankForGenerate = tableRankedEmployee.getValueAt(i, 0).toString();
+                empCode = tableRankedEmployee.getValueAt(i, 3).toString();
 
-                if (IfExistRset.next()) {
-                    String deleteQuery = "delete From event_student_attendees where GROUP_ID = '" + groupID[1] + "' AND STUDENT_ID = '" + studentID + "'";
-                    stmtDeleteExist.execute(deleteQuery);
-                }
-
-                String MainInsertQuery = "INSERT INTO `event_student_attendees`\n"
-                        + "(`GROUP_ID`,\n"
-                        + "`STUDENT_ID`,\n"
-                        + "`EVENT_CODE`,\n"
-                        + "`IS_CONFERMATION_SENT_TO_STUDENT`,\n"
-                        + "`student_event_groups_GROUP_ID`)\n"
-                        + "VALUES\n"
-                        + "(\n"
-                        + "'" + groupID[1] + "',\n"
-                        + "'" + studentID + "',\n"
-                        + "'" + eventCode[1] + "',\n"
-                        + "'" + SENT_TO_STUDENT + "',\n"
-                        + "'" + groupID[1] + "'\n"
-                        + ")";
-                stmtMain.execute(MainInsertQuery);
+                String ItemInsertQuery = "INSERT INTO [EmployeeTree]\n"
+                        + "           ([EMPLOYEE_CODE]\n"
+                        + "           ,[RANK_CODE])\n"
+                        + "     VALUES\n"
+                        + "           ('" + empCode + "'\n"
+                        + "           ,'" + rankForGenerate + "')";
+                stmtItems.execute(ItemInsertQuery);
             }
-
-            JOptionPane.showMessageDialog(this, "Selected students are allocated to '" + event + "' successfully.");
-            btnSave.setEnabled(false);
-            stmtMain.close();
-            stmtDeleteExist.close();
-            stmtIfExist.close();
-
+            JOptionPane.showMessageDialog(this, "'" + menuName + "' is updated.");
+            Refresh();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(this, "Please contact for support.");
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        } catch (HeadlessException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(this, "Please contact for support.");
         }
@@ -737,7 +757,7 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
     }
 
     private void Refresh() {
-        int x = JOptionPane.showConfirmDialog(this, "Refresh '"+menuName+"' window?", "Refresh", JOptionPane.YES_NO_OPTION);
+        int x = JOptionPane.showConfirmDialog(this, "Refresh '" + menuName + "' window?", "Refresh", JOptionPane.YES_NO_OPTION);
         if (x == JOptionPane.YES_OPTION) {
             comboDepartment.setEnabled(true);
             buttonView.setEnabled(true);
@@ -746,7 +766,7 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
 
             TextNumberOfEmpRanked.setText("0");
             TextNumberOfEmpAtSubDepartment.setText("0");
-            
+
             model_tableDesignationRank.setRowCount(0);
 
             try {
