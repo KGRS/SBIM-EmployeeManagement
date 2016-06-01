@@ -1,5 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package Transactions;
@@ -7,14 +8,10 @@ package Transactions;
 import static MainFiles.IndexPage.userPrivilege;
 import db.ConnectSql;
 import functions.ValidateFields;
-import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -25,20 +22,73 @@ import javax.swing.table.DefaultTableModel;
  */
 public class UserPrivilege extends javax.swing.JInternalFrame {
 
+    private final DefaultTableModel model_TableEmployee;
+    private final String menuName = "User privilege";
     private final String select = "--Select--";
     private final String spliter = "--";
-    private final DefaultTableModel model_StudentTable;
-    private final String projectPath = System.getProperty("user.dir");
+    String departmentCode, subDepartmentCode, userName, designationCode, designationName, empCode, empFirstName, empCallingName, password, retypePassword, oldPassword, typedOldpassword;
+    int rowCountOfTableEmployee, selectedRowOfTableEmployee, selectedRowCountOfTableEmployee;
 
+    /**
+     * Creates new form UserLogins
+     */
     public UserPrivilege() {
         initComponents();
-        model_StudentTable = (DefaultTableModel) tableViewDetails.getModel();
-        LoadStudents();
-        loadBatchesToCombo();
-        rBtnCode.setSelected(true);
 
-        ImageIcon DefaultBackGround = new ImageIcon(projectPath + "/pictures/InternalFrameIcons/DataFiles/student.jpg");
-        labelIcon.setIcon(DefaultBackGround);
+        buttonGroup1.add(rBtCode);
+        buttonGroup1.add(rBtnName);
+        rBtCode.setSelected(true);
+        txtSearchStudent.requestFocus();
+        model_TableEmployee = (DefaultTableModel) tableEmployee.getModel();
+        panel1.setToolTipText("Press right mouse click to refresh.");
+        this.setTitle(menuName);
+
+        loadDepartmentsToCombo();
+    }
+
+    private void loadDepartmentsToCombo() {
+        try {
+            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query = "select DepartmentCode, DepartmentName From Departments order by DepartmentName";
+            ResultSet rset = stmt.executeQuery(query);
+
+            comboDepartment.removeAllItems();
+            comboDepartment.insertItemAt("--Select--", 0);
+            int position = 1;
+            if (rset.next()) {
+                do {
+                    comboDepartment.insertItemAt(rset.getString("DepartmentName") + "--" + rset.getString("DepartmentCode"), position); // 
+                    position++;
+                } while (rset.next());
+            }
+            comboDepartment.setSelectedIndex(0);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
+        }
+    }
+
+    private void loadSubDepartmentsToCombo() {
+        try {
+            String departmentCodeByArray[] = comboDepartment.getSelectedItem().toString().split(spliter);
+            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query = "select SUB_DEPARTMENT_CODE, SUB_DEPARTMENT_NAME From SubDepartments WHERE DepartmentCode = '" + departmentCodeByArray[1] + "' order by SUB_DEPARTMENT_NAME";
+            ResultSet rset = stmt.executeQuery(query);
+
+            comboSubDepartment.removeAllItems();
+            comboSubDepartment.insertItemAt("--Select--", 0);
+            int position = 1;
+            if (rset.next()) {
+                do {
+                    comboSubDepartment.insertItemAt(rset.getString("SUB_DEPARTMENT_NAME") + "--" + rset.getString("SUB_DEPARTMENT_CODE"), position); // 
+                    position++;
+                } while (rset.next());
+            }
+            comboSubDepartment.setSelectedIndex(0);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
+        }
     }
 
     /**
@@ -50,45 +100,35 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnGrup_yesNo = new javax.swing.ButtonGroup();
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         panel1 = new javax.swing.JPanel();
-        lbl_category = new javax.swing.JLabel();
-        txtStudentID = new javax.swing.JTextField();
-        txtFirstName = new javax.swing.JTextField();
-        btnRegister = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
-        lbl_description = new javax.swing.JLabel();
-        lbl_subAccount = new javax.swing.JLabel();
+        btnSave = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
-        rBtnCode = new javax.swing.JRadioButton();
+        rBtCode = new javax.swing.JRadioButton();
         rBtnName = new javax.swing.JRadioButton();
-        lbl_accountType = new javax.swing.JLabel();
-        cmbBatchCode = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableViewDetails = new javax.swing.JTable();
-        txtSearch = new javax.swing.JTextField();
+        tableEmployee = new javax.swing.JTable();
+        txtSearchStudent = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
+        lbl_subAccount1 = new javax.swing.JLabel();
+        lbl_subAccount2 = new javax.swing.JLabel();
+        lbl_subAccount3 = new javax.swing.JLabel();
+        lbl_subAccount4 = new javax.swing.JLabel();
+        textUserName = new javax.swing.JTextField();
+        textNewPassword = new javax.swing.JPasswordField();
+        textRetypeNewPassword = new javax.swing.JPasswordField();
         lbl_accountType1 = new javax.swing.JLabel();
-        txtNameWithInitials = new javax.swing.JTextField();
-        txtSurName = new javax.swing.JTextField();
-        lbl_accountType2 = new javax.swing.JLabel();
-        lbl_accountType3 = new javax.swing.JLabel();
-        lbl_accountType4 = new javax.swing.JLabel();
-        lbl_accountType5 = new javax.swing.JLabel();
-        txtContactLand = new javax.swing.JTextField();
-        txtContactMobile = new javax.swing.JTextField();
-        txtEmail = new javax.swing.JTextField();
-        lbl_accountType6 = new javax.swing.JLabel();
-        cmbActive = new javax.swing.JComboBox();
-        Fax = new javax.swing.JLabel();
-        btnRegDate = new net.sourceforge.jcalendarbutton.JCalendarButton();
-        txtLastName = new javax.swing.JTextField();
-        labelIcon = new javax.swing.JLabel();
-        lbl_description1 = new javax.swing.JLabel();
+        comboDepartment = new javax.swing.JComboBox();
+        lbl_subAccount5 = new javax.swing.JLabel();
+        comboSubDepartment = new javax.swing.JComboBox();
+        lbl_subAccount6 = new javax.swing.JLabel();
+        textNumberOfEmpAtSubDepartment = new javax.swing.JTextField();
+        textOldPassword = new javax.swing.JPasswordField();
+        buttonRefresh = new javax.swing.JButton();
 
         setIconifiable(true);
-        setTitle("Unregister Student");
+        setPreferredSize(new java.awt.Dimension(1024, 560));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -117,76 +157,15 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
         });
         panel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        lbl_category.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_category.setText("Student ID *");
-        panel1.add(lbl_category, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 60, 80, 20));
-
-        txtStudentID.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtStudentIDFocusGained(evt);
-            }
-        });
-        txtStudentID.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtStudentIDKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtStudentIDKeyReleased(evt);
-            }
-        });
-        panel1.add(txtStudentID, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 60, 250, 20));
-
-        txtFirstName.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFirstNameFocusGained(evt);
-            }
-        });
-        txtFirstName.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtFirstNameKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtFirstNameKeyReleased(evt);
-            }
-        });
-        panel1.add(txtFirstName, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 100, 130, 20));
-
-        btnRegister.setMnemonic('s');
-        btnRegister.setText("Register");
-        btnRegister.setActionCommand("Delete");
-        btnRegister.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setMnemonic('s');
+        btnSave.setText("Save");
+        btnSave.setActionCommand("Delete");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegisterActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
-        btnRegister.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                btnRegisterKeyPressed(evt);
-            }
-        });
-        panel1.add(btnRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 490, 80, -1));
-
-        btnDelete.setMnemonic('d');
-        btnDelete.setText("Delete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-        btnDelete.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                btnDeleteKeyPressed(evt);
-            }
-        });
-        panel1.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 490, 80, -1));
-
-        lbl_description.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_description.setText("Last name *");
-        panel1.add(lbl_description, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 100, 70, 20));
-
-        lbl_subAccount.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_subAccount.setText("Search unregistered student by");
-        panel1.add(lbl_subAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 160, 20));
+        panel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 490, 80, -1));
 
         btnExit.setMnemonic('e');
         btnExit.setText("Exit");
@@ -200,23 +179,21 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
                 btnExitKeyPressed(evt);
             }
         });
-        panel1.add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 490, 80, -1));
+        panel1.add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 490, 80, -1));
 
-        rBtnCode.setBackground(new java.awt.Color(255, 255, 255));
-        buttonGroup1.add(rBtnCode);
-        rBtnCode.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
-        rBtnCode.setText("First");
-        rBtnCode.addActionListener(new java.awt.event.ActionListener() {
+        rBtCode.setBackground(new java.awt.Color(255, 255, 255));
+        buttonGroup1.add(rBtCode);
+        rBtCode.setText("Code");
+        rBtCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rBtnCodeActionPerformed(evt);
+                rBtCodeActionPerformed(evt);
             }
         });
-        panel1.add(rBtnCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, 50, -1));
+        panel1.add(rBtCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 20, 60, -1));
 
         rBtnName.setBackground(new java.awt.Color(255, 255, 255));
         buttonGroup1.add(rBtnName);
-        rBtnName.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
-        rBtnName.setText("Last");
+        rBtnName.setText("Name");
         rBtnName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rBtnNameActionPerformed(evt);
@@ -227,42 +204,21 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
                 rBtnNameKeyPressed(evt);
             }
         });
-        panel1.add(rBtnName, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, 60, -1));
+        panel1.add(rBtnName, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 20, 60, -1));
 
-        lbl_accountType.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType.setText("Active *");
-        panel1.add(lbl_accountType, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 420, 90, 20));
-
-        cmbBatchCode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
-        cmbBatchCode.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            }
-            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                cmbBatchCodePopupMenuWillBecomeInvisible(evt);
-            }
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-            }
-        });
-        cmbBatchCode.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                cmbBatchCodeKeyPressed(evt);
-            }
-        });
-        panel1.add(cmbBatchCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 220, 250, 20));
-
-        tableViewDetails.setModel(new javax.swing.table.DefaultTableModel(
+        tableEmployee.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "First Name", "Last Name", "Name in initial"
+                "Employee code", "First name", "Name with initials", "Call name", "User name"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -273,546 +229,205 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableViewDetails.getTableHeader().setReorderingAllowed(false);
-        tableViewDetails.addMouseListener(new java.awt.event.MouseAdapter() {
+        tableEmployee.getTableHeader().setReorderingAllowed(false);
+        tableEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableViewDetailsMouseClicked(evt);
+                tableEmployeeMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tableViewDetails);
+        jScrollPane1.setViewportView(tableEmployee);
 
-        panel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, 450));
+        panel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 970, 300));
 
-        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtSearchStudent.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtSearchKeyReleased(evt);
+                txtSearchStudentKeyReleased(evt);
             }
         });
-        panel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 170, -1));
-        panel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 468, 440, -1));
+        panel1.add(txtSearchStudent, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 20, 230, -1));
+        panel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 480, 260, 10));
+
+        lbl_subAccount1.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_subAccount1.setText("Retype new password");
+        panel1.add(lbl_subAccount1, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 460, 110, 20));
+
+        lbl_subAccount2.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_subAccount2.setText("Search employee by");
+        panel1.add(lbl_subAccount2, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 20, 110, 20));
+
+        lbl_subAccount3.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_subAccount3.setText("User name");
+        panel1.add(lbl_subAccount3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 430, 70, 20));
+
+        lbl_subAccount4.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_subAccount4.setText("Old password");
+        panel1.add(lbl_subAccount4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, 90, 20));
+
+        textUserName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textUserNameKeyReleased(evt);
+            }
+        });
+        panel1.add(textUserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 430, 200, -1));
+
+        textNewPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textNewPasswordKeyReleased(evt);
+            }
+        });
+        panel1.add(textNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 430, 200, -1));
+
+        textRetypeNewPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textRetypeNewPasswordKeyReleased(evt);
+            }
+        });
+        panel1.add(textRetypeNewPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 460, 200, -1));
 
         lbl_accountType1.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType1.setText("Sur name *");
-        panel1.add(lbl_accountType1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 140, 80, 20));
+        lbl_accountType1.setText("Department *");
+        panel1.add(lbl_accountType1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 80, 20));
 
-        txtNameWithInitials.addKeyListener(new java.awt.event.KeyAdapter() {
+        comboDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
+        comboDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                comboDepartmentPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
+        comboDepartment.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtNameWithInitialsKeyPressed(evt);
+                comboDepartmentKeyPressed(evt);
             }
         });
-        panel1.add(txtNameWithInitials, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 180, 350, -1));
+        panel1.add(comboDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 20, 290, 20));
 
-        txtSurName.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtSurNameKeyPressed(evt);
+        lbl_subAccount5.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_subAccount5.setText("Sub department *");
+        panel1.add(lbl_subAccount5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 100, 20));
+
+        comboSubDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
+        comboSubDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                comboSubDepartmentPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
             }
         });
-        panel1.add(txtSurName, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 140, 350, -1));
+        panel1.add(comboSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 290, -1));
 
-        lbl_accountType2.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType2.setText("Name with initial");
-        panel1.add(lbl_accountType2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 180, 90, 20));
+        lbl_subAccount6.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_subAccount6.setText("New password");
+        panel1.add(lbl_subAccount6, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 430, 110, 20));
 
-        lbl_accountType3.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType3.setText("Batch code *");
-        panel1.add(lbl_accountType3, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 220, 90, 20));
+        textNumberOfEmpAtSubDepartment.setEditable(false);
+        textNumberOfEmpAtSubDepartment.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        textNumberOfEmpAtSubDepartment.setText("0");
+        panel1.add(textNumberOfEmpAtSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 430, 80, -1));
+        panel1.add(textOldPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 460, 200, -1));
 
-        lbl_accountType4.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType4.setText("Contact land");
-        panel1.add(lbl_accountType4, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 300, 80, 20));
-
-        lbl_accountType5.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType5.setText("Contact mobile");
-        panel1.add(lbl_accountType5, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 340, 90, 20));
-
-        txtContactLand.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtContactLandKeyPressed(evt);
+        buttonRefresh.setText("Refresh");
+        buttonRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRefreshActionPerformed(evt);
             }
         });
-        panel1.add(txtContactLand, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 300, 250, -1));
-
-        txtContactMobile.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtContactMobileKeyPressed(evt);
-            }
-        });
-        panel1.add(txtContactMobile, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 340, 250, -1));
-
-        txtEmail.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtEmailKeyPressed(evt);
-            }
-        });
-        panel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 260, 250, -1));
-
-        lbl_accountType6.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType6.setText("E-mail  @ *");
-        panel1.add(lbl_accountType6, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 260, 80, 20));
-
-        cmbActive.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
-        cmbActive.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                cmbActiveKeyPressed(evt);
-            }
-        });
-        panel1.add(cmbActive, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 420, 250, -1));
-
-        Fax.setForeground(new java.awt.Color(102, 102, 102));
-        Fax.setText("Register date *");
-        panel1.add(Fax, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 380, 90, 20));
-
-        btnRegDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                btnRegDatePropertyChange(evt);
-            }
-        });
-        panel1.add(btnRegDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 380, 130, -1));
-        panel1.add(txtLastName, new org.netbeans.lib.awtextra.AbsoluteConstraints(819, 100, 130, -1));
-        panel1.add(labelIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 4, 410, 530));
-
-        lbl_description1.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_description1.setText("First name *");
-        panel1.add(lbl_description1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 100, 90, 20));
+        panel1.add(buttonRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 490, 80, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 976, Short.MAX_VALUE)
+            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1008, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
+            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loadBatchesToCombo() {
-        try {
-            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "select BATCH_WITH_DEPARTMENT_CODE, departments_DEPARTMENT_CODE From student_batch order by BATCH_WITH_DEPARTMENT_CODE";
-            ResultSet rset = stmt.executeQuery(query);
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        selectedRowCountOfTableEmployee = tableEmployee.getSelectedRowCount();
+        if (selectedRowCountOfTableEmployee == 1) {
+            password = textNewPassword.getText();
+            retypePassword = textRetypeNewPassword.getText();
+            typedOldpassword = textOldPassword.getText();
+            if (!password.isEmpty() && !retypePassword.isEmpty() && !typedOldpassword.isEmpty()) {
+                if (password.equals(retypePassword)) {
+                    try {
+                        selectedRowOfTableEmployee = tableEmployee.getSelectedRow();
+                        empCode = tableEmployee.getValueAt(selectedRowOfTableEmployee, 0).toString();
+                        ResultSet reset;
+                        Statement stmt;
+                        String query;
+                        query = "SELECT [USER_OLD_PASSWORD]\n"
+                                + "      ,[USER_NAME]\n"
+                                + "  FROM [UnAndPw] WHERE EMPLOYEE_CODE = '" + empCode + "'";
+                        stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        reset = stmt.executeQuery(query);
 
-            cmbBatchCode.removeAllItems();
-            cmbBatchCode.insertItemAt("--Select--", 0);
-            int position = 1;
-            if (rset.next()) {
-                do {
-                    cmbBatchCode.insertItemAt(rset.getString("BATCH_WITH_DEPARTMENT_CODE") + "--" + rset.getString("departments_DEPARTMENT_CODE") , position);
-                    position++;
-                } while (rset.next());
-            }
-            cmbBatchCode.setSelectedIndex(0);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
-    private void LoadStudents() {
-        try {
-            ResultSet reset;
-            Statement stmt;
-            String query;
-            int rowCount = 0;
-            query = "SELECT STUDENT_FIRST_NAME, STUDENT_LAST_NAME, STUDENT_NAME_INITIAL FROM studentunregister ORDER BY STUDENT_FIRST_NAME";
-            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            reset = stmt.executeQuery(query);
-
-            while (reset.next()) {
-                model_StudentTable.addRow(new Object[model_StudentTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("STUDENT_FIRST_NAME"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("STUDENT_LAST_NAME"), rowCount, 1);
-                tableViewDetails.setValueAt(reset.getString("STUDENT_NAME_INITIAL"), rowCount, 2);
-                rowCount++;
-            }
-            reset.close();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
-    private void CheckBeforeSave() {
-        String Code, FirstName, SurName, NameWithIni, ContactLand,
-                ContactMobile, Email, IS_ACTIVE, regDate, LastName
-                , password = "123";
-        if (!cmbBatchCode.getSelectedItem().equals(select)) {
-            Code = txtStudentID.getText().toUpperCase();
-            FirstName = txtFirstName.getText();
-            LastName = txtLastName.getText();
-            String batchCode[] = cmbBatchCode.getSelectedItem().toString().split("--");
-            String departmentCode[] = cmbBatchCode.getSelectedItem().toString().split("--");
-            NameWithIni = txtNameWithInitials.getText();
-            SurName = txtSurName.getText();
-            ContactLand = txtContactLand.getText();
-            ContactMobile = txtContactMobile.getText();
-            Email = txtEmail.getText();
-            regDate = btnRegDate.getText();
-            IS_ACTIVE = cmbActive.getSelectedItem().toString();
-            if (!Code.isEmpty() && !FirstName.isEmpty()) {
-                try {
-                    java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                    java.sql.Statement stmtForUserLogin = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                    String query = "select STUDENT_ID From students where STUDENT_ID = '" + Code + "'";
-                    ResultSet rset = stmt.executeQuery(query);
-
-                    if (rset.next()) {
-                        int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + FirstName + "' student details?", "Update student?", JOptionPane.YES_NO_OPTION);
-                        if (x == JOptionPane.YES_OPTION) {
-                            String UpdateQuery = "UPDATE `students`\n"
-                                    + "SET\n"
-                                    + "`STUDENT_FIRST_NAME` = '" + FirstName + "',\n"
-                                    + "`STUDENT_LAST_NAME` = '" + LastName + "',\n"
-                                    + "`STUDENT_SUR_NAME` = '" + SurName + "',\n"
-                                    + "`STUDENT_NAME_INITIAL` = '" + NameWithIni + "',\n"
-                                    + "`DEPARTMENT_CODE` = '" + departmentCode[1] + "',\n"
-                                    + "`EMAIL` = '" + Email + "',\n"
-                                    + "`CONTACT_LAND` = '" + ContactLand + "',\n"
-                                    + "`CONTACT_MOBILE` = '" + ContactMobile + "' ,\n"
-                                    + "`REGISTERED_DATE` = '" + regDate + "',\n"
-                                    + "`IS_ACTIVE` = '" + IS_ACTIVE + "',\n"
-                                    + "`student_batch_BATCH_WITH_DEPARTMENT_CODE` = '" + batchCode[0] + "'\n"
-                                    + "WHERE `STUDENT_ID` = '" + Code + "'";
-                            stmt.execute(UpdateQuery);
-                            JOptionPane.showMessageDialog(this, "Student details are updated.");
-                            Refresh();
-                        } else if (x == JOptionPane.NO_OPTION) {
-                            txtStudentID.requestFocus();
+                        if (reset.next()) {
+                            oldPassword = reset.getString("USER_OLD_PASSWORD");
+                            if (oldPassword.equals(typedOldpassword)) {
+                                int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the password of '" + empCode + "'?", "Change password?", JOptionPane.YES_NO_OPTION);
+                                if (x == JOptionPane.YES_OPTION) {
+                                    saveData(password, oldPassword);
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(this, "Old password is not correct.", "Not correct.", JOptionPane.OK_OPTION);
+                                textOldPassword.requestFocus();
+                            }
                         }
-
-                    } else if (!rset.next()) {
-                        String UpdateQuery = "INSERT INTO `students`\n"
-                                + "(`STUDENT_ID`,\n"
-                                + "`STUDENT_FIRST_NAME`,\n"
-                                + "`STUDENT_LAST_NAME`,\n"
-                                + "`STUDENT_SUR_NAME`,\n"
-                                + "`STUDENT_NAME_INITIAL`,\n"
-                                + "`DEPARTMENT_CODE`,\n"
-                                + "`EMAIL`,\n"
-                                + "`CONTACT_LAND`,\n"
-                                + "`CONTACT_MOBILE`,\n"
-                                + "`REGISTERED_DATE`,\n"
-                                + "`IS_ACTIVE`,\n"
-                                + "`student_batch_BATCH_WITH_DEPARTMENT_CODE`)\n"
-                                + "VALUES\n"
-                                + "(\n"
-                                + "'" + Code + "',\n"
-                                + "'" + FirstName + "',\n"
-                                + "'" + LastName + "',\n"
-                                + "'" + SurName + "',\n"
-                                + "'" + NameWithIni + "',\n"
-                                + "'" + departmentCode[1] + "',\n"
-                                + "'" + Email + "',\n"
-                                + "'" + ContactLand + "',\n"
-                                + "'" + ContactMobile + "',\n"
-                                + "'" + regDate + "',\n"
-                                + "'" + IS_ACTIVE + "',\n"
-                                + "'" + batchCode[0] + "'\n"
-                                + "); ";
-                        stmt.execute(UpdateQuery);
-
-                        String queryToUserLogin = "INSERT INTO `user_login`\n"
-                                + "(`STUDENT_OR_MEMBER_ID`,\n"
-                                + "`DEPARTMENT_CODE`,\n"
-                                + "`USER_NAME`,\n"
-                                + "`USER_PASSWORD`)\n"
-                                + "VALUES\n"
-                                + "(\n"
-                                + "'" + Code + "',\n"
-                                + "'" + departmentCode[1] + "',\n"
-                                + "'" + FirstName + "',\n"
-                                + "'" + password + "'\n"
-                                + ")";
-                        stmtForUserLogin.execute(queryToUserLogin);
-
-                        JOptionPane.showMessageDialog(this, "New student is saved.");
-                        Refresh();
+                        reset.close();
+                        stmt.close();
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Please contact for support.");
                     }
-                    rset.close();
-                    stmt.close();
-                    stmtForUserLogin.close();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    JOptionPane.showMessageDialog(this, "Please contact for support.");
-                } catch (HeadlessException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    JOptionPane.showMessageDialog(this, "Please contact for support.");
+                } else if (!password.equals(retypePassword)) {
+                    JOptionPane.showMessageDialog(this, "Retyping of password is not correct.\nPlease type again.", "Not correct", JOptionPane.OK_OPTION);
                 }
-            } else if (Code.isEmpty() || FirstName.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please fill all fields before save.", "Empty fields", JOptionPane.OK_OPTION);
-                txtStudentID.requestFocus();
+            } else if (password.isEmpty() || retypePassword.isEmpty() || typedOldpassword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill all the password fields.", "Empty fields", JOptionPane.OK_OPTION);
             }
-        } else if (cmbBatchCode.getSelectedItem().equals(select)) {
-            JOptionPane.showMessageDialog(this, "Student is not selected.", "Not selected", JOptionPane.OK_OPTION);
-            cmbBatchCode.requestFocus();
         }
-    }
+    }//GEN-LAST:event_btnSaveActionPerformed
 
-    private void CheckBeforeDelete() {
-
-        String Code = txtStudentID.getText();
-        if (!Code.isEmpty()) {
-            
-        } else if (Code.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please insert a valid student id before delete.", "Empty student id", JOptionPane.OK_OPTION);
-            txtStudentID.requestFocus();
-        }
-    }
-
-
-    private void SearchStudentByCode(String CategoryCode) {
+    private void saveData(String password, String oldPassword) {
         try {
-            ResultSet reset;
-            Statement stmt;
-            String query;
-            int rowCount = 0;
-            RefreshTable();
+            rowCountOfTableEmployee = tableEmployee.getRowCount();
+            java.sql.Statement stmtItems = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            for (int i = 0; i < rowCountOfTableEmployee; i++) {
+                empCode = tableEmployee.getValueAt(i, 0).toString();
 
-            if (!CategoryCode.equals("")) {
-                query = "SELECT STUDENT_ID, STUDENT_FIRST_NAME, student_batch_BATCH_WITH_DEPARTMENT_CODE FROM students WHERE STUDENT_ID LIKE '" + CategoryCode + "%'";
-            } else {
-                query = "SELECT STUDENT_ID, STUDENT_FIRST_NAME, student_batch_BATCH_WITH_DEPARTMENT_CODE FROM students WHERE STUDENT_ID LIKE '" + CategoryCode + "%'";
+                String ItemInsertQuery = "UPDATE [UnAndPw] SET\n"
+                        + "           [USER_PASSWORD] = '"+password+"'\n"
+                        + "           ,[USER_OLD_PASSWORD] = '"+oldPassword+"'\n"
+                        + "     WHERE EMPLOYEE_CODE = '"+empCode+"'";
+                stmtItems.execute(ItemInsertQuery);
             }
-            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            reset = stmt.executeQuery(query);
-
-            while (reset.next()) {
-
-                model_StudentTable.addRow(new Object[model_StudentTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("STUDENT_ID"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("STUDENT_FIRST_NAME"), rowCount, 1);
-                tableViewDetails.setValueAt(reset.getString("student_batch_BATCH_WITH_DEPARTMENT_CODE"), rowCount, 2);
-                rowCount++;
-            }
-            reset.close();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
-    private void SearchStudentByName(String CategoryName) {
-        try {
-            ResultSet reset;
-            Statement stmt;
-            String query;
-            int rowCount = 0;
-            RefreshTable();
-
-            if (!CategoryName.equals("")) {
-                query = "SELECT STUDENT_ID, STUDENT_FIRST_NAME, student_batch_BATCH_WITH_DEPARTMENT_CODE FROM students WHERE STUDENT_FIRST_NAME LIKE '%" + CategoryName + "%'";
-            } else {
-                query = "SELECT STUDENT_ID, STUDENT_FIRST_NAME, student_batch_BATCH_WITH_DEPARTMENT_CODE FROM students WHERE STUDENT_FIRST_NAME LIKE '%" + CategoryName + "%'";
-            }
-            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            reset = stmt.executeQuery(query);
-
-            while (reset.next()) {
-
-                model_StudentTable.addRow(new Object[model_StudentTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("STUDENT_ID"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("STUDENT_FIRST_NAME"), rowCount, 1);
-                tableViewDetails.setValueAt(reset.getString("student_batch_BATCH_WITH_DEPARTMENT_CODE"), rowCount, 2);
-                rowCount++;
-            }
-            reset.close();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
-    private void RefreshTable() {
-        try {
-            int row = model_StudentTable.getRowCount();
-            for (int j = 0; j < row; j++) {
-                model_StudentTable.removeRow(0);
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
-    private void Refresh() {
-        RefreshTableAndLoadAgain();
-        txtStudentID.setText("");
-        txtFirstName.setText("");
-        txtLastName.setText("");
-        cmbBatchCode.setSelectedIndex(0);
-        txtNameWithInitials.setText("");
-        txtSurName.setText("");
-        txtContactLand.setText("");
-        txtContactMobile.setText("");
-        txtEmail.setText("");
-        btnRegDate.setText("");
-        loadBatchesToCombo();
-        txtSearch.setText("");
-    }
-
-    private void RefreshTableAndLoadAgain() {
-        try {
-            int row = model_StudentTable.getRowCount();
-            for (int j = 0; j < row; j++) {
-                model_StudentTable.removeRow(0);
-            }
-            LoadStudents();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
-    private void formInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameIconified
-        userPrivilege.toFront();
-    }//GEN-LAST:event_formInternalFrameIconified
-
-    private void panel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panel1MouseClicked
-        if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
+            JOptionPane.showMessageDialog(this, "'" + menuName + "' is updated.");
             Refresh();
-        }
-    }//GEN-LAST:event_panel1MouseClicked
-
-    private void txtEmailKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txtContactLand.requestFocus();
-        }
-    }//GEN-LAST:event_txtEmailKeyPressed
-
-    private void txtContactMobileKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContactMobileKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            btnRegDate.requestFocus();
-        }
-    }//GEN-LAST:event_txtContactMobileKeyPressed
-
-    private void txtContactLandKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContactLandKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txtContactMobile.requestFocus();
-        }
-    }//GEN-LAST:event_txtContactLandKeyPressed
-
-    private void txtSurNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSurNameKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txtContactLand.requestFocus();
-        }
-    }//GEN-LAST:event_txtSurNameKeyPressed
-
-    private void txtNameWithInitialsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNameWithInitialsKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txtSurName.requestFocus();
-        }
-    }//GEN-LAST:event_txtNameWithInitialsKeyPressed
-
-    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
-        if (rBtnCode.isSelected()) {
-            SearchStudentByCode(txtSearch.getText());
-        } else if (rBtnName.isSelected()) {
-            SearchStudentByName(txtSearch.getText());
-        }
-    }//GEN-LAST:event_txtSearchKeyReleased
-
-    private void tableViewDetailsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableViewDetailsMouseClicked
-        String Code, FirstName, LastName = "", SurName, NameWithIni = "", ContactLand = "",
-                ContactMobile = "", Email = "", 
-                IS_ACTIVE = "", batchCode = "", regDate = "", departmentCode = "";
-
-        Code = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 0).toString();
-        FirstName = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 1).toString();
-        SurName = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 2).toString();
-
-        try {
-            ResultSet reset;
-            Statement stmt;
-            String query;
-            query = "SELECT\n"
-                    + "`students`.`STUDENT_ID`,\n"
-                    + "`students`.`STUDENT_FIRST_NAME`,\n"
-                    + "`students`.`STUDENT_LAST_NAME`,\n"
-                    + "`students`.`STUDENT_SUR_NAME`,\n"
-                    + "`students`.`STUDENT_NAME_INITIAL`,\n"
-                    + "`students`.`DEPARTMENT_CODE`,\n"
-                    + "`students`.`EMAIL`,\n"
-                    + "`students`.`CONTACT_LAND`,\n"
-                    + "`students`.`CONTACT_MOBILE`,\n"
-                    + "`students`.`REGISTERED_DATE`,\n"
-                    + "`students`.`IS_ACTIVE`,\n"
-                    + "`students`.`student_batch_BATCH_WITH_DEPARTMENT_CODE`\n"
-                    + "FROM `students` WHERE STUDENT_ID = '" + Code + "'";
-            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            reset = stmt.executeQuery(query);
-
-            if (reset.next()) {
-                LastName = reset.getString("STUDENT_LAST_NAME");
-                NameWithIni = reset.getString("STUDENT_NAME_INITIAL");
-                batchCode = reset.getString("student_batch_BATCH_WITH_DEPARTMENT_CODE");
-                departmentCode = reset.getString("DEPARTMENT_CODE");
-                ContactLand = reset.getString("CONTACT_LAND");
-                ContactMobile = reset.getString("CONTACT_MOBILE");
-                Email = reset.getString("EMAIL");
-                regDate = reset.getString("REGISTERED_DATE");
-                IS_ACTIVE = reset.getString("IS_ACTIVE");
-            }
+            stmtItems.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(this, "Please contact for support.");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
         }
+    }
 
-        txtStudentID.setText(Code);
-        txtFirstName.setText(FirstName);
-        txtLastName.setText(LastName);
-        txtSurName.setText(SurName);
-        txtNameWithInitials.setText(NameWithIni);
-        cmbBatchCode.setSelectedItem(batchCode+"--"+departmentCode);
-        txtContactLand.setText(ContactLand);
-        txtContactMobile.setText(ContactMobile);
-        txtEmail.setText(Email);
-        btnRegDate.setText(regDate);
-        cmbActive.setSelectedItem(IS_ACTIVE);
-    }//GEN-LAST:event_tableViewDetailsMouseClicked
-
-    private void cmbBatchCodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbBatchCodeKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String text = cmbBatchCode.getSelectedItem().toString();
-            if (!text.equals(select)) {
-                txtNameWithInitials.requestFocus();
-            }
-        }
-    }//GEN-LAST:event_cmbBatchCodeKeyPressed
-
-    private void cmbBatchCodePopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cmbBatchCodePopupMenuWillBecomeInvisible
-        String text = cmbBatchCode.getSelectedItem().toString();
-        if (!text.equals(select)) {
-            btnRegister.requestFocus();
-        }
-    }//GEN-LAST:event_cmbBatchCodePopupMenuWillBecomeInvisible
-
-    private void rBtnNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rBtnNameKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_UP) {
-            rBtnCode.requestFocus();
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            rBtnName.setSelected(true);
-            btnRegister.requestFocus();
-        }
-    }//GEN-LAST:event_rBtnNameKeyPressed
-
-    private void rBtnNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnNameActionPerformed
-        if (rBtnName.isSelected()) {
-            txtSearch.requestFocus();
-            txtSearch.selectAll();
-        }
-    }//GEN-LAST:event_rBtnNameActionPerformed
-
-    private void rBtnCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnCodeActionPerformed
-        if (rBtnCode.isSelected()) {
-            txtSearch.requestFocus();
-            txtSearch.selectAll();
-        }
-    }//GEN-LAST:event_rBtnCodeActionPerformed
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        exit();
+    }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnExitKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnExitKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -820,125 +435,258 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnExitKeyPressed
 
-    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        exit();
-    }//GEN-LAST:event_btnExitActionPerformed
-
-    private void btnDeleteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnDeleteKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            CheckBeforeDelete();
+    private void rBtCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtCodeActionPerformed
+        if (rBtCode.isSelected()) {
+            txtSearchStudent.requestFocus();
+            txtSearchStudent.selectAll();
         }
-    }//GEN-LAST:event_btnDeleteKeyPressed
+    }//GEN-LAST:event_rBtCodeActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        CheckBeforeDelete();
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void btnRegisterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnRegisterKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            CheckBeforeSave();
+    private void rBtnNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnNameActionPerformed
+        if (rBtnName.isSelected()) {
+            txtSearchStudent.requestFocus();
+            txtSearchStudent.selectAll();
         }
-    }//GEN-LAST:event_btnRegisterKeyPressed
+    }//GEN-LAST:event_rBtnNameActionPerformed
 
-    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-        CheckBeforeSave();
-    }//GEN-LAST:event_btnRegisterActionPerformed
-
-    private void txtFirstNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFirstNameKeyReleased
-        ValidateFields.CheckForOtherFields(txtFirstName);
-    }//GEN-LAST:event_txtFirstNameKeyReleased
-
-    private void txtFirstNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFirstNameKeyPressed
+    private void rBtnNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rBtnNameKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_UP) {
+            rBtCode.requestFocus();
+        }
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String text = txtFirstName.getText();
-            if (!text.isEmpty()) {
-                cmbBatchCode.requestFocus();
+            rBtnName.setSelected(true);
+            btnSave.requestFocus();
+        }
+    }//GEN-LAST:event_rBtnNameKeyPressed
+
+    private void tableEmployeeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableEmployeeMouseClicked
+        UNLoadAtTableInMouseClick();
+//        tableViewStaffMem.remove
+    }//GEN-LAST:event_tableEmployeeMouseClicked
+
+    private void UNLoadAtTableInMouseClick() {
+        selectedRowCountOfTableEmployee = tableEmployee.getSelectedRowCount();
+        if (selectedRowCountOfTableEmployee == 1) {
+            selectedRowOfTableEmployee = tableEmployee.getSelectedRow();
+            userName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 4).toString();
+            textUserName.setText(userName);
+            textNewPassword.requestFocus();
+        }
+    }
+
+
+    private void txtSearchStudentKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchStudentKeyReleased
+        if (rBtCode.isSelected()) {
+//            SearchStudentByCode(txtSearchStudent.getText());
+        } else if (rBtnName.isSelected()) {
+//            SearchStudentByName(txtSearchStudent.getText());
+        }
+    }//GEN-LAST:event_txtSearchStudentKeyReleased
+
+    private void SearchStudentByCode(String studentCode) {
+        try {
+            ResultSet reset;
+            Statement stmt;
+            String query;
+            int rowCount = 0;
+            model_TableEmployee.setRowCount(rowCount);
+
+            if (!studentCode.equals("")) {
+                query = "SELECT STUDENT_ID, STUDENT_FIRST_NAME, student_batch_BATCH_WITH_DEPARTMENT_CODE FROM students WHERE STUDENT_ID LIKE '" + studentCode + "%'";
+            } else {
+                query = "SELECT STUDENT_ID, STUDENT_FIRST_NAME, student_batch_BATCH_WITH_DEPARTMENT_CODE FROM students WHERE STUDENT_ID LIKE '" + studentCode + "%'";
+            }
+            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            reset = stmt.executeQuery(query);
+
+            while (reset.next()) {
+
+                model_TableEmployee.addRow(new Object[model_TableEmployee.getColumnCount()]);
+                tableEmployee.setValueAt(reset.getString("STUDENT_ID"), rowCount, 0);
+                tableEmployee.setValueAt(reset.getString("STUDENT_FIRST_NAME"), rowCount, 1);
+                tableEmployee.setValueAt(reset.getString("student_batch_BATCH_WITH_DEPARTMENT_CODE"), rowCount, 2);
+                rowCount++;
+            }
+            reset.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
+
+    private void SearchStudentByName(String studentName) {
+        try {
+            ResultSet reset;
+            Statement stmt;
+            String query;
+            int rowCount = 0;
+            model_TableEmployee.setRowCount(rowCount);
+
+            if (!studentName.equals("")) {
+                query = "SELECT STUDENT_ID, STUDENT_FIRST_NAME, student_batch_BATCH_WITH_DEPARTMENT_CODE FROM students WHERE STUDENT_FIRST_NAME LIKE '%" + studentName + "%'";
+            } else {
+                query = "SELECT STUDENT_ID, STUDENT_FIRST_NAME, student_batch_BATCH_WITH_DEPARTMENT_CODE FROM students WHERE STUDENT_FIRST_NAME LIKE '%" + studentName + "%'";
+            }
+            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            reset = stmt.executeQuery(query);
+
+            while (reset.next()) {
+
+                model_TableEmployee.addRow(new Object[model_TableEmployee.getColumnCount()]);
+                tableEmployee.setValueAt(reset.getString("STUDENT_ID"), rowCount, 0);
+                tableEmployee.setValueAt(reset.getString("STUDENT_FIRST_NAME"), rowCount, 1);
+                tableEmployee.setValueAt(reset.getString("student_batch_BATCH_WITH_DEPARTMENT_CODE"), rowCount, 2);
+                rowCount++;
+            }
+            reset.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
+
+    private void panel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panel1MouseClicked
+        if (SwingUtilities.isRightMouseButton(evt) || evt.isControlDown()) {
+            Refresh();
+        }
+    }//GEN-LAST:event_panel1MouseClicked
+
+    private void formInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameIconified
+        userPrivilege.toFront();
+    }//GEN-LAST:event_formInternalFrameIconified
+
+    private void textUserNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textUserNameKeyReleased
+        ValidateFields.CheckForOtherFields(textUserName);
+    }//GEN-LAST:event_textUserNameKeyReleased
+
+    private void textNewPasswordKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textNewPasswordKeyReleased
+        ValidateFields.CheckForOtherFields(textNewPassword);
+    }//GEN-LAST:event_textNewPasswordKeyReleased
+
+    private void textRetypeNewPasswordKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textRetypeNewPasswordKeyReleased
+        ValidateFields.CheckForOtherFields(textRetypeNewPassword);
+    }//GEN-LAST:event_textRetypeNewPasswordKeyReleased
+
+    private void comboDepartmentPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_comboDepartmentPopupMenuWillBecomeInvisible
+        String text = comboDepartment.getSelectedItem().toString();
+        if (!text.equals(select)) {
+            loadSubDepartmentsToCombo();
+            btnSave.requestFocus();
+        }
+    }//GEN-LAST:event_comboDepartmentPopupMenuWillBecomeInvisible
+
+    private void comboDepartmentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_comboDepartmentKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String text = comboDepartment.getSelectedItem().toString();
+            if (!text.equals(select)) {
+                loadSubDepartmentsToCombo();
+                btnSave.requestFocus();
             }
         }
-    }//GEN-LAST:event_txtFirstNameKeyPressed
+    }//GEN-LAST:event_comboDepartmentKeyPressed
 
-    private void txtFirstNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFirstNameFocusGained
-        txtFirstName.selectAll();
-    }//GEN-LAST:event_txtFirstNameFocusGained
+    private void comboSubDepartmentPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
+        subDepartmentCode = comboSubDepartment.getSelectedItem().toString();
+        if (!subDepartmentCode.equals(select)) {
+            String subDepartmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
+            loadSelectedSubDepartmentEmployeesToTable(subDepartmentCodeByArray[1]);
+        } else if (subDepartmentCode.equals(select)) {
+            JOptionPane.showMessageDialog(this, "Sub department is not selected.", "Not selected", JOptionPane.OK_OPTION);
+            comboSubDepartment.requestFocus();
+        }
+    }//GEN-LAST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
 
-    private void txtStudentIDKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStudentIDKeyReleased
-        ValidateFields.CheckForCodes(txtStudentID);
-    }//GEN-LAST:event_txtStudentIDKeyReleased
+    private void buttonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshActionPerformed
+        Refresh();
+    }//GEN-LAST:event_buttonRefreshActionPerformed
 
-    private void txtStudentIDKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStudentIDKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String text = txtStudentID.getText();
-            if (!text.isEmpty()) {
-                txtFirstName.requestFocus();
-                //                LoadAtCodes();
+    private void loadSelectedSubDepartmentEmployeesToTable(String subDepartmentCode) {
+        try {
+            ResultSet reset;
+            Statement stmt;
+            String query;
+            int rowCount = 0;
+            model_TableEmployee.setRowCount(0);
+
+            query = "SELECT\n"
+                    + "     Employees.\"FIRST_NAME\" AS Employees_FIRST_NAME,\n"
+                    + "     Employees.\"CALL_NAME\" AS Employees_CALL_NAME,\n"
+                    + "     Employees.\"EMPLOYEE_CODE\" AS Employees_EMPLOYEE_CODE,\n"
+                    + "     Employees.\"INITIALS\" AS Employees_INITIALS,\n"
+                    + "     Employees.\"SUB_DEPARTMENT_CODE\" AS Employees_SUB_DEPARTMENT_CODE,\n"
+                    + "     Employees.\"DepartmentCode\" AS Employees_DepartmentCode,\n"
+                    + "     UnAndPw.\"USER_NAME\" AS UnAndPw_USER_NAME,\n"
+                    + "     UnAndPw.\"USER_PASSWORD\" AS UnAndPw_USER_PASSWORD\n"
+                    + "FROM\n"
+                    + "     \"dbo\".\"UnAndPw\" UnAndPw INNER JOIN \"dbo\".\"Employees\" Employees ON UnAndPw.\"EMPLOYEE_CODE\" = Employees.\"EMPLOYEE_CODE\"\n"
+                    + "WHERE Employees.\"SUB_DEPARTMENT_CODE\" = '" + subDepartmentCode + "'\n"
+                    + "ORDER BY Employees.\"CALL_NAME\"";
+            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            reset = stmt.executeQuery(query);
+
+            while (reset.next()) {
+                model_TableEmployee.addRow(new Object[model_TableEmployee.getColumnCount()]);
+                tableEmployee.setValueAt(reset.getString("Employees_EMPLOYEE_CODE"), rowCount, 0);
+                tableEmployee.setValueAt(reset.getString("Employees_FIRST_NAME"), rowCount, 1);
+                tableEmployee.setValueAt(reset.getString("Employees_INITIALS"), rowCount, 2);
+                tableEmployee.setValueAt(reset.getString("Employees_CALL_NAME"), rowCount, 3);
+                tableEmployee.setValueAt(reset.getString("UnAndPw_USER_NAME"), rowCount, 4);
+                rowCount++;
             }
+            textNumberOfEmpAtSubDepartment.setText(String.valueOf(rowCount));
+            reset.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
         }
-    }//GEN-LAST:event_txtStudentIDKeyPressed
+    }
 
-    private void txtStudentIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtStudentIDFocusGained
-        txtStudentID.selectAll();
-    }//GEN-LAST:event_txtStudentIDFocusGained
-
-    private void cmbActiveKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbActiveKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            btnRegister.requestFocus();
-        }
-    }//GEN-LAST:event_cmbActiveKeyPressed
-
-    private void btnRegDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_btnRegDatePropertyChange
-        if (evt.getNewValue() instanceof Date) {
-            Date RecievedDate = (Date) evt.getNewValue();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            btnRegDate.setText(format.format(RecievedDate));
-            btnRegDate.requestFocus();
-        }
-    }//GEN-LAST:event_btnRegDatePropertyChange
+    private void Refresh() {
+        model_TableEmployee.setRowCount(0);
+        textUserName.setText("");
+        textNewPassword.setText("");
+        textRetypeNewPassword.setText("");
+        txtSearchStudent.setText("");
+        textOldPassword.setText("");
+        comboDepartment.setSelectedIndex(0);
+        comboSubDepartment.setSelectedIndex(0);
+        textNumberOfEmpAtSubDepartment.setText("0");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel Fax;
-    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExit;
-    private javax.swing.ButtonGroup btnGrup_yesNo;
-    private net.sourceforge.jcalendarbutton.JCalendarButton btnRegDate;
-    private javax.swing.JButton btnRegister;
+    private javax.swing.JButton btnSave;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JComboBox cmbActive;
-    private javax.swing.JComboBox cmbBatchCode;
+    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JButton buttonRefresh;
+    private javax.swing.JComboBox comboDepartment;
+    private javax.swing.JComboBox comboSubDepartment;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JLabel labelIcon;
-    private javax.swing.JLabel lbl_accountType;
     private javax.swing.JLabel lbl_accountType1;
-    private javax.swing.JLabel lbl_accountType2;
-    private javax.swing.JLabel lbl_accountType3;
-    private javax.swing.JLabel lbl_accountType4;
-    private javax.swing.JLabel lbl_accountType5;
-    private javax.swing.JLabel lbl_accountType6;
-    private javax.swing.JLabel lbl_category;
-    private javax.swing.JLabel lbl_description;
-    private javax.swing.JLabel lbl_description1;
-    private javax.swing.JLabel lbl_subAccount;
+    private javax.swing.JLabel lbl_subAccount1;
+    private javax.swing.JLabel lbl_subAccount2;
+    private javax.swing.JLabel lbl_subAccount3;
+    private javax.swing.JLabel lbl_subAccount4;
+    private javax.swing.JLabel lbl_subAccount5;
+    private javax.swing.JLabel lbl_subAccount6;
     private javax.swing.JPanel panel1;
-    private javax.swing.JRadioButton rBtnCode;
+    private javax.swing.JRadioButton rBtCode;
     private javax.swing.JRadioButton rBtnName;
-    private javax.swing.JTable tableViewDetails;
-    private javax.swing.JTextField txtContactLand;
-    private javax.swing.JTextField txtContactMobile;
-    private javax.swing.JTextField txtEmail;
-    private javax.swing.JTextField txtFirstName;
-    private javax.swing.JTextField txtLastName;
-    private javax.swing.JTextField txtNameWithInitials;
-    private javax.swing.JTextField txtSearch;
-    private javax.swing.JTextField txtStudentID;
-    private javax.swing.JTextField txtSurName;
+    private javax.swing.JTable tableEmployee;
+    private javax.swing.JPasswordField textNewPassword;
+    private javax.swing.JTextField textNumberOfEmpAtSubDepartment;
+    private javax.swing.JPasswordField textOldPassword;
+    private javax.swing.JPasswordField textRetypeNewPassword;
+    private javax.swing.JTextField textUserName;
+    private javax.swing.JTextField txtSearchStudent;
     // End of variables declaration//GEN-END:variables
 
     private void exit() {
-
         if (userPrivilege != null) {
             userPrivilege = null;
         }
-
         this.dispose();
     }
+
 }

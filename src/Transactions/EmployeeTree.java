@@ -646,51 +646,6 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
         return data;
     }
 
-    private void loadBatchCodeToCombo() {
-        try {
-            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "select BATCH_WITH_DEPARTMENT_CODE, BATCH_YEAR From student_batch order by BATCH_WITH_DEPARTMENT_CODE DESC";
-            ResultSet rset = stmt.executeQuery(query);
-
-            comboDepartment.removeAllItems();
-            comboDepartment.insertItemAt("--Select--", 0);
-            int position = 1;
-            if (rset.next()) {
-                do {
-                    comboDepartment.insertItemAt(rset.getString("BATCH_WITH_DEPARTMENT_CODE") + "--" + rset.getString("BATCH_YEAR"), position);
-                    position++;
-                } while (rset.next());
-            }
-            comboDepartment.setSelectedIndex(0);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
-        }
-    }
-
-    private void loadGroupsToCombo() {
-        try {
-            String batchCode[] = comboDepartment.getSelectedItem().toString().split("--");
-            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "SELECT GROUP_ID, GROUP_NAME FROM student_event_groups WHERE student_batch_BATCH_WITH_DEPARTMENT_CODE = '" + batchCode[0] + "' AND STATUS = 'Pending' ORDER BY GROUP_NAME";
-            ResultSet rset = stmt.executeQuery(query);
-
-            comboSubDepartment.removeAllItems();
-            comboSubDepartment.insertItemAt("--Select--", 0);
-            int position = 1;
-            if (rset.next()) {
-                do {
-                    comboSubDepartment.insertItemAt(rset.getString("GROUP_NAME") + "--" + rset.getString("GROUP_ID"), position);
-                    position++;
-                } while (rset.next());
-            }
-            comboSubDepartment.setSelectedIndex(0);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
-        }
-    }
-
     private void CheckBeforeSave() {
         int RowCount = tableRankedEmployee.getRowCount();
         if (RowCount <= 0) {

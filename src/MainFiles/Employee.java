@@ -114,6 +114,8 @@ public class Employee extends javax.swing.JInternalFrame {
         jComboBox1 = new javax.swing.JComboBox();
         lbl_accountType8 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
+        lbl_description2 = new javax.swing.JLabel();
+        textUserName = new javax.swing.JTextField();
 
         setIconifiable(true);
         setTitle("Employee");
@@ -162,7 +164,7 @@ public class Employee extends javax.swing.JInternalFrame {
                 txtStaffMemCodeKeyReleased(evt);
             }
         });
-        panel1.add(txtStaffMemCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 60, 210, 20));
+        panel1.add(txtStaffMemCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 60, 120, 20));
 
         txtFirstName.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -209,8 +211,8 @@ public class Employee extends javax.swing.JInternalFrame {
         panel1.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 490, 80, -1));
 
         lbl_description.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_description.setText("Last name *");
-        panel1.add(lbl_description, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 100, 60, 20));
+        lbl_description.setText("User name *");
+        panel1.add(lbl_description, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 60, 60, 20));
 
         lbl_subAccount.setForeground(new java.awt.Color(102, 102, 102));
         lbl_subAccount.setText("Search employee by");
@@ -363,6 +365,11 @@ public class Employee extends javax.swing.JInternalFrame {
         lbl_accountType8.setText("Contact land");
         panel1.add(lbl_accountType8, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 340, 90, 20));
         panel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 380, 210, -1));
+
+        lbl_description2.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_description2.setText("Last name *");
+        panel1.add(lbl_description2, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 100, 60, 20));
+        panel1.add(textUserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 60, 130, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -888,11 +895,13 @@ public class Employee extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbl_category;
     private javax.swing.JLabel lbl_description;
     private javax.swing.JLabel lbl_description1;
+    private javax.swing.JLabel lbl_description2;
     private javax.swing.JLabel lbl_subAccount;
     private javax.swing.JPanel panel1;
     private javax.swing.JRadioButton rBtnCode;
     private javax.swing.JRadioButton rBtnName;
     private javax.swing.JTable tableViewDetails;
+    private javax.swing.JTextField textUserName;
     private javax.swing.JTextField txtCallName;
     private javax.swing.JTextField txtContactLand;
     private javax.swing.JTextField txtContactMobile;

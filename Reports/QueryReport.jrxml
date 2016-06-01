@@ -5,23 +5,27 @@
 	<property name="ireport.y" value="0"/>
 	<queryString>
 		<![CDATA[SELECT
-     EmployeeDesignationTree."EMPLOYEE_DESIGNATION_CODE" AS EmployeeDesignationTree_EMPLOYEE_DESIGNATION_CODE,
-     EmployeeDesignation."EMPLOYEE_DESIGNATION_NAME" AS EmployeeDesignation_EMPLOYEE_DESIGNATION_NAME,
-     EmployeeTree."EMPLOYEE_CODE" AS EmployeeTree_EMPLOYEE_CODE,
-     EmployeeTree."RANK_CODE" AS EmployeeTree_RANK_CODE,
      Employees."FIRST_NAME" AS Employees_FIRST_NAME,
-     Employees."CALL_NAME" AS Employees_CALL_NAME
+     Employees."CALL_NAME" AS Employees_CALL_NAME,
+     Employees."EMPLOYEE_CODE" AS Employees_EMPLOYEE_CODE,
+     Employees."INITIALS" AS Employees_INITIALS,
+     Employees."SUB_DEPARTMENT_CODE" AS Employees_SUB_DEPARTMENT_CODE,
+     Employees."DepartmentCode" AS Employees_DepartmentCode,
+     UnAndPw."USER_NAME" AS UnAndPw_USER_NAME,
+     UnAndPw."USER_PASSWORD" AS UnAndPw_USER_PASSWORD
 FROM
-     "dbo"."EmployeeDesignation" EmployeeDesignation INNER JOIN "dbo"."EmployeeDesignationTree" EmployeeDesignationTree ON EmployeeDesignation."EMPLOYEE_DESIGNATION_CODE" = EmployeeDesignationTree."EMPLOYEE_DESIGNATION_CODE"
-     INNER JOIN "dbo"."EmployeeTree" EmployeeTree ON EmployeeDesignationTree."RANK_CODE" = EmployeeTree."RANK_CODE"
-     INNER JOIN "dbo"."Employees" Employees ON EmployeeTree."EMPLOYEE_CODE" = Employees."EMPLOYEE_CODE"]]>
+     "dbo"."UnAndPw" UnAndPw INNER JOIN "dbo"."Employees" Employees ON UnAndPw."EMPLOYEE_CODE" = Employees."EMPLOYEE_CODE"
+WHERE Employees."SUB_DEPARTMENT_CODE" = ''
+ORDER BY Employees."CALL_NAME"]]>
 	</queryString>
-	<field name="EmployeeDesignationTree_EMPLOYEE_DESIGNATION_CODE" class="java.lang.String"/>
-	<field name="EmployeeDesignation_EMPLOYEE_DESIGNATION_NAME" class="java.lang.String"/>
-	<field name="EmployeeTree_EMPLOYEE_CODE" class="java.lang.String"/>
-	<field name="EmployeeTree_RANK_CODE" class="java.lang.String"/>
 	<field name="Employees_FIRST_NAME" class="java.lang.String"/>
 	<field name="Employees_CALL_NAME" class="java.lang.String"/>
+	<field name="Employees_EMPLOYEE_CODE" class="java.lang.String"/>
+	<field name="Employees_INITIALS" class="java.lang.String"/>
+	<field name="Employees_SUB_DEPARTMENT_CODE" class="java.lang.String"/>
+	<field name="Employees_DepartmentCode" class="java.lang.String"/>
+	<field name="UnAndPw_USER_NAME" class="java.lang.String"/>
+	<field name="UnAndPw_USER_PASSWORD" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
