@@ -7,25 +7,31 @@
 		<![CDATA[SELECT
      Employees."FIRST_NAME" AS Employees_FIRST_NAME,
      Employees."CALL_NAME" AS Employees_CALL_NAME,
-     Employees."EMPLOYEE_CODE" AS Employees_EMPLOYEE_CODE,
      Employees."INITIALS" AS Employees_INITIALS,
-     Employees."SUB_DEPARTMENT_CODE" AS Employees_SUB_DEPARTMENT_CODE,
-     Employees."DepartmentCode" AS Employees_DepartmentCode,
      UnAndPw."USER_NAME" AS UnAndPw_USER_NAME,
-     UnAndPw."USER_PASSWORD" AS UnAndPw_USER_PASSWORD
+     UserPrivilegeForModules."MODULE_CODE" AS UserPrivilegeForModules_MODULE_CODE,
+     UserPrivilegeForModules."EMPLOYEE_CODE" AS UserPrivilegeForModules_EMPLOYEE_CODE,
+     Modules."MODULE_NAME" AS Modules_MODULE_NAME,
+     Modules."VERSION" AS Modules_VERSION,
+     Employees."ACTIVE" AS Employees_ACTIVE
 FROM
      "dbo"."UnAndPw" UnAndPw INNER JOIN "dbo"."Employees" Employees ON UnAndPw."EMPLOYEE_CODE" = Employees."EMPLOYEE_CODE"
-WHERE Employees."SUB_DEPARTMENT_CODE" = ''
-ORDER BY Employees."CALL_NAME"]]>
+     INNER JOIN "dbo"."UserPrivilegeForModules" UserPrivilegeForModules ON Employees."EMPLOYEE_CODE" = UserPrivilegeForModules."EMPLOYEE_CODE"
+     INNER JOIN "dbo"."Modules" Modules ON UserPrivilegeForModules."MODULE_CODE" = Modules."MODULE_CODE"
+WHERE
+     Employees."ACTIVE" = 'Yes'
+ORDER BY
+     Employees."CALL_NAME" ASC]]>
 	</queryString>
 	<field name="Employees_FIRST_NAME" class="java.lang.String"/>
 	<field name="Employees_CALL_NAME" class="java.lang.String"/>
-	<field name="Employees_EMPLOYEE_CODE" class="java.lang.String"/>
 	<field name="Employees_INITIALS" class="java.lang.String"/>
-	<field name="Employees_SUB_DEPARTMENT_CODE" class="java.lang.String"/>
-	<field name="Employees_DepartmentCode" class="java.lang.String"/>
 	<field name="UnAndPw_USER_NAME" class="java.lang.String"/>
-	<field name="UnAndPw_USER_PASSWORD" class="java.lang.String"/>
+	<field name="UserPrivilegeForModules_MODULE_CODE" class="java.lang.String"/>
+	<field name="UserPrivilegeForModules_EMPLOYEE_CODE" class="java.lang.String"/>
+	<field name="Modules_MODULE_NAME" class="java.lang.String"/>
+	<field name="Modules_VERSION" class="java.lang.String"/>
+	<field name="Employees_ACTIVE" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

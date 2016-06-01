@@ -7,7 +7,7 @@ package Transactions;
 
 import static MainFiles.IndexPage.userPrivilege;
 import db.ConnectSql;
-import functions.ValidateFields;
+import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,8 +26,8 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
     private final String menuName = "User privilege";
     private final String select = "--Select--";
     private final String spliter = "--";
-    String departmentCode, subDepartmentCode, userName, designationCode, designationName, empCode, empFirstName, empCallingName, password, retypePassword, oldPassword, typedOldpassword;
-    int rowCountOfTableEmployee, selectedRowOfTableEmployee, selectedRowCountOfTableEmployee;
+    String departmentCode, subDepartmentCode, userName, designationCode, designationName, empCode, empFirstName, empInitials, empCallingName, password, retypePassword, oldPassword, typedOldpassword, moduleVersion, moduleName;
+    int rowCountOfTableEmployee, rowCountOfTablePrivilege, selectedRowOfTableEmployee, selectedRowCountOfTableEmployee, selectedRowCountOftablePrivilleges, selectedRowOftablePrivilleges, selectedRowCountOftableModule, selectedRowOftableModule, moduleCode;
 
     /**
      * Creates new form UserLogins
@@ -42,6 +42,7 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
 
         loadDepartmentsToCombo();
         loadModules();
+        loadPrivillegesToTable();
     }
 
     private void loadModules() {
@@ -63,7 +64,7 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
                 model_TableModules.addRow(new Object[model_TableModules.getColumnCount()]);
                 tableModule.setValueAt(reset.getString("MODULE_CODE"), rowCount, 0);
                 tableModule.setValueAt(reset.getString("MODULE_NAME"), rowCount, 1);
-                tableModule.setValueAt(reset.getString("VERSION"), rowCount, 2);                
+                tableModule.setValueAt(reset.getString("VERSION"), rowCount, 2);
                 rowCount++;
             }
             reset.close();
@@ -388,25 +389,55 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-
+        CheckBeforeSave();
     }//GEN-LAST:event_btnSaveActionPerformed
 
-    private void saveData(String password, String oldPassword) {
-        try {
-            rowCountOfTableEmployee = tableEmployee.getRowCount();
-            java.sql.Statement stmtItems = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            for (int i = 0; i < rowCountOfTableEmployee; i++) {
-                empCode = tableEmployee.getValueAt(i, 0).toString();
+    private void CheckBeforeSave() {
+        int RowCount = tablePrivilleges.getRowCount();
+        if (RowCount <= 0) {
+            JOptionPane.showMessageDialog(this, "Privileges are not available at table.", "No employees", JOptionPane.OK_OPTION);
+        } else if (RowCount > 0) {
+            int x = JOptionPane.showConfirmDialog(this, "Are you sure to update privileges?", "Update?", JOptionPane.YES_NO_OPTION);
+            if (x == JOptionPane.YES_OPTION) {
+                deleteExsistsRecordsBeforeSave();
+            }
+        }
+    }
 
-                String ItemInsertQuery = "UPDATE [UnAndPw] SET\n"
-                        + "           [USER_PASSWORD] = '" + password + "'\n"
-                        + "           ,[USER_OLD_PASSWORD] = '" + oldPassword + "'\n"
-                        + "     WHERE EMPLOYEE_CODE = '" + empCode + "'";
+    private void deleteExsistsRecordsBeforeSave() {
+        try {
+            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query = "delete From UserPrivilegeForModules";
+            stmt.execute(query);
+            stmt.close();
+            saveData();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        } catch (HeadlessException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
+
+    private void saveData() {
+        try {
+            rowCountOfTablePrivilege = tablePrivilleges.getRowCount();
+            java.sql.Statement stmtItems = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            for (int i = 0; i < rowCountOfTablePrivilege; i++) {
+                empCode = tablePrivilleges.getValueAt(i, 0).toString();
+                moduleCode = Integer.parseInt(tablePrivilleges.getValueAt(i, 5).toString());
+
+                String ItemInsertQuery = "INSERT INTO [UserPrivilegeForModules]\n"
+                        + "           ([MODULE_CODE]\n"
+                        + "           ,[EMPLOYEE_CODE])\n"
+                        + "     VALUES\n"
+                        + "           ('" + moduleCode + "'\n"
+                        + "           ,'" + empCode + "')";
                 stmtItems.execute(ItemInsertQuery);
             }
             JOptionPane.showMessageDialog(this, "'" + menuName + "' is updated.");
             Refresh();
-            stmtItems.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(this, "Please contact for support.");
@@ -478,22 +509,71 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
 
+    private void loadPrivillegesToTable() {
+        try {
+            ResultSet reset;
+            Statement stmt;
+            String query;
+            int rowCount = 0;
+            model_TablePrivilleges.setRowCount(0);
+
+            query = "SELECT\n"
+                    + "     Employees.\"FIRST_NAME\" AS Employees_FIRST_NAME,\n"
+                    + "     Employees.\"CALL_NAME\" AS Employees_CALL_NAME,\n"
+                    + "     Employees.\"INITIALS\" AS Employees_INITIALS,\n"
+                    + "     UnAndPw.\"USER_NAME\" AS UnAndPw_USER_NAME,\n"
+                    + "     UserPrivilegeForModules.\"MODULE_CODE\" AS UserPrivilegeForModules_MODULE_CODE,\n"
+                    + "     UserPrivilegeForModules.\"EMPLOYEE_CODE\" AS UserPrivilegeForModules_EMPLOYEE_CODE,\n"
+                    + "     Modules.\"MODULE_NAME\" AS Modules_MODULE_NAME,\n"
+                    + "     Modules.\"VERSION\" AS Modules_VERSION,\n"
+                    + "     Employees.\"ACTIVE\" AS Employees_ACTIVE\n"
+                    + "FROM\n"
+                    + "     \"dbo\".\"UnAndPw\" UnAndPw INNER JOIN \"dbo\".\"Employees\" Employees ON UnAndPw.\"EMPLOYEE_CODE\" = Employees.\"EMPLOYEE_CODE\"\n"
+                    + "     INNER JOIN \"dbo\".\"UserPrivilegeForModules\" UserPrivilegeForModules ON Employees.\"EMPLOYEE_CODE\" = UserPrivilegeForModules.\"EMPLOYEE_CODE\"\n"
+                    + "     INNER JOIN \"dbo\".\"Modules\" Modules ON UserPrivilegeForModules.\"MODULE_CODE\" = Modules.\"MODULE_CODE\"\n"
+                    + "WHERE\n"
+                    + "     Employees.\"ACTIVE\" = 'Yes'\n"
+                    + "ORDER BY\n"
+                    + "     Employees.\"CALL_NAME\" ASC";
+            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            reset = stmt.executeQuery(query);
+
+            while (reset.next()) {
+                model_TablePrivilleges.addRow(new Object[model_TablePrivilleges.getColumnCount()]);
+                tablePrivilleges.setValueAt(reset.getString("UserPrivilegeForModules_EMPLOYEE_CODE"), rowCount, 0);
+                tablePrivilleges.setValueAt(reset.getString("Employees_FIRST_NAME"), rowCount, 1);
+                tablePrivilleges.setValueAt(reset.getString("Employees_INITIALS"), rowCount, 2);
+                tablePrivilleges.setValueAt(reset.getString("Employees_CALL_NAME"), rowCount, 3);
+                tablePrivilleges.setValueAt(reset.getString("UnAndPw_USER_NAME"), rowCount, 4);
+                tablePrivilleges.setValueAt(reset.getString("UserPrivilegeForModules_MODULE_CODE"), rowCount, 5);
+                tablePrivilleges.setValueAt(reset.getString("Modules_MODULE_NAME"), rowCount, 6);
+                tablePrivilleges.setValueAt(reset.getString("Modules_VERSION"), rowCount, 7);
+                rowCount++;
+            }
+            textNumberOfEmpAtSecondTable.setText(String.valueOf(rowCount));
+            reset.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
+
     private void buttonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshActionPerformed
         Refresh();
     }//GEN-LAST:event_buttonRefreshActionPerformed
 
     private void ButtonRemoveSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonRemoveSelectedActionPerformed
-//        selectedRowOfTableRankedEmployee = tableRankedEmployee.getSelectedRowCount();
-//        if (selectedRowOfTableRankedEmployee == 1) {
-//            int x = JOptionPane.showConfirmDialog(this, "Are you sure To remove this employee?", "Remove employee?", JOptionPane.YES_NO_OPTION);
-//            if (x == JOptionPane.YES_OPTION) {
-//                int i = tableRankedEmployee.getSelectedRow();
-//                model_tableRankedEmployee.removeRow(i);
-//                countItemsInSecondTable();
-//            }
-//        } else if (selectedRowOfTableRankedEmployee != 1) {
-//            JOptionPane.showMessageDialog(this, "Employee is not selected.", "Not selected.", JOptionPane.OK_OPTION);
-//        }
+        selectedRowCountOftablePrivilleges = tablePrivilleges.getSelectedRowCount();
+        if (selectedRowCountOftablePrivilleges == 1) {
+            int x = JOptionPane.showConfirmDialog(this, "Are you sure To remove this user privillege?", "Remove employee?", JOptionPane.YES_NO_OPTION);
+            if (x == JOptionPane.YES_OPTION) {
+                selectedRowOftablePrivilleges = tablePrivilleges.getSelectedRow();
+                model_TablePrivilleges.removeRow(selectedRowOftablePrivilleges);
+                countItemsInSecondTable();
+            }
+        } else if (selectedRowCountOftablePrivilleges != 1) {
+            JOptionPane.showMessageDialog(this, "Privillege is not selected.", "Not selected.", JOptionPane.OK_OPTION);
+        }
     }//GEN-LAST:event_ButtonRemoveSelectedActionPerformed
 
     private void countItemsInSecondTable() {
@@ -501,12 +581,63 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
     }
 
     private void ButtonAddSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAddSelectedActionPerformed
-//        selectedRowOfTableEmployee = tableEmployee.getSelectedRowCount();
-//        selectedRowOfTableDesignationRank = tableDesignationRank.getSelectedRowCount();
-//        if (selectedRowOfTableEmployee == 1 && selectedRowOfTableDesignationRank == 1) {
-//            FirstCheckBeforeAddToSecondTable();
-//        }
+        selectedRowCountOfTableEmployee = tableEmployee.getSelectedRowCount();
+        selectedRowCountOftableModule = tableModule.getSelectedRowCount();
+        if (selectedRowCountOfTableEmployee == 1 && selectedRowCountOftableModule == 1) {
+            FirstCheckBeforeAddToSecondTable();
+        }
     }//GEN-LAST:event_ButtonAddSelectedActionPerformed
+
+    private void FirstCheckBeforeAddToSecondTable() {
+        selectedRowOfTableEmployee = tableEmployee.getSelectedRow();
+        empCode = tableEmployee.getValueAt(selectedRowOfTableEmployee, 0).toString();
+        selectedRowOftableModule = tableModule.getSelectedRow();
+        moduleCode = Integer.parseInt(tableModule.getValueAt(selectedRowOftableModule, 0).toString());
+        Object[] CheckItemAlreadyAdded = CheckItemAlreadyAdded(empCode, moduleCode);
+        if ((Boolean) CheckItemAlreadyAdded[0]) {
+            JOptionPane.showMessageDialog(this, "Employee is already added.", "Already added.", JOptionPane.OK_OPTION);
+        } else {
+            AddToSecondTable(empCode, moduleCode);
+        }
+    }
+
+    private void AddToSecondTable(String empCode, int moduleCode) {
+        selectedRowOfTableEmployee = tableEmployee.getSelectedRow();
+        selectedRowOftablePrivilleges = tablePrivilleges.getSelectedRow();
+        try {
+            empFirstName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 1).toString();
+            empInitials = tableEmployee.getValueAt(selectedRowOfTableEmployee, 2).toString();
+            empCallingName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 3).toString();
+            userName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 4).toString();
+
+            moduleName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 1).toString();
+            moduleVersion = tableEmployee.getValueAt(selectedRowOfTableEmployee, 2).toString();
+
+            model_TablePrivilleges.addRow(new Object[]{empCode, empFirstName, empInitials, empCallingName, userName, moduleCode, moduleName, moduleVersion});
+            countItemsInSecondTable();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
+
+    protected Object[] CheckItemAlreadyAdded(String ItemFromFirstTable, int moduleCode) {
+        int rowCount = model_TablePrivilleges.getRowCount();
+        Object[] data = new Object[2];
+        data[0] = false;
+        data[1] = -1;
+
+        for (int i = 0; i < rowCount; i++) {
+            String Item1AtSecondTable = model_TablePrivilleges.getValueAt(i, 0).toString();
+            int Item2AtSecondTable = Integer.parseInt(model_TablePrivilleges.getValueAt(i, 5).toString());
+            if (ItemFromFirstTable.equals(Item1AtSecondTable) && Item2AtSecondTable == moduleCode) {
+                data[0] = true;
+                data[1] = i;
+            }
+        }
+        return data;
+    }
 
     private void loadSelectedSubDepartmentEmployeesToTable(String subDepartmentCode) {
         try {
@@ -523,11 +654,12 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
                     + "     Employees.\"INITIALS\" AS Employees_INITIALS,\n"
                     + "     Employees.\"SUB_DEPARTMENT_CODE\" AS Employees_SUB_DEPARTMENT_CODE,\n"
                     + "     Employees.\"DepartmentCode\" AS Employees_DepartmentCode,\n"
+                    + "     Employees.\"ACTIVE\" AS Employees_ACTIVE,\n"
                     + "     UnAndPw.\"USER_NAME\" AS UnAndPw_USER_NAME,\n"
                     + "     UnAndPw.\"USER_PASSWORD\" AS UnAndPw_USER_PASSWORD\n"
                     + "FROM\n"
                     + "     \"dbo\".\"UnAndPw\" UnAndPw INNER JOIN \"dbo\".\"Employees\" Employees ON UnAndPw.\"EMPLOYEE_CODE\" = Employees.\"EMPLOYEE_CODE\"\n"
-                    + "WHERE Employees.\"SUB_DEPARTMENT_CODE\" = '" + subDepartmentCode + "'\n"
+                    + "WHERE Employees.\"SUB_DEPARTMENT_CODE\" = '" + subDepartmentCode + "' AND Employees.\"ACTIVE\" = 'Yes'\n"
                     + "ORDER BY Employees.\"CALL_NAME\"";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
@@ -554,6 +686,9 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
         comboDepartment.setSelectedIndex(0);
         comboSubDepartment.setSelectedIndex(0);
         textNumberOfEmpAtSubDepartment.setText("0");
+        loadDepartmentsToCombo();
+        loadModules();
+        loadPrivillegesToTable();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
