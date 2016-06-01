@@ -369,6 +369,8 @@ public class Employee extends javax.swing.JInternalFrame {
         lbl_description2.setForeground(new java.awt.Color(102, 102, 102));
         lbl_description2.setText("Last name *");
         panel1.add(lbl_description2, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 100, 60, 20));
+
+        textUserName.setToolTipText("User name cannot change after save it.");
         panel1.add(textUserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 60, 130, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
