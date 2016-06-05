@@ -126,6 +126,7 @@ public class UserLogins extends javax.swing.JInternalFrame {
         textNumberOfEmpAtSubDepartment = new javax.swing.JTextField();
         textOldPassword = new javax.swing.JPasswordField();
         buttonRefresh = new javax.swing.JButton();
+        buttonView = new javax.swing.JButton();
 
         setIconifiable(true);
         setPreferredSize(new java.awt.Dimension(1024, 560));
@@ -310,15 +311,6 @@ public class UserLogins extends javax.swing.JInternalFrame {
         panel1.add(lbl_subAccount5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 100, 20));
 
         comboSubDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
-        comboSubDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            }
-            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                comboSubDepartmentPopupMenuWillBecomeInvisible(evt);
-            }
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-            }
-        });
         panel1.add(comboSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 290, -1));
 
         lbl_subAccount6.setForeground(new java.awt.Color(102, 102, 102));
@@ -338,6 +330,14 @@ public class UserLogins extends javax.swing.JInternalFrame {
             }
         });
         panel1.add(buttonRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 490, 80, -1));
+
+        buttonView.setText("View");
+        buttonView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonViewActionPerformed(evt);
+            }
+        });
+        panel1.add(buttonView, new org.netbeans.lib.awtextra.AbsoluteConstraints(903, 60, 90, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -408,9 +408,9 @@ public class UserLogins extends javax.swing.JInternalFrame {
                 empCode = tableEmployee.getValueAt(i, 0).toString();
 
                 String ItemInsertQuery = "UPDATE [UnAndPw] SET\n"
-                        + "           [USER_PASSWORD] = '"+password+"'\n"
-                        + "           ,[USER_OLD_PASSWORD] = '"+oldPassword+"'\n"
-                        + "     WHERE EMPLOYEE_CODE = '"+empCode+"'";
+                        + "           [USER_PASSWORD] = '" + password + "'\n"
+                        + "           ,[USER_OLD_PASSWORD] = '" + oldPassword + "'\n"
+                        + "     WHERE EMPLOYEE_CODE = '" + empCode + "'";
                 stmtItems.execute(ItemInsertQuery);
             }
             JOptionPane.showMessageDialog(this, "'" + menuName + "' is updated.");
@@ -585,7 +585,11 @@ public class UserLogins extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_comboDepartmentKeyPressed
 
-    private void comboSubDepartmentPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
+    private void buttonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshActionPerformed
+        Refresh();
+    }//GEN-LAST:event_buttonRefreshActionPerformed
+
+    private void buttonViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonViewActionPerformed
         subDepartmentCode = comboSubDepartment.getSelectedItem().toString();
         if (!subDepartmentCode.equals(select)) {
             String subDepartmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
@@ -594,11 +598,7 @@ public class UserLogins extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Sub department is not selected.", "Not selected", JOptionPane.OK_OPTION);
             comboSubDepartment.requestFocus();
         }
-    }//GEN-LAST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
-
-    private void buttonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRefreshActionPerformed
-        Refresh();
-    }//GEN-LAST:event_buttonRefreshActionPerformed
+    }//GEN-LAST:event_buttonViewActionPerformed
 
     private void loadSelectedSubDepartmentEmployeesToTable(String subDepartmentCode) {
         try {
@@ -659,6 +659,7 @@ public class UserLogins extends javax.swing.JInternalFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton buttonRefresh;
+    private javax.swing.JButton buttonView;
     private javax.swing.JComboBox comboDepartment;
     private javax.swing.JComboBox comboSubDepartment;
     private javax.swing.JScrollPane jScrollPane1;

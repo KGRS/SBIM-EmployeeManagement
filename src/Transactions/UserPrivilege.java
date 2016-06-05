@@ -150,6 +150,7 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
         lbl_subAccount = new javax.swing.JLabel();
         lbl_subAccount1 = new javax.swing.JLabel();
         textNumberOfEmpAtSecondTable = new javax.swing.JTextField();
+        buttonView = new javax.swing.JButton();
 
         setIconifiable(true);
         setPreferredSize(new java.awt.Dimension(1024, 560));
@@ -264,16 +265,7 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
         panel1.add(lbl_subAccount5, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 20, 100, 20));
 
         comboSubDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
-        comboSubDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            }
-            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                comboSubDepartmentPopupMenuWillBecomeInvisible(evt);
-            }
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-            }
-        });
-        panel1.add(comboSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 20, 290, -1));
+        panel1.add(comboSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 20, 280, -1));
 
         textNumberOfEmpAtSubDepartment.setEditable(false);
         textNumberOfEmpAtSubDepartment.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
@@ -373,6 +365,14 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
         textNumberOfEmpAtSecondTable.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         textNumberOfEmpAtSecondTable.setText("0");
         panel1.add(textNumberOfEmpAtSecondTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 490, 80, -1));
+
+        buttonView.setText("View");
+        buttonView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonViewActionPerformed(evt);
+            }
+        });
+        panel1.add(buttonView, new org.netbeans.lib.awtextra.AbsoluteConstraints(863, 20, 130, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -498,17 +498,6 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_comboDepartmentKeyPressed
 
-    private void comboSubDepartmentPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
-        subDepartmentCode = comboSubDepartment.getSelectedItem().toString();
-        if (!subDepartmentCode.equals(select)) {
-            String subDepartmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
-            loadSelectedSubDepartmentEmployeesToTable(subDepartmentCodeByArray[1]);
-        } else if (subDepartmentCode.equals(select)) {
-            JOptionPane.showMessageDialog(this, "Sub department is not selected.", "Not selected", JOptionPane.OK_OPTION);
-            comboSubDepartment.requestFocus();
-        }
-    }//GEN-LAST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
-
     private void loadPrivillegesToTable() {
         try {
             ResultSet reset;
@@ -587,6 +576,17 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
             FirstCheckBeforeAddToSecondTable();
         }
     }//GEN-LAST:event_ButtonAddSelectedActionPerformed
+
+    private void buttonViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonViewActionPerformed
+        subDepartmentCode = comboSubDepartment.getSelectedItem().toString();
+        if (!subDepartmentCode.equals(select)) {
+            String subDepartmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
+            loadSelectedSubDepartmentEmployeesToTable(subDepartmentCodeByArray[1]);
+        } else if (subDepartmentCode.equals(select)) {
+            JOptionPane.showMessageDialog(this, "Sub department is not selected.", "Not selected", JOptionPane.OK_OPTION);
+            comboSubDepartment.requestFocus();
+        }
+    }//GEN-LAST:event_buttonViewActionPerformed
 
     private void FirstCheckBeforeAddToSecondTable() {
         selectedRowOfTableEmployee = tableEmployee.getSelectedRow();
@@ -699,6 +699,7 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton buttonRefresh;
+    private javax.swing.JButton buttonView;
     private javax.swing.JComboBox comboDepartment;
     private javax.swing.JComboBox comboSubDepartment;
     private javax.swing.JScrollPane jScrollPane1;
