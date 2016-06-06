@@ -7,18 +7,12 @@ package MainFiles;
 import static MainFiles.IndexPage.employee;
 import db.ConnectSql;
 import functions.ValidateFields;
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.HeadlessException;
-import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -28,27 +22,20 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Employee extends javax.swing.JInternalFrame {
 
-    private final String select = "--Select--"; //hello
-    /**
-     * This will be used to split Code from Description.
-     *
-     * Represent the Value "--Select--"
-     */
+    private final String select = "--Select--";
+    private final String menuName = "Employee";
     private final String spliter = "--";
     private final DefaultTableModel model_CustomerTable;
     private final String projectPath = System.getProperty("user.dir");
+    String Code, FirstName, LastName, SurName, NameWithIni, ContactLand, ContactMobile, Email, IS_ACTIVE, DESIGNATION, password = "123", departmentCode, departmentName = "", epfNumber = "", callName, empType;
 
     public Employee() {
         initComponents();
         model_CustomerTable = (DefaultTableModel) tableViewDetails.getModel();
-//        loadStaffMembers();
-//        loadDepartments();
         rBtnCode.setSelected(true);
+        this.setTitle(menuName);
 
-//        ImageIcon DefaultBackGround = new ImageIcon(projectPath + "/pictures/InternalFrameIcons/DataFiles/Customer.png");
-//
-//        ImageIcon internalBackGround = new ImageIcon(projectPath + "/pictures/DefaultBackgrounds/InternalFrames/GrayGradient.png");
-//        backgroundLabel.setIcon(internalBackGround);
+        loadDepartmentsToCombo();
     }
 
     /**
@@ -106,19 +93,18 @@ public class Employee extends javax.swing.JInternalFrame {
         Fax = new javax.swing.JLabel();
         lbl_description1 = new javax.swing.JLabel();
         txtLastName = new javax.swing.JTextField();
-        cmbDepartment = new javax.swing.JComboBox();
-        cmbDesignation = new javax.swing.JComboBox();
+        comboDepartment = new javax.swing.JComboBox();
+        comboSubDepartment = new javax.swing.JComboBox();
         cmbActive = new javax.swing.JComboBox();
         lbl_accountType7 = new javax.swing.JLabel();
         Fax1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        comboBoxEmpType = new javax.swing.JComboBox();
         lbl_accountType8 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         lbl_description2 = new javax.swing.JLabel();
         textUserName = new javax.swing.JTextField();
 
         setIconifiable(true);
-        setTitle("Employee");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -341,11 +327,25 @@ public class Employee extends javax.swing.JInternalFrame {
         panel1.add(lbl_description1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 100, 90, 20));
         panel1.add(txtLastName, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 100, 130, -1));
 
-        cmbDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
-        panel1.add(cmbDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 220, 220, -1));
+        comboDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
+        comboDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                comboDepartmentPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
+        comboDepartment.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                comboDepartmentKeyPressed(evt);
+            }
+        });
+        panel1.add(comboDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 220, 220, -1));
 
-        cmbDesignation.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
-        panel1.add(cmbDesignation, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 260, 220, -1));
+        comboSubDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
+        panel1.add(comboSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 260, 220, -1));
 
         cmbActive.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
         panel1.add(cmbActive, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 420, 120, -1));
@@ -358,8 +358,8 @@ public class Employee extends javax.swing.JInternalFrame {
         Fax1.setText("Sub department *");
         panel1.add(Fax1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 260, 90, 20));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Intern", "Probation", "Contract", "Permenent" }));
-        panel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 300, 120, -1));
+        comboBoxEmpType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Intern", "Probation", "Contract", "Permenent" }));
+        panel1.add(comboBoxEmpType, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 300, 120, -1));
 
         lbl_accountType8.setForeground(new java.awt.Color(102, 102, 102));
         lbl_accountType8.setText("Contact land");
@@ -389,22 +389,45 @@ public class Employee extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loadDepartments() {
+    private void loadDepartmentsToCombo() {
         try {
             java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "select DEPARTMENT_CODE, DEPARTMENT_NAME From departments order by DEPARTMENT_NAME";
+            String query = "select DepartmentCode, DepartmentName From Departments order by DepartmentName";
             ResultSet rset = stmt.executeQuery(query);
 
-            cmbDepartment.removeAllItems();
-            cmbDepartment.insertItemAt("--Select--", 0);
+            comboDepartment.removeAllItems();
+            comboDepartment.insertItemAt("--Select--", 0);
             int position = 1;
             if (rset.next()) {
                 do {
-                    cmbDepartment.insertItemAt(rset.getString("DEPARTMENT_NAME") + "--" + rset.getString("DEPARTMENT_CODE"), position); //
+                    comboDepartment.insertItemAt(rset.getString("DepartmentName") + "--" + rset.getString("DepartmentCode"), position); // 
                     position++;
                 } while (rset.next());
             }
-            cmbDepartment.setSelectedIndex(0);
+            comboDepartment.setSelectedIndex(0);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
+        }
+    }
+
+    private void loadSubDepartmentsToCombo() {
+        try {
+            String departmentCodeByArray[] = comboDepartment.getSelectedItem().toString().split(spliter);
+            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query = "select SUB_DEPARTMENT_CODE, SUB_DEPARTMENT_NAME From SubDepartments WHERE DepartmentCode = '" + departmentCodeByArray[1] + "' order by SUB_DEPARTMENT_NAME";
+            ResultSet rset = stmt.executeQuery(query);
+
+            comboSubDepartment.removeAllItems();
+            comboSubDepartment.insertItemAt("--Select--", 0);
+            int position = 1;
+            if (rset.next()) {
+                do {
+                    comboSubDepartment.insertItemAt(rset.getString("SUB_DEPARTMENT_NAME") + "--" + rset.getString("SUB_DEPARTMENT_CODE"), position); // 
+                    position++;
+                } while (rset.next());
+            }
+            comboSubDepartment.setSelectedIndex(0);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
@@ -420,7 +443,6 @@ public class Employee extends javax.swing.JInternalFrame {
             String text = txtStaffMemCode.getText();
             if (!text.isEmpty()) {
                 txtFirstName.requestFocus();
-                //                LoadAtCodes();
             }
         }
     }//GEN-LAST:event_txtStaffMemCodeKeyPressed
@@ -457,59 +479,62 @@ public class Employee extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSaveKeyPressed
 
     private void CheckBeforeSave() {
-        String Code, FirstName, LastName, SurName, NameWithIni, ContactLand,
-                ContactMobile, Email, IS_ACTIVE, DESIGNATION, password = "123";
-
         Code = txtStaffMemCode.getText().toUpperCase();
         FirstName = txtFirstName.getText();
         LastName = txtLastName.getText();
         SurName = txtSurName.getText();
         NameWithIni = txtNameWithIni.getText();
-        String department[] = cmbDepartment.getSelectedItem().toString().split("--");
-        String checkDepartment = cmbDepartment.getSelectedItem().toString();
-        Email = txtCallName.getText();
+        callName = txtCallName.getText();
+        String department[] = comboDepartment.getSelectedItem().toString().split(spliter);
+        String checkDepartment = comboDepartment.getSelectedItem().toString();
+        String subDepartment[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
+        String checkSubDepartment = comboSubDepartment.getSelectedItem().toString();
+        empType = comboBoxEmpType.getSelectedItem().toString();
+        Email = txtEmail.getText();
         ContactLand = txtContactLand.getText();
         ContactMobile = txtContactMobile.getText();
-        DESIGNATION = cmbDesignation.getSelectedItem().toString();
         IS_ACTIVE = cmbActive.getSelectedItem().toString();
 
         if (!Code.isEmpty() && !FirstName.isEmpty() && !SurName.isEmpty() && !Email.isEmpty() && !checkDepartment.equals(select)) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                 java.sql.Statement stmtForUserLogin = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                String query = "select MEMBER_ID From staff_members where MEMBER_ID = '" + Code + "'";
+                String query = "select EMPLOYEE_CODE From Employees where EMPLOYEE_CODE = '" + Code + "'";
                 ResultSet rset = stmt.executeQuery(query);
 
                 if (rset.next()) {
-                    int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + Code + "' staff members details?", "Update staff members?", JOptionPane.YES_NO_OPTION);
+                    int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + Code + "' '" + menuName + "' details?", "Update '" + menuName + "'?", JOptionPane.YES_NO_OPTION);
                     if (x == JOptionPane.YES_OPTION) {
-                        String UpdateQuery = "UPDATE staff_members\n"
+                        String UpdateQuery = "UPDATE Employees\n"
                                 + "   SET \n"
-                                + "      MEMBER_FIRST_NAME = '" + FirstName + "'\n"
-                                + "      ,MEMBER_LAST_NAME = '" + LastName + "'\n"
-                                + "      ,MEMBER_SUR_NAME = '" + SurName + "'\n"
-                                + "      ,MEMBER_NAME_INITIAL = '" + NameWithIni + "'\n"
-                                + "      ,EMAIL = '" + Email + "'\n"
+                                + "      EPF_NO = '" + epfNumber + "'\n"
+                                + "      ,FIRST_NAME = '" + FirstName + "'\n"
+                                + "      ,LAST_NAME = '" + LastName + "'\n"
+                                + "      ,SUR_NAME = '" + SurName + "'\n"
+                                + "      ,INITIALS = '" + NameWithIni + "'\n"
+                                + "      ,CALL_NAME = '" + callName + "'\n"
+                                + "      ,DepartmentCode = '" + department[1] + "'\n"
+                                + "      ,SUB_DEPARTMENT_CODE = '" + subDepartment[1] + "'\n"
+                                + "      ,EMPLOYEE_TYPE_CODE = '" + empType + "'\n"
                                 + "      ,CONTACT_LAND = '" + ContactLand + "'\n"
                                 + "      ,CONTACT_MOBILE = '" + ContactMobile + "'\n"
-                                + "      ,DESIGNATION = '" + DESIGNATION + "'\n"
+                                + "      ,EMAIL = '" + Email + "'\n"
                                 + "      ,IS_ACTIVE = '" + IS_ACTIVE + "'\n"
-                                + "      ,departments_DEPARTMENT_CODE = '" + department[1] + "'\n"
                                 + " WHERE MEMBER_ID = '" + Code + "'";
                         stmt.execute(UpdateQuery);
-                        JOptionPane.showMessageDialog(this, "staff members details are updated.");
+                        JOptionPane.showMessageDialog(this, "'" + menuName + "' details are updated.");
                         Refresh();
                     } else if (x == JOptionPane.NO_OPTION) {
                         txtStaffMemCode.requestFocus();
                     }
 
                 } else if (!rset.next()) {
-                    String UpdateQuery = "INSERT INTO staff_members\n"
+                    String UpdateQuery = "INSERT INTO Employees\n"
                             + "           (MEMBER_ID\n"
-                            + "           ,MEMBER_FIRST_NAME\n"
-                            + "           ,MEMBER_LAST_NAME\n"
-                            + "           ,MEMBER_SUR_NAME\n"
-                            + "           ,MEMBER_NAME_INITIAL\n"
+                            + "           ,FIRST_NAME\n"
+                            + "           ,LAST_NAME\n"
+                            + "           ,SUR_NAME\n"
+                            + "           ,INITIAL\n"
                             + "           ,EMAIL\n"
                             + "           ,CONTACT_LAND\n"
                             + "           ,CONTACT_MOBILE\n"
@@ -543,7 +568,7 @@ public class Employee extends javax.swing.JInternalFrame {
                             + "'" + password + "'\n"
                             + ")";
                     stmtForUserLogin.execute(queryToUserLogin);
-                    JOptionPane.showMessageDialog(this, "New staff members is saved.");
+                    JOptionPane.showMessageDialog(this, "New '" + menuName + "' is saved.");
                     Refresh();
                 }
                 rset.close();
@@ -571,7 +596,7 @@ public class Employee extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnDeleteKeyPressed
 
     private void CheckBeforeDelete() {
-        String Code = txtStaffMemCode.getText();
+        Code = txtStaffMemCode.getText();
         if (!Code.isEmpty()) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -599,7 +624,7 @@ public class Employee extends javax.swing.JInternalFrame {
     }
 
     private void Delete() {
-        String Code = txtStaffMemCode.getText();
+        Code = txtStaffMemCode.getText();
         int x = JOptionPane.showConfirmDialog(this, "Are you sure To delete this?", "Delete staff members?", JOptionPane.YES_NO_OPTION);
         if (x == JOptionPane.YES_OPTION) {
             try {
@@ -663,9 +688,6 @@ public class Employee extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_rBtnNameKeyPressed
 
     private void tableViewDetailsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableViewDetailsMouseClicked
-        String Code, FirstName, LastName = "", SurName = "", NameWithIni = "", ContactLand = "",
-                ContactMobile = "", Email = "", IS_ACTIVE = "", DESIGNATION = "", departmentCode, departmentName = "";
-
         Code = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 0).toString();
         FirstName = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 1).toString();
         departmentCode = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 2).toString();
@@ -716,11 +738,11 @@ public class Employee extends javax.swing.JInternalFrame {
         txtLastName.setText(LastName);
         txtSurName.setText(SurName);
         txtNameWithIni.setText(NameWithIni);
-        cmbDepartment.setSelectedItem(departmentName + "--" + departmentCode);
+        comboDepartment.setSelectedItem(departmentName + "--" + departmentCode);
         txtCallName.setText(Email);
         txtContactLand.setText(ContactLand);
         txtContactMobile.setText(ContactMobile);
-        cmbDesignation.setSelectedItem(DESIGNATION);
+        comboSubDepartment.setSelectedItem(DESIGNATION);
         cmbActive.setSelectedItem(IS_ACTIVE);
     }//GEN-LAST:event_tableViewDetailsMouseClicked
 
@@ -819,8 +841,8 @@ public class Employee extends javax.swing.JInternalFrame {
         txtSearch.setText("");
 
         cmbActive.setSelectedIndex(0);
-        cmbDepartment.setSelectedIndex(0);
-        cmbDesignation.setSelectedIndex(0);
+        comboDepartment.setSelectedIndex(0);
+        comboSubDepartment.setSelectedIndex(0);
     }
 
     private void RefreshTableAndLoadAgain() {
@@ -873,6 +895,24 @@ public class Employee extends javax.swing.JInternalFrame {
         employee.toFront();
     }//GEN-LAST:event_formInternalFrameIconified
 
+    private void comboDepartmentPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_comboDepartmentPopupMenuWillBecomeInvisible
+        String text = comboDepartment.getSelectedItem().toString();
+        if (!text.equals(select)) {
+            loadSubDepartmentsToCombo();
+            btnSave.requestFocus();
+        }
+    }//GEN-LAST:event_comboDepartmentPopupMenuWillBecomeInvisible
+
+    private void comboDepartmentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_comboDepartmentKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String text = comboDepartment.getSelectedItem().toString();
+            if (!text.equals(select)) {
+                loadSubDepartmentsToCombo();
+                btnSave.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_comboDepartmentKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Fax;
     private javax.swing.JLabel Fax1;
@@ -881,9 +921,9 @@ public class Employee extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox cmbActive;
-    private javax.swing.JComboBox cmbDepartment;
-    private javax.swing.JComboBox cmbDesignation;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox comboBoxEmpType;
+    private javax.swing.JComboBox comboDepartment;
+    private javax.swing.JComboBox comboSubDepartment;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbl_accountType;
