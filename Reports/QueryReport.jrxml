@@ -9,29 +9,50 @@
      Employees."CALL_NAME" AS Employees_CALL_NAME,
      Employees."INITIALS" AS Employees_INITIALS,
      UnAndPw."USER_NAME" AS UnAndPw_USER_NAME,
-     UserPrivilegeForModules."MODULE_CODE" AS UserPrivilegeForModules_MODULE_CODE,
-     UserPrivilegeForModules."EMPLOYEE_CODE" AS UserPrivilegeForModules_EMPLOYEE_CODE,
-     Modules."MODULE_NAME" AS Modules_MODULE_NAME,
-     Modules."VERSION" AS Modules_VERSION,
-     Employees."ACTIVE" AS Employees_ACTIVE
+     Employees."ACTIVE" AS Employees_ACTIVE,
+     Employees."EMPLOYEE_CODE" AS Employees_EMPLOYEE_CODE,
+     Employees."EPF_NO" AS Employees_EPF_NO,
+     Employees."LAST_NAME" AS Employees_LAST_NAME,
+     Employees."SUR_NAME" AS Employees_SUR_NAME,
+     Employees."SUB_DEPARTMENT_CODE" AS Employees_SUB_DEPARTMENT_CODE,
+     Employees."EMPLOYEE_TYPE_CODE" AS Employees_EMPLOYEE_TYPE_CODE,
+     Employees."CONTACT_LAND" AS Employees_CONTACT_LAND,
+     Employees."CONTACT_MOBILE" AS Employees_CONTACT_MOBILE,
+     Employees."EMAIL" AS Employees_EMAIL,
+     SubDepartments."SUB_DEPARTMENT_NAME" AS SubDepartments_SUB_DEPARTMENT_NAME,
+     SubDepartments."DepartmentCode" AS SubDepartments_DepartmentCode,
+     Departments."DepartmentName" AS Departments_DepartmentName,
+     EmployeeTypes."EMPLOYEE_TYPE_NAME" AS EmployeeTypes_EMPLOYEE_TYPE_NAME,
+     EmployeeTypes."SERVICE_DURATION" AS EmployeeTypes_SERVICE_DURATION
 FROM
      "dbo"."UnAndPw" UnAndPw INNER JOIN "dbo"."Employees" Employees ON UnAndPw."EMPLOYEE_CODE" = Employees."EMPLOYEE_CODE"
-     INNER JOIN "dbo"."UserPrivilegeForModules" UserPrivilegeForModules ON Employees."EMPLOYEE_CODE" = UserPrivilegeForModules."EMPLOYEE_CODE"
-     INNER JOIN "dbo"."Modules" Modules ON UserPrivilegeForModules."MODULE_CODE" = Modules."MODULE_CODE"
+     INNER JOIN "dbo"."SubDepartments" SubDepartments ON Employees."SUB_DEPARTMENT_CODE" = SubDepartments."SUB_DEPARTMENT_CODE"
+     INNER JOIN "dbo"."EmployeeTypes" EmployeeTypes ON Employees."EMPLOYEE_TYPE_CODE" = EmployeeTypes."EMPLOYEE_TYPE_CODE"
+     INNER JOIN "dbo"."Departments" Departments ON SubDepartments."DepartmentCode" = Departments."DepartmentCode"
 WHERE
-     Employees."ACTIVE" = 'Yes'
+     Employees."EMPLOYEE_CODE" = ''
 ORDER BY
-     Employees."CALL_NAME" ASC]]>
+     Employees."EMPLOYEE_CODE" ASC]]>
 	</queryString>
 	<field name="Employees_FIRST_NAME" class="java.lang.String"/>
 	<field name="Employees_CALL_NAME" class="java.lang.String"/>
 	<field name="Employees_INITIALS" class="java.lang.String"/>
 	<field name="UnAndPw_USER_NAME" class="java.lang.String"/>
-	<field name="UserPrivilegeForModules_MODULE_CODE" class="java.lang.String"/>
-	<field name="UserPrivilegeForModules_EMPLOYEE_CODE" class="java.lang.String"/>
-	<field name="Modules_MODULE_NAME" class="java.lang.String"/>
-	<field name="Modules_VERSION" class="java.lang.String"/>
 	<field name="Employees_ACTIVE" class="java.lang.String"/>
+	<field name="Employees_EMPLOYEE_CODE" class="java.lang.String"/>
+	<field name="Employees_EPF_NO" class="java.lang.String"/>
+	<field name="Employees_LAST_NAME" class="java.lang.String"/>
+	<field name="Employees_SUR_NAME" class="java.lang.String"/>
+	<field name="Employees_SUB_DEPARTMENT_CODE" class="java.lang.String"/>
+	<field name="Employees_EMPLOYEE_TYPE_CODE" class="java.lang.String"/>
+	<field name="Employees_CONTACT_LAND" class="java.lang.String"/>
+	<field name="Employees_CONTACT_MOBILE" class="java.lang.String"/>
+	<field name="Employees_EMAIL" class="java.lang.String"/>
+	<field name="SubDepartments_SUB_DEPARTMENT_NAME" class="java.lang.String"/>
+	<field name="SubDepartments_DepartmentCode" class="java.lang.String"/>
+	<field name="Departments_DepartmentName" class="java.lang.String"/>
+	<field name="EmployeeTypes_EMPLOYEE_TYPE_NAME" class="java.lang.String"/>
+	<field name="EmployeeTypes_SERVICE_DURATION" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

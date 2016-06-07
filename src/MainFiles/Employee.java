@@ -25,17 +25,20 @@ public class Employee extends javax.swing.JInternalFrame {
     private final String select = "--Select--";
     private final String menuName = "Employee";
     private final String spliter = "--";
-    private final DefaultTableModel model_CustomerTable;
+    private final DefaultTableModel model_tableViewDetails;
     private final String projectPath = System.getProperty("user.dir");
-    String Code, FirstName, LastName, SurName, NameWithIni, ContactLand, ContactMobile, Email, IS_ACTIVE, DESIGNATION, password = "123", departmentCode, departmentName = "", epfNumber = "", callName, empType;
+    String userName, Code, FirstName, LastName, SurName, NameWithIni, ContactLand, ContactMobile, Email, IS_ACTIVE, password = "123", departmentCode, departmentName = "", epfNumber = "", callName, empTypeName, empTypeCode, subDepartmentCode, subDepartmentName;
 
     public Employee() {
         initComponents();
-        model_CustomerTable = (DefaultTableModel) tableViewDetails.getModel();
+        model_tableViewDetails = (DefaultTableModel) tableViewDetails.getModel();
         rBtnCode.setSelected(true);
         this.setTitle(menuName);
 
+        loadEmpTypesToCombo();
+        loadEmployees();
         loadDepartmentsToCombo();
+        loadSubDepartmentsToComboAtStart();
     }
 
     /**
@@ -358,7 +361,7 @@ public class Employee extends javax.swing.JInternalFrame {
         Fax1.setText("Sub department *");
         panel1.add(Fax1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 260, 90, 20));
 
-        comboBoxEmpType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Intern", "Probation", "Contract", "Permenent" }));
+        comboBoxEmpType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
         panel1.add(comboBoxEmpType, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 300, 120, -1));
 
         lbl_accountType8.setForeground(new java.awt.Color(102, 102, 102));
@@ -389,6 +392,28 @@ public class Employee extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void loadEmpTypesToCombo() {
+        try {
+            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query = "select EMPLOYEE_TYPE_CODE, EMPLOYEE_TYPE_NAME From EmployeeTypes order by EMPLOYEE_TYPE_CODE";
+            ResultSet rset = stmt.executeQuery(query);
+
+            comboBoxEmpType.removeAllItems();
+            comboBoxEmpType.insertItemAt("--Select--", 0);
+            int position = 1;
+            if (rset.next()) {
+                do {
+                    comboBoxEmpType.insertItemAt(rset.getString("EMPLOYEE_TYPE_CODE") + spliter + rset.getString("EMPLOYEE_TYPE_NAME"), position); // 
+                    position++;
+                } while (rset.next());
+            }
+            comboBoxEmpType.setSelectedIndex(0);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
+        }
+    }
+
     private void loadDepartmentsToCombo() {
         try {
             java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -400,7 +425,7 @@ public class Employee extends javax.swing.JInternalFrame {
             int position = 1;
             if (rset.next()) {
                 do {
-                    comboDepartment.insertItemAt(rset.getString("DepartmentName") + "--" + rset.getString("DepartmentCode"), position); // 
+                    comboDepartment.insertItemAt(rset.getString("DepartmentName") + spliter + rset.getString("DepartmentCode"), position); // 
                     position++;
                 } while (rset.next());
             }
@@ -423,7 +448,29 @@ public class Employee extends javax.swing.JInternalFrame {
             int position = 1;
             if (rset.next()) {
                 do {
-                    comboSubDepartment.insertItemAt(rset.getString("SUB_DEPARTMENT_NAME") + "--" + rset.getString("SUB_DEPARTMENT_CODE"), position); // 
+                    comboSubDepartment.insertItemAt(rset.getString("SUB_DEPARTMENT_NAME") + spliter + rset.getString("SUB_DEPARTMENT_CODE"), position); // 
+                    position++;
+                } while (rset.next());
+            }
+            comboSubDepartment.setSelectedIndex(0);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
+        }
+    }
+
+    private void loadSubDepartmentsToComboAtStart() {
+        try {
+            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query = "select SUB_DEPARTMENT_CODE, SUB_DEPARTMENT_NAME From SubDepartments order by SUB_DEPARTMENT_NAME";
+            ResultSet rset = stmt.executeQuery(query);
+
+            comboSubDepartment.removeAllItems();
+            comboSubDepartment.insertItemAt("--Select--", 0);
+            int position = 1;
+            if (rset.next()) {
+                do {
+                    comboSubDepartment.insertItemAt(rset.getString("SUB_DEPARTMENT_NAME") + spliter + rset.getString("SUB_DEPARTMENT_CODE"), position); // 
                     position++;
                 } while (rset.next());
             }
@@ -480,22 +527,24 @@ public class Employee extends javax.swing.JInternalFrame {
 
     private void CheckBeforeSave() {
         Code = txtStaffMemCode.getText().toUpperCase();
+        userName = textUserName.getText();
         FirstName = txtFirstName.getText();
         LastName = txtLastName.getText();
         SurName = txtSurName.getText();
         NameWithIni = txtNameWithIni.getText();
         callName = txtCallName.getText();
-        String department[] = comboDepartment.getSelectedItem().toString().split(spliter);
+//        String department[] = comboDepartment.getSelectedItem().toString().split(spliter);
         String checkDepartment = comboDepartment.getSelectedItem().toString();
         String subDepartment[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
         String checkSubDepartment = comboSubDepartment.getSelectedItem().toString();
-        empType = comboBoxEmpType.getSelectedItem().toString();
+        String empType[] = comboBoxEmpType.getSelectedItem().toString().split(spliter);
+        String checkEmpType = comboBoxEmpType.getSelectedItem().toString();
         Email = txtEmail.getText();
         ContactLand = txtContactLand.getText();
         ContactMobile = txtContactMobile.getText();
         IS_ACTIVE = cmbActive.getSelectedItem().toString();
 
-        if (!Code.isEmpty() && !FirstName.isEmpty() && !SurName.isEmpty() && !Email.isEmpty() && !checkDepartment.equals(select)) {
+        if (!Code.isEmpty() && !FirstName.isEmpty() && !SurName.isEmpty() && !Email.isEmpty() && !checkDepartment.equals(select) && !checkSubDepartment.equals(select) && !checkEmpType.equals(select)) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                 java.sql.Statement stmtForUserLogin = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -513,14 +562,14 @@ public class Employee extends javax.swing.JInternalFrame {
                                 + "      ,SUR_NAME = '" + SurName + "'\n"
                                 + "      ,INITIALS = '" + NameWithIni + "'\n"
                                 + "      ,CALL_NAME = '" + callName + "'\n"
-                                + "      ,DepartmentCode = '" + department[1] + "'\n"
+                                //                                + "      ,DepartmentCode = '" + department[1] + "'\n"
                                 + "      ,SUB_DEPARTMENT_CODE = '" + subDepartment[1] + "'\n"
-                                + "      ,EMPLOYEE_TYPE_CODE = '" + empType + "'\n"
+                                + "      ,EMPLOYEE_TYPE_CODE = '" + empType[0] + "'\n"
                                 + "      ,CONTACT_LAND = '" + ContactLand + "'\n"
                                 + "      ,CONTACT_MOBILE = '" + ContactMobile + "'\n"
                                 + "      ,EMAIL = '" + Email + "'\n"
-                                + "      ,IS_ACTIVE = '" + IS_ACTIVE + "'\n"
-                                + " WHERE MEMBER_ID = '" + Code + "'";
+                                + "      ,ACTIVE = '" + IS_ACTIVE + "'\n"
+                                + " WHERE EMPLOYEE_CODE = '" + Code + "'";
                         stmt.execute(UpdateQuery);
                         JOptionPane.showMessageDialog(this, "'" + menuName + "' details are updated.");
                         Refresh();
@@ -530,43 +579,46 @@ public class Employee extends javax.swing.JInternalFrame {
 
                 } else if (!rset.next()) {
                     String UpdateQuery = "INSERT INTO Employees\n"
-                            + "           (MEMBER_ID\n"
+                            + "           (EMPLOYEE_CODE\n"
+                            + "           ,EPF_NO\n"
                             + "           ,FIRST_NAME\n"
                             + "           ,LAST_NAME\n"
                             + "           ,SUR_NAME\n"
-                            + "           ,INITIAL\n"
-                            + "           ,EMAIL\n"
+                            + "           ,INITIALS\n"
+                            + "           ,CALL_NAME\n"
+                            + "           ,SUB_DEPARTMENT_CODE\n"
+                            + "           ,EMPLOYEE_TYPE_CODE\n"
                             + "           ,CONTACT_LAND\n"
                             + "           ,CONTACT_MOBILE\n"
-                            + "           ,DESIGNATION\n"
-                            + "           ,IS_ACTIVE\n"
-                            + "           ,departments_DEPARTMENT_CODE)\n"
+                            + "           ,EMAIL\n"
+                            + "           ,ACTIVE)\n"
                             + "     VALUES\n"
                             + "           ('" + Code + "'\n"
+                            + "           ,'" + epfNumber + "'\n"
                             + "           ,'" + FirstName + "'\n"
                             + "           ,'" + LastName + "'\n"
                             + "           ,'" + SurName + "'\n"
                             + "           ,'" + NameWithIni + "'\n"
-                            + "           ,'" + Email + "'\n"
+                            + "           ,'" + callName + "'\n"
+                            + "           ,'" + subDepartment[1] + "'\n"
+                            + "           ,'" + empType[0] + "'\n"
                             + "           ,'" + ContactLand + "'\n"
                             + "           ,'" + ContactMobile + "'\n"
-                            + "           ,'" + DESIGNATION + "'\n"
-                            + "           ,'" + IS_ACTIVE + "'\n"
-                            + "           ,'" + department[1] + "') ";
+                            + "           ,'" + Email + "'\n"
+                            + "           ,'" + IS_ACTIVE + "')";
                     stmt.execute(UpdateQuery);
 
-                    String queryToUserLogin = "INSERT INTO `user_login`\n"
-                            + "(`STUDENT_OR_MEMBER_ID`,\n"
-                            + "`DEPARTMENT_CODE`,\n"
-                            + "`USER_NAME`,\n"
-                            + "`USER_PASSWORD`)\n"
+                    String queryToUserLogin = "INSERT INTO UnAndPw\n"
+                            + "(EMPLOYEE_CODE,\n"
+                            + "USER_NAME,\n"
+                            + "USER_PASSWORD,\n"
+                            + "USER_OLD_PASSWORD)\n"
                             + "VALUES\n"
                             + "(\n"
                             + "'" + Code + "',\n"
-                            + "'" + department[1] + "',\n"
-                            + "'" + FirstName + "',\n"
-                            + "'" + password + "'\n"
-                            + ")";
+                            + "'" + userName + "',\n"
+                            + "'" + password + "',\n"
+                            + "'" + password + "')";
                     stmtForUserLogin.execute(queryToUserLogin);
                     JOptionPane.showMessageDialog(this, "New '" + menuName + "' is saved.");
                     Refresh();
@@ -579,7 +631,7 @@ public class Employee extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 JOptionPane.showMessageDialog(this, "Please contact for support.");
             }
-        } else if (Code.isEmpty() || FirstName.isEmpty() || SurName.isEmpty() || Email.isEmpty() || checkDepartment.equals(select)) {
+        } else if (Code.isEmpty() || FirstName.isEmpty() || SurName.isEmpty() || Email.isEmpty() || checkDepartment.equals(select) || checkEmpType.equals(select)) {
             JOptionPane.showMessageDialog(this, "Please fill all fields before save.", "Empty fields", JOptionPane.OK_OPTION);
             txtStaffMemCode.requestFocus();
         }
@@ -690,60 +742,79 @@ public class Employee extends javax.swing.JInternalFrame {
     private void tableViewDetailsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableViewDetailsMouseClicked
         Code = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 0).toString();
         FirstName = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 1).toString();
-        departmentCode = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 2).toString();
-
+        subDepartmentCode = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 2).toString();
         try {
             ResultSet reset;
             Statement stmt;
             String query;
             query = "SELECT\n"
-                    + "     staff_members.`MEMBER_ID` AS staff_members_MEMBER_ID,\n"
-                    + "     staff_members.`MEMBER_FIRST_NAME` AS staff_members_MEMBER_FIRST_NAME,\n"
-                    + "     staff_members.`MEMBER_LAST_NAME` AS staff_members_MEMBER_LAST_NAME,\n"
-                    + "     staff_members.`MEMBER_SUR_NAME` AS staff_members_MEMBER_SUR_NAME,\n"
-                    + "     staff_members.`MEMBER_NAME_INITIAL` AS staff_members_MEMBER_NAME_INITIAL,\n"
-                    //                    + "     staff_members.`DEPARTMENT_CODE` AS staff_members_DEPARTMENT_CODE,\n"
-                    + "     staff_members.`EMAIL` AS staff_members_EMAIL,\n"
-                    + "     staff_members.`CONTACT_LAND` AS staff_members_CONTACT_LAND,\n"
-                    + "     staff_members.`CONTACT_MOBILE` AS staff_members_CONTACT_MOBILE,\n"
-                    + "     staff_members.`DESIGNATION` AS staff_members_DESIGNATION,\n"
-                    + "     staff_members.`IS_ACTIVE` AS staff_members_IS_ACTIVE,\n"
-                    + "     staff_members.`departments_DEPARTMENT_CODE` AS staff_members_departments_DEPARTMENT_CODE,\n"
-                    + "     departments.`DEPARTMENT_CODE` AS departments_DEPARTMENT_CODE,\n"
-                    + "     departments.`DEPARTMENT_NAME` AS departments_DEPARTMENT_NAME\n"
+                    + "     Employees.\"FIRST_NAME\" AS Employees_FIRST_NAME,\n"
+                    + "     Employees.\"CALL_NAME\" AS Employees_CALL_NAME,\n"
+                    + "     Employees.\"INITIALS\" AS Employees_INITIALS,\n"
+                    + "     UnAndPw.\"USER_NAME\" AS UnAndPw_USER_NAME,\n"
+                    + "     Employees.\"ACTIVE\" AS Employees_ACTIVE,\n"
+                    + "     Employees.\"EMPLOYEE_CODE\" AS Employees_EMPLOYEE_CODE,\n"
+                    + "     Employees.\"EPF_NO\" AS Employees_EPF_NO,\n"
+                    + "     Employees.\"LAST_NAME\" AS Employees_LAST_NAME,\n"
+                    + "     Employees.\"SUR_NAME\" AS Employees_SUR_NAME,\n"
+                    + "     Employees.\"SUB_DEPARTMENT_CODE\" AS Employees_SUB_DEPARTMENT_CODE,\n"
+                    + "     Employees.\"EMPLOYEE_TYPE_CODE\" AS Employees_EMPLOYEE_TYPE_CODE,\n"
+                    + "     Employees.\"CONTACT_LAND\" AS Employees_CONTACT_LAND,\n"
+                    + "     Employees.\"CONTACT_MOBILE\" AS Employees_CONTACT_MOBILE,\n"
+                    + "     Employees.\"EMAIL\" AS Employees_EMAIL,\n"
+                    + "     SubDepartments.\"SUB_DEPARTMENT_NAME\" AS SubDepartments_SUB_DEPARTMENT_NAME,\n"
+                    + "     SubDepartments.\"DepartmentCode\" AS SubDepartments_DepartmentCode,\n"
+                    + "     Departments.\"DepartmentName\" AS Departments_DepartmentName,\n"
+                    + "     EmployeeTypes.\"EMPLOYEE_TYPE_CODE\" AS EmployeeTypes_EMPLOYEE_TYPE_CODE,\n"
+                    + "     EmployeeTypes.\"EMPLOYEE_TYPE_NAME\" AS EmployeeTypes_EMPLOYEE_TYPE_NAME,\n"
+                    + "     EmployeeTypes.\"SERVICE_DURATION\" AS EmployeeTypes_SERVICE_DURATION\n"
                     + "FROM\n"
-                    + "     `departments` departments INNER JOIN `staff_members` staff_members ON departments.`DEPARTMENT_CODE` = staff_members.`departments_DEPARTMENT_CODE`\n"
-                    + "WHERE staff_members.`MEMBER_ID` = '" + Code + "'";
+                    + "     \"dbo\".\"UnAndPw\" UnAndPw INNER JOIN \"dbo\".\"Employees\" Employees ON UnAndPw.\"EMPLOYEE_CODE\" = Employees.\"EMPLOYEE_CODE\"\n"
+                    + "     INNER JOIN \"dbo\".\"SubDepartments\" SubDepartments ON Employees.\"SUB_DEPARTMENT_CODE\" = SubDepartments.\"SUB_DEPARTMENT_CODE\"\n"
+                    + "     INNER JOIN \"dbo\".\"EmployeeTypes\" EmployeeTypes ON Employees.\"EMPLOYEE_TYPE_CODE\" = EmployeeTypes.\"EMPLOYEE_TYPE_CODE\"\n"
+                    + "     INNER JOIN \"dbo\".\"Departments\" Departments ON SubDepartments.\"DepartmentCode\" = Departments.\"DepartmentCode\"\n"
+                    + "WHERE\n"
+                    + "     Employees.\"EMPLOYEE_CODE\" = '" + Code + "'\n"
+                    + "ORDER BY\n"
+                    + "     Employees.\"EMPLOYEE_CODE\" ASC";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             if (reset.next()) {
-                LastName = reset.getString("staff_members_MEMBER_LAST_NAME");
-                SurName = reset.getString("staff_members_MEMBER_SUR_NAME");
-                NameWithIni = reset.getString("staff_members_MEMBER_NAME_INITIAL");
-                departmentName = reset.getString("departments_DEPARTMENT_NAME");
-                Email = reset.getString("staff_members_EMAIL");
-                ContactLand = reset.getString("staff_members_CONTACT_LAND");
-                ContactMobile = reset.getString("staff_members_CONTACT_MOBILE");
-                DESIGNATION = reset.getString("staff_members_DESIGNATION");
-                IS_ACTIVE = reset.getString("staff_members_IS_ACTIVE");
+                userName = reset.getString("UnAndPw_USER_NAME");
+                LastName = reset.getString("Employees_LAST_NAME");
+                SurName = reset.getString("Employees_SUR_NAME");
+                NameWithIni = reset.getString("Employees_INITIALS");
+                callName = reset.getString("Employees_CALL_NAME");
+                subDepartmentName = reset.getString("SubDepartments_SUB_DEPARTMENT_NAME");
+                departmentCode = reset.getString("SubDepartments_DepartmentCode");
+                departmentName = reset.getString("Departments_DepartmentName");
+                empTypeCode = reset.getString("EmployeeTypes_EMPLOYEE_TYPE_CODE");
+                empTypeName = reset.getString("EmployeeTypes_EMPLOYEE_TYPE_NAME");
+                Email = reset.getString("Employees_EMAIL");
+                ContactLand = reset.getString("Employees_CONTACT_LAND");
+                ContactMobile = reset.getString("Employees_CONTACT_MOBILE");
+                IS_ACTIVE = reset.getString("Employees_ACTIVE");
+
             }
+            textUserName.setText(userName);
+            txtStaffMemCode.setText(Code);
+            txtFirstName.setText(FirstName);
+            txtLastName.setText(LastName);
+            txtSurName.setText(SurName);
+            txtNameWithIni.setText(NameWithIni);
+            txtCallName.setText(callName);
+            comboBoxEmpType.setSelectedItem(empTypeCode + "--" + empTypeName);
+            txtContactLand.setText(ContactLand);
+            txtContactMobile.setText(ContactMobile);
+            txtEmail.setText(Email);
+            cmbActive.setSelectedItem(IS_ACTIVE);
+            comboSubDepartment.setSelectedItem(subDepartmentName + "--" + subDepartmentCode);
+            comboDepartment.setSelectedItem(departmentName + "--" + departmentCode);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(this, "Please contact for support.");
         }
-
-        txtStaffMemCode.setText(Code);
-        txtFirstName.setText(FirstName);
-        txtLastName.setText(LastName);
-        txtSurName.setText(SurName);
-        txtNameWithIni.setText(NameWithIni);
-        comboDepartment.setSelectedItem(departmentName + "--" + departmentCode);
-        txtCallName.setText(Email);
-        txtContactLand.setText(ContactLand);
-        txtContactMobile.setText(ContactMobile);
-        comboSubDepartment.setSelectedItem(DESIGNATION);
-        cmbActive.setSelectedItem(IS_ACTIVE);
     }//GEN-LAST:event_tableViewDetailsMouseClicked
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
@@ -760,22 +831,22 @@ public class Employee extends javax.swing.JInternalFrame {
             Statement stmt;
             String query;
             int rowCount = 0;
-            RefreshTable();
+            model_tableViewDetails.setRowCount(0);
 
             if (!CategoryCode.equals("")) {
-                query = "SELECT * FROM staff_members WHERE MEMBER_ID LIKE '" + CategoryCode + "%'";
+                query = "SELECT EMPLOYEE_CODE, FIRST_NAME, SUB_DEPARTMENT_CODE FROM Employees WHERE EMPLOYEE_CODE LIKE '" + CategoryCode + "%'";
             } else {
-                query = "SELECT * FROM staff_members WHERE MEMBER_ID LIKE '" + CategoryCode + "%'";
+                query = "SELECT EMPLOYEE_CODE, FIRST_NAME, SUB_DEPARTMENT_CODE FROM Employees WHERE EMPLOYEE_CODE LIKE '" + CategoryCode + "%'";
             }
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             while (reset.next()) {
 
-                model_CustomerTable.addRow(new Object[model_CustomerTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("MEMBER_ID"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("MEMBER_FIRST_NAME"), rowCount, 1);
-                tableViewDetails.setValueAt(reset.getString("departments_DEPARTMENT_CODE"), rowCount, 2);
+                model_tableViewDetails.addRow(new Object[model_tableViewDetails.getColumnCount()]);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_CODE"), rowCount, 0);
+                tableViewDetails.setValueAt(reset.getString("FIRST_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("SUB_DEPARTMENT_CODE"), rowCount, 2);
                 rowCount++;
             }
             reset.close();
@@ -791,22 +862,21 @@ public class Employee extends javax.swing.JInternalFrame {
             Statement stmt;
             String query;
             int rowCount = 0;
-            RefreshTable();
+            model_tableViewDetails.setRowCount(0);
 
             if (!CategoryName.equals("")) {
-                query = "SELECT * FROM staff_members WHERE MEMBER_FIRST_NAME LIKE '" + CategoryName + "%'";
+                query = "SELECT EMPLOYEE_CODE, FIRST_NAME, SUB_DEPARTMENT_CODE FROM Employees WHERE FIRST_NAME LIKE '" + CategoryName + "%'";
             } else {
-                query = "SELECT * FROM staff_members WHERE MEMBER_FIRST_NAME LIKE '" + CategoryName + "%'";
+                query = "SELECT EMPLOYEE_CODE, FIRST_NAME, SUB_DEPARTMENT_CODE FROM Employees WHERE FIRST_NAME LIKE '" + CategoryName + "%'";
             }
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             while (reset.next()) {
-
-                model_CustomerTable.addRow(new Object[model_CustomerTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("MEMBER_ID"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("MEMBER_FIRST_NAME"), rowCount, 1);
-                tableViewDetails.setValueAt(reset.getString("departments_DEPARTMENT_CODE"), rowCount, 2);
+                model_tableViewDetails.addRow(new Object[model_tableViewDetails.getColumnCount()]);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_CODE"), rowCount, 0);
+                tableViewDetails.setValueAt(reset.getString("FIRST_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("SUB_DEPARTMENT_CODE"), rowCount, 2);
                 rowCount++;
             }
             reset.close();
@@ -816,63 +886,41 @@ public class Employee extends javax.swing.JInternalFrame {
         }
     }
 
-    private void RefreshTable() {
-        try {
-            int row = model_CustomerTable.getRowCount();
-            for (int j = 0; j < row; j++) {
-                model_CustomerTable.removeRow(0);
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
     private void Refresh() {
-        RefreshTableAndLoadAgain();
+        model_tableViewDetails.setRowCount(0);
         txtStaffMemCode.setText("");
+        textUserName.setText("");
         txtFirstName.setText("");
         txtLastName.setText("");
         txtSurName.setText("");
         txtNameWithIni.setText("");
         txtContactLand.setText("");
         txtContactMobile.setText("");
+        txtEmail.setText("");
         txtCallName.setText("");
         txtSearch.setText("");
-
+        comboBoxEmpType.setSelectedIndex(0);
         cmbActive.setSelectedIndex(0);
         comboDepartment.setSelectedIndex(0);
         comboSubDepartment.setSelectedIndex(0);
+        loadEmployees();
     }
 
-    private void RefreshTableAndLoadAgain() {
-        try {
-            int row = model_CustomerTable.getRowCount();
-            for (int j = 0; j < row; j++) {
-                model_CustomerTable.removeRow(0);
-            }
-            loadStaffMembers();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
-    private void loadStaffMembers() {
+    private void loadEmployees() {
         try {
             ResultSet reset;
             Statement stmt;
             String query;
             int rowCount = 0;
-            query = "SELECT MEMBER_ID, MEMBER_FIRST_NAME, departments_DEPARTMENT_CODE FROM staff_members ORDER BY MEMBER_FIRST_NAME";
+            query = "SELECT EMPLOYEE_CODE, FIRST_NAME, SUB_DEPARTMENT_CODE FROM Employees ORDER BY EMPLOYEE_CODE";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             while (reset.next()) {
-                model_CustomerTable.addRow(new Object[model_CustomerTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("MEMBER_ID"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("MEMBER_FIRST_NAME"), rowCount, 1);
-                tableViewDetails.setValueAt(reset.getString("departments_DEPARTMENT_CODE"), rowCount, 2);
+                model_tableViewDetails.addRow(new Object[model_tableViewDetails.getColumnCount()]);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_CODE"), rowCount, 0);
+                tableViewDetails.setValueAt(reset.getString("FIRST_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("SUB_DEPARTMENT_CODE"), rowCount, 2);
                 rowCount++;
             }
             reset.close();

@@ -522,11 +522,8 @@
         <Component class="javax.swing.JComboBox" name="comboBoxEmpType">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Intern"/>
-                <StringItem index="1" value="Probation"/>
-                <StringItem index="2" value="Contract"/>
-                <StringItem index="3" value="Permenent"/>
+              <StringArray count="1">
+                <StringItem index="0" value="--Select--"/>
               </StringArray>
             </Property>
           </Properties>
