@@ -55,6 +55,7 @@ public class IndexPage extends javax.swing.JFrame {
     public static URL url = null;
     public static Date SYSTEM_DATE;
 
+    public static Branch bran = null;
     public static Department department = null;
     public static SubDepartment subDepartment = null;
     public static Employee employee = null;
@@ -148,6 +149,7 @@ public class IndexPage extends javax.swing.JFrame {
         LabelBackGroundPicture = new javax.swing.JLabel();
         mnBar_menuBar = new javax.swing.JMenuBar();
         TabMenuMainFiles = new javax.swing.JMenu();
+        MenuBranch = new javax.swing.JMenuItem();
         MenuDepartment = new javax.swing.JMenuItem();
         menuSubDepartment = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
@@ -362,6 +364,15 @@ public class IndexPage extends javax.swing.JFrame {
                 TabMenuMainFilesActionPerformed(evt);
             }
         });
+
+        MenuBranch.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+        MenuBranch.setText("Branch");
+        MenuBranch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuBranchActionPerformed(evt);
+            }
+        });
+        TabMenuMainFiles.add(MenuBranch);
 
         MenuDepartment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         MenuDepartment.setText("Department");
@@ -1297,6 +1308,18 @@ private void TabMenuMainFilesActionPerformed(java.awt.event.ActionEvent evt) {//
         }
     }//GEN-LAST:event_menuUserPrivilegeActionPerformed
 
+    private void MenuBranchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuBranchActionPerformed
+        if (bran != null) {
+            if (!bran.isVisible()) {
+                bran.setVisible(true);
+            }
+        } else {
+            bran = new Branch();
+            dskPane_RightPanel.add(bran);
+            bran.setVisible(true);
+        }
+    }//GEN-LAST:event_MenuBranchActionPerformed
+
     public static JMenu getOpenWindowMenuItem() {
         return TabMenuSettings;
     }
@@ -1349,6 +1372,7 @@ private void TabMenuMainFilesActionPerformed(java.awt.event.ActionEvent evt) {//
     private javax.swing.JLabel LabelUser;
     private javax.swing.JMenuItem MenuAbout;
     private javax.swing.JMenuItem MenuAdminSettings;
+    private javax.swing.JMenuItem MenuBranch;
     private javax.swing.JMenuItem MenuConnectionSettings;
     private javax.swing.JMenuItem MenuCreateStudentEventGroup;
     private javax.swing.JMenuItem MenuDepartment;

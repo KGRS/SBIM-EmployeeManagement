@@ -5,7 +5,7 @@
  */
 package MainFiles;
 
-import static MainFiles.IndexPage.department;
+import static MainFiles.IndexPage.bran;
 import db.ConnectSql;
 import functions.ValidateFields;
 import java.awt.HeadlessException;
@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Ravindu
  */
-public class Department extends javax.swing.JInternalFrame {
+public class Branch extends javax.swing.JInternalFrame {
 
     private final String select = "--Select--";
     private final DefaultTableModel model_categoryTable;
@@ -30,7 +30,7 @@ public class Department extends javax.swing.JInternalFrame {
     /**
      * Creates new form Department
      */
-    public Department() {
+    public Branch() {
         initComponents();
 
         buttonGroup1.add(rBtnCode);
@@ -41,8 +41,6 @@ public class Department extends javax.swing.JInternalFrame {
         panel1.setToolTipText("Press right mouse click to refresh.");
 
         LoadCategories();
-        loadBranchesToCombo();
-        loadTypes();
     }
 
     private void LoadCategories() {
@@ -51,16 +49,15 @@ public class Department extends javax.swing.JInternalFrame {
             Statement stmt;
             String query;
             int rowCount = 0;
-            query = "SELECT * FROM Departments ORDER BY DepartmentName";
+            query = "SELECT * FROM Branches ORDER BY BranchName";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             while (reset.next()) {
                 model_categoryTable.addRow(new Object[model_categoryTable.getColumnCount()]);
-                TableCategory.setValueAt(reset.getString("DepartmentCode"), rowCount, 0);
-                TableCategory.setValueAt(reset.getString("DepartmentName"), rowCount, 1);
-                TableCategory.setValueAt(reset.getString("Type"), rowCount, 2);
-                TableCategory.setValueAt(reset.getString("BranchCode"), rowCount, 3);
+                TableCategory.setValueAt(reset.getString("BranchCode"), rowCount, 0);
+                TableCategory.setValueAt(reset.getString("BranchName"), rowCount, 1);
+                TableCategory.setValueAt(reset.getString("Telephone1"), rowCount, 2);
                 rowCount++;
             }
             reset.close();
@@ -70,28 +67,6 @@ public class Department extends javax.swing.JInternalFrame {
         }
     }
 
-    private void loadBranchesToCombo() {
-        try {
-            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "select * From Branches order by BranchName";
-            ResultSet rset = stmt.executeQuery(query);
-
-            cmbBranch.removeAllItems();
-            cmbBranch.insertItemAt("--Select--", 0);
-            int position = 1;
-            if (rset.next()) {
-                do {
-                    cmbBranch.insertItemAt(rset.getString("BranchName") + "--" + rset.getString("BranchCode"), position); // 
-                    position++;
-                } while (rset.next());
-            }
-            cmbBranch.setSelectedIndex(0);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
-        }
-    }
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -114,16 +89,14 @@ public class Department extends javax.swing.JInternalFrame {
         rBtnCode = new javax.swing.JRadioButton();
         rBtnName = new javax.swing.JRadioButton();
         lbl_accountType = new javax.swing.JLabel();
-        cmbTypes = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         TableCategory = new javax.swing.JTable();
         txtSearch = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel7 = new javax.swing.JLabel();
-        cmbBranch = new javax.swing.JComboBox();
+        txtTelephone = new javax.swing.JTextField();
 
         setIconifiable(true);
-        setTitle("Department");
+        setTitle("Branch");
         setPreferredSize(new java.awt.Dimension(895, 365));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
@@ -154,7 +127,7 @@ public class Department extends javax.swing.JInternalFrame {
         panel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl_category.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_category.setText("Department code");
+        lbl_category.setText("Branch code");
         panel1.add(lbl_category, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 60, 110, 20));
 
         txtCode.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -207,11 +180,11 @@ public class Department extends javax.swing.JInternalFrame {
         panel1.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 290, 80, -1));
 
         lbl_description.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_description.setText("Department name");
+        lbl_description.setText("Branch name");
         panel1.add(lbl_description, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, 110, 20));
 
         lbl_subAccount.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_subAccount.setText("Search department by");
+        lbl_subAccount.setText("Search branch by");
         panel1.add(lbl_subAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 140, 20));
 
         btnExit.setMnemonic('e');
@@ -256,38 +229,22 @@ public class Department extends javax.swing.JInternalFrame {
         panel1.add(rBtnName, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 20, 60, -1));
 
         lbl_accountType.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_accountType.setText("Department Type");
-        panel1.add(lbl_accountType, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 180, 110, 20));
-
-        cmbTypes.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            }
-            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                cmbTypesPopupMenuWillBecomeInvisible(evt);
-            }
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-            }
-        });
-        cmbTypes.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                cmbTypesKeyPressed(evt);
-            }
-        });
-        panel1.add(cmbTypes, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 180, 210, 20));
+        lbl_accountType.setText("Telephone");
+        panel1.add(lbl_accountType, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 140, 110, 20));
 
         TableCategory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Code", "Name", "Type", "Branch"
+                "Code", "Name", "Telephone"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -316,25 +273,15 @@ public class Department extends javax.swing.JInternalFrame {
         panel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 170, -1));
         panel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 270, 350, -1));
 
-        jLabel7.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel7.setText("Branch");
-        panel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 140, 114, 20));
-
-        cmbBranch.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
-            }
-            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                cmbBranchPopupMenuWillBecomeInvisible(evt);
-            }
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-            }
-        });
-        cmbBranch.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtTelephone.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                cmbBranchKeyPressed(evt);
+                txtTelephoneKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTelephoneKeyReleased(evt);
             }
         });
-        panel1.add(cmbBranch, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, 210, 20));
+        panel1.add(txtTelephone, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, 210, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -374,13 +321,13 @@ public class Department extends javax.swing.JInternalFrame {
             ResultSet reset;
             Statement stmt;
             String query;
-            query = "SELECT * FROM Departments where DepartmentCode = '" + CategoryCode + "'";
+            query = "SELECT * FROM Branches where BranchCode = '" + CategoryCode + "'";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             if (reset.next()) {
-                txtCategoryName.setText(reset.getString("DepartmentName"));
-                cmbTypes.setSelectedItem(reset.getString("Type"));
+                txtCategoryName.setText(reset.getString("BranchName"));
+                txtTelephone.setText(reset.getString("Telephone1"));
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -400,7 +347,7 @@ public class Department extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String text = txtCategoryName.getText();
             if (!text.isEmpty()) {
-                cmbBranch.requestFocus();
+                txtTelephone.requestFocus();
             }
         }
     }//GEN-LAST:event_txtCategoryNameKeyPressed
@@ -416,31 +363,28 @@ public class Department extends javax.swing.JInternalFrame {
     private void CheckBeforeSave() {
         String CategoryCode = txtCode.getText();
         String CategoryName = txtCategoryName.getText();
-        String Type = cmbTypes.getSelectedItem().toString();
-        String BranchCode[] = cmbBranch.getSelectedItem().toString().split("--");
-        if (!CategoryCode.isEmpty() && !CategoryName.isEmpty() && !Type.equals(select) && !BranchCode[1].equals(select)) {
+        String Type = txtTelephone.getText();
+        if (!CategoryCode.isEmpty() && !CategoryName.isEmpty() && !Type.equals(select)) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                String query = "select DepartmentCode From Departments where DepartmentCode = '" + CategoryCode + "'";
+                String query = "select BranchCode From Branches where BranchCode = '" + CategoryCode + "'";
                 ResultSet rset = stmt.executeQuery(query);
 
                 if (rset.next()) {
-                    int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + CategoryCode + "' department details?", "Update department?", JOptionPane.YES_NO_OPTION);
+                    int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + CategoryCode + "' branch details?", "Update branch?", JOptionPane.YES_NO_OPTION);
                     if (x == JOptionPane.YES_OPTION) {
-                        String UpdateQuery = "update Departments set DepartmentName = '" + CategoryName + "'"
-                                + ", Type = '" + Type + "', BranchCode = '" + BranchCode[1] + "' where DepartmentCode = '" + CategoryCode + "'";
+                        String UpdateQuery = "update Branches set BranchName = '" + CategoryName + "', Telephone1 = '" + Type + "' where BranchCode = '" + CategoryCode + "'";
                         stmt.execute(UpdateQuery);
-                        JOptionPane.showMessageDialog(this, "Department details are updated.");
+                        JOptionPane.showMessageDialog(this, "Branche details are updated.");
                         Refresh();
                     } else if (x == JOptionPane.NO_OPTION) {
                         txtCode.requestFocus();
                     }
 
                 } else if (!rset.next()) {
-                    String UpdateQuery = "insert into Departments (DepartmentCode, DepartmentName"
-                            + ", Type, BranchCode) values ( '" + CategoryCode + "','" + CategoryName + "', '" + Type + "', '" + BranchCode[1] + "') ";
+                    String UpdateQuery = "insert into Branches (BranchCode, BranchName, Telephone1) values ( '" + CategoryCode + "','" + CategoryName + "', '" + Type + "') ";
                     stmt.execute(UpdateQuery);
-                    JOptionPane.showMessageDialog(this, "New department is saved.");
+                    JOptionPane.showMessageDialog(this, "New branch is saved.");
                     Refresh();
                 }
                 rset.close();
@@ -466,11 +410,15 @@ public class Department extends javax.swing.JInternalFrame {
         if (!CategoryCode.isEmpty()) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                String query = "select DepartmentCode From Items where DepartmentCode = '" + CategoryCode + "'";
+                String query = "select TakeFrom, TransferTo From ItemTransferMain where TakeFrom = '" + CategoryCode + "' or TransferTo = '" + CategoryCode + "'";
                 ResultSet rset = stmt.executeQuery(query);
+                
+                java.sql.Statement stmt1 = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                String query1 = "select BranchCode From Departments where BranchCode = '" + CategoryCode + "'";
+                ResultSet rset1 = stmt1.executeQuery(query1);
 
-                if (rset.next()) {
-                    JOptionPane.showMessageDialog(this, "This department is already used. Can't delete.", "Can't delete", JOptionPane.ERROR_MESSAGE);
+                if (rset.next() || rset1.next()) {
+                    JOptionPane.showMessageDialog(this, "This branch is already used. Can't delete.", "Can't delete", JOptionPane.ERROR_MESSAGE);
                 } else if (!rset.next()) {
                     DeleteDepartment();
                 }
@@ -483,29 +431,29 @@ public class Department extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Please contact for support.");
             }
         } else if (CategoryCode.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please insert a valid department code before delete.", "Empty department code", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(this, "Please insert a valid branch code before delete.", "Empty branch code", JOptionPane.OK_OPTION);
             txtCode.requestFocus();
         }
     }
 
     private void DeleteDepartment() {
         String Code = txtCode.getText();
-        int x = JOptionPane.showConfirmDialog(this, "Are you sure To delete this?", "Delete department?", JOptionPane.YES_NO_OPTION);
+        int x = JOptionPane.showConfirmDialog(this, "Are you sure To delete this?", "Delete branch?", JOptionPane.YES_NO_OPTION);
         if (x == JOptionPane.YES_OPTION) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                 java.sql.Statement Checkstmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-                String Checkquery = "select DepartmentCode From Departments where DepartmentCode = '" + Code + "'";
+                String Checkquery = "select BranchCode From Branches where BranchCode = '" + Code + "'";
                 ResultSet Checkrset = Checkstmt.executeQuery(Checkquery);
 
                 if (Checkrset.next()) {
-                    String query = "delete From Departments where DepartmentCode = '" + Code + "'";
+                    String query = "delete From Branches where BranchCode = '" + Code + "'";
                     stmt.execute(query);
-                    JOptionPane.showMessageDialog(this, "Department is deleted.");
+                    JOptionPane.showMessageDialog(this, "Branch is deleted.");
                     Refresh();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Invalid department code. Please insert a valid department code.", "Invalid department code", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(this, "Invalid branch code. Please insert a valid branch code.", "Invalid branch code", JOptionPane.OK_OPTION);
                     txtCode.requestFocus();
                 }
 
@@ -556,50 +504,16 @@ public class Department extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_rBtnNameKeyPressed
 
-    private void cmbTypesPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cmbTypesPopupMenuWillBecomeInvisible
-        String text = cmbTypes.getSelectedItem().toString();
-        if (!text.equals(select)) {
-            btnSave.requestFocus();
-        }
-    }//GEN-LAST:event_cmbTypesPopupMenuWillBecomeInvisible
-
-    private void cmbTypesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbTypesKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String text = cmbTypes.getSelectedItem().toString();
-            if (!text.equals(select)) {
-                btnSave.requestFocus();
-            }
-        }
-    }//GEN-LAST:event_cmbTypesKeyPressed
-
     private void TableCategoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableCategoryMouseClicked
-        String Code, Name, Type, BranchCode, BranchName = "";
+        String Code, Name, Telephone;
 
         Code = TableCategory.getValueAt(TableCategory.getSelectedRow(), 0).toString();
         Name = TableCategory.getValueAt(TableCategory.getSelectedRow(), 1).toString();
-        Type = TableCategory.getValueAt(TableCategory.getSelectedRow(), 2).toString();
-        BranchCode = TableCategory.getValueAt(TableCategory.getSelectedRow(), 3).toString();
+        Telephone = TableCategory.getValueAt(TableCategory.getSelectedRow(), 2).toString();
 
-        try {
-            ResultSet reset;
-            Statement stmt;
-            String query;
-            query = "SELECT * FROM Branches where BranchCode = '" + BranchCode + "'";
-            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            reset = stmt.executeQuery(query);
-
-            if (reset.next()) {
-                BranchName = reset.getString("BranchName");
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-        
         txtCode.setText(Code);
         txtCategoryName.setText(Name);
-        cmbBranch.setSelectedItem(BranchName + "--" + BranchCode);
-        cmbTypes.setSelectedItem(Type);
+        txtTelephone.setText(Telephone);
     }//GEN-LAST:event_TableCategoryMouseClicked
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
@@ -619,9 +533,9 @@ public class Department extends javax.swing.JInternalFrame {
             RefreshTable();
 
             if (!CategoryCode.equals("")) {
-                query = "SELECT * FROM Departments WHERE DepartmentCode LIKE '" + CategoryCode + "%'";
+                query = "SELECT * FROM Branches WHERE BranchCode LIKE '" + CategoryCode + "%'";
             } else {
-                query = "SELECT * FROM Departments  WHERE DepartmentCode LIKE '" + CategoryCode + "%'";
+                query = "SELECT * FROM Branches  WHERE BranchCode LIKE '" + CategoryCode + "%'";
             }
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
@@ -629,10 +543,9 @@ public class Department extends javax.swing.JInternalFrame {
             while (reset.next()) {
 
                 model_categoryTable.addRow(new Object[model_categoryTable.getColumnCount()]);
-                TableCategory.setValueAt(reset.getString("DepartmentCode"), rowCount, 0);
-                TableCategory.setValueAt(reset.getString("DepartmentName"), rowCount, 1);
-                TableCategory.setValueAt(reset.getString("Type"), rowCount, 2);
-                TableCategory.setValueAt(reset.getString("BranchCode"), rowCount, 3);
+                TableCategory.setValueAt(reset.getString("BranchCode"), rowCount, 0);
+                TableCategory.setValueAt(reset.getString("BranchName"), rowCount, 1);
+                TableCategory.setValueAt(reset.getString("Telephone1"), rowCount, 2);
                 rowCount++;
             }
             reset.close();
@@ -651,9 +564,9 @@ public class Department extends javax.swing.JInternalFrame {
             RefreshTable();
 
             if (!CategoryName.equals("")) {
-                query = "SELECT * FROM Departments WHERE DepartmentName LIKE '%" + CategoryName + "%'";
+                query = "SELECT * FROM Branches WHERE BranchName LIKE '%" + CategoryName + "%'";
             } else {
-                query = "SELECT * FROM Departments  WHERE DepartmentName LIKE '%" + CategoryName + "%'";
+                query = "SELECT * FROM Branches  WHERE BranchName LIKE '%" + CategoryName + "%'";
             }
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
@@ -661,10 +574,9 @@ public class Department extends javax.swing.JInternalFrame {
             while (reset.next()) {
 
                 model_categoryTable.addRow(new Object[model_categoryTable.getColumnCount()]);
-                TableCategory.setValueAt(reset.getString("DepartmentCode"), rowCount, 0);
-                TableCategory.setValueAt(reset.getString("DepartmentName"), rowCount, 1);
-                TableCategory.setValueAt(reset.getString("Type"), rowCount, 2);
-                TableCategory.setValueAt(reset.getString("BranchCode"), rowCount, 3);
+                TableCategory.setValueAt(reset.getString("BranchCode"), rowCount, 0);
+                TableCategory.setValueAt(reset.getString("BranchName"), rowCount, 1);
+                TableCategory.setValueAt(reset.getString("Telephone1"), rowCount, 2);
                 rowCount++;
             }
             reset.close();
@@ -692,33 +604,25 @@ public class Department extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_panel1MouseClicked
 
-    private void cmbBranchPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cmbBranchPopupMenuWillBecomeInvisible
-        if (cmbBranch.getSelectedItem().equals(select)) {
-            cmbBranch.requestFocus();
-        } else {
-            cmbTypes.requestFocus();
-        }
-    }//GEN-LAST:event_cmbBranchPopupMenuWillBecomeInvisible
+    private void txtTelephoneKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelephoneKeyReleased
+        ValidateFields.CheckForOtherFields(txtCategoryName);
+    }//GEN-LAST:event_txtTelephoneKeyReleased
 
-    private void cmbBranchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbBranchKeyPressed
+    private void txtTelephoneKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelephoneKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (cmbBranch.getSelectedItem().equals(select)) {
-                cmbBranch.requestFocus();
-            } else {
-                cmbTypes.requestFocus();
-            }
+            btnSave.requestFocus();
         }
-    }//GEN-LAST:event_cmbBranchKeyPressed
+    }//GEN-LAST:event_txtTelephoneKeyPressed
 
     private void formInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameIconified
-        department.toFront();
+        bran.toFront();
     }//GEN-LAST:event_formInternalFrameIconified
 
     private void Refresh() {
         RefreshTableAndLoadAgain();
         txtCode.setText("");
         txtCategoryName.setText("");
-        cmbTypes.setSelectedIndex(0);
+        txtTelephone.setText("");
         txtSearch.setText("");
     }
 
@@ -741,9 +645,6 @@ public class Department extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnSave;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JComboBox cmbBranch;
-    private javax.swing.JComboBox cmbTypes;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbl_accountType;
@@ -756,35 +657,14 @@ public class Department extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtCategoryName;
     private javax.swing.JTextField txtCode;
     private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtTelephone;
     // End of variables declaration//GEN-END:variables
 
     private void exit() {
-        if (department != null) {
-            department = null;
+         if (bran != null) {
+            bran = null;
         }
         this.dispose();
-    }
-
-    private void loadTypes() {
-        try {
-            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "select TypeCode, TypeName From ItemTypes order by TypeName";
-            ResultSet rset = stmt.executeQuery(query);
-
-            cmbTypes.removeAllItems();
-            cmbTypes.insertItemAt("--Select--", 0);
-            int position = 1;
-            if (rset.next()) {
-                do {
-                    cmbTypes.insertItemAt(rset.getString("TypeName"), position); // + "--" + rset.getString("TypeCode")
-                    position++;
-                } while (rset.next());
-            }
-            cmbTypes.setSelectedIndex(0);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
-        }
     }
 
 }
