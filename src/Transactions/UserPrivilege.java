@@ -603,15 +603,15 @@ public class UserPrivilege extends javax.swing.JInternalFrame {
 
     private void AddToSecondTable(String empCode, int moduleCode) {
         selectedRowOfTableEmployee = tableEmployee.getSelectedRow();
-        selectedRowOftablePrivilleges = tablePrivilleges.getSelectedRow();
+        selectedRowOftableModule = tableModule.getSelectedRow();
         try {
             empFirstName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 1).toString();
             empInitials = tableEmployee.getValueAt(selectedRowOfTableEmployee, 2).toString();
             empCallingName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 3).toString();
             userName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 4).toString();
 
-            moduleName = tableEmployee.getValueAt(selectedRowOfTableEmployee, 1).toString();
-            moduleVersion = tableEmployee.getValueAt(selectedRowOfTableEmployee, 2).toString();
+            moduleName = tableModule.getValueAt(selectedRowOftableModule, 1).toString();
+            moduleVersion = tableModule.getValueAt(selectedRowOftableModule, 2).toString();
 
             model_TablePrivilleges.addRow(new Object[]{empCode, empFirstName, empInitials, empCallingName, userName, moduleCode, moduleName, moduleVersion});
             countItemsInSecondTable();
