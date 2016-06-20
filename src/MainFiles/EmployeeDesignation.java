@@ -91,6 +91,8 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         tableViewDetails = new javax.swing.JTable();
         txtSearch = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
+        lbl_description1 = new javax.swing.JLabel();
+        IsSupervising = new javax.swing.JComboBox();
 
         setIconifiable(true);
         setTitle("Employee designation");
@@ -140,7 +142,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
                 txtCodeKeyReleased(evt);
             }
         });
-        panel1.add(txtCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 60, 170, 20));
+        panel1.add(txtCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 60, 210, 20));
 
         txtDepartmentName.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -177,8 +179,8 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         panel1.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 290, 80, -1));
 
         lbl_description.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_description.setText("Designation name");
-        panel1.add(lbl_description, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, 110, 20));
+        lbl_description.setText("Is supervising");
+        panel1.add(lbl_description, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 140, 110, 20));
 
         lbl_subAccount.setForeground(new java.awt.Color(102, 102, 102));
         lbl_subAccount.setText("Search designation by");
@@ -265,6 +267,13 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         });
         panel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 170, -1));
         panel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 270, 350, -1));
+
+        lbl_description1.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_description1.setText("Designation name");
+        panel1.add(lbl_description1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, 110, 20));
+
+        IsSupervising.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No", "Yes" }));
+        panel1.add(IsSupervising, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, 110, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -598,6 +607,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox IsSupervising;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnSave;
@@ -606,6 +616,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbl_category;
     private javax.swing.JLabel lbl_description;
+    private javax.swing.JLabel lbl_description1;
     private javax.swing.JLabel lbl_subAccount;
     private javax.swing.JPanel panel1;
     private javax.swing.JRadioButton rBtnCode;

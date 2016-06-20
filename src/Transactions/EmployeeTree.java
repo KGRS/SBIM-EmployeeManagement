@@ -564,8 +564,10 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
 
     private void FirstCheckBeforeAddToSecondTable() {
         selectedRowOfTableEmployee = tableEmployee.getSelectedRow();
+        selectedRowOfTableDesignationRank = tableDesignationRank.getSelectedRow();
         empCode = tableEmployee.getValueAt(selectedRowOfTableEmployee, 0).toString();
-        Object[] CheckItemAlreadyAdded = CheckItemAlreadyAdded(empCode);
+        rankForGenerate = tableDesignationRank.getValueAt(selectedRowOfTableDesignationRank, 0).toString();
+        Object[] CheckItemAlreadyAdded = CheckItemAlreadyAdded(empCode, rankForGenerate);        
         if ((Boolean) CheckItemAlreadyAdded[0]) {
             JOptionPane.showMessageDialog(this, "Employee is already added.", "Already added.", JOptionPane.OK_OPTION);
         } else {
@@ -573,7 +575,7 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
         }
     }
 
-    protected Object[] CheckItemAlreadyAdded(String ItemFromFirstTable) {
+    protected Object[] CheckItemAlreadyAdded(String ItemFromFirstTable, String secondItemFromFirstTable) {
         int rowCount = model_tableRankedEmployee.getRowCount();
         Object[] data = new Object[2];
         data[0] = false;
@@ -581,7 +583,8 @@ public class EmployeeTree extends javax.swing.JInternalFrame {
 
         for (int i = 0; i < rowCount; i++) {
             String ItemAtSecondTable = model_tableRankedEmployee.getValueAt(i, 3).toString();
-            if (ItemFromFirstTable.equals(ItemAtSecondTable)) {
+            String secondItemAtSecondTable = model_tableRankedEmployee.getValueAt(i, 0).toString();
+            if (ItemFromFirstTable.equals(ItemAtSecondTable) && secondItemFromFirstTable.equals(secondItemAtSecondTable)) {
                 data[0] = true;
                 data[1] = i;
             }
