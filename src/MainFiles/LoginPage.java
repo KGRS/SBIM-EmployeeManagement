@@ -89,7 +89,6 @@ public class LoginPage extends javax.swing.JFrame {
             .getImage("images/inv1.png"));
         setResizable(false);
 
-        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 255, 0), 1, true));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hi, please insert your login details...", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 18), new java.awt.Color(255, 255, 255))); // NOI18N
@@ -345,6 +344,7 @@ public class LoginPage extends javax.swing.JFrame {
                     + "     SubDepartments.\"SUB_DEPARTMENT_NAME\" AS SubDepartments_SUB_DEPARTMENT_NAME,\n"
                     + "     SubDepartments.\"DepartmentCode\" AS SubDepartments_DepartmentCode,\n"
                     + "     Employees.\"SUB_DEPARTMENT_CODE\" AS Employees_SUB_DEPARTMENT_CODE,\n"
+                    + "     Employees.\"EMPLOYEE_CODE\" AS Employees_EMPLOYEE_CODE,\n"
                     + "     Departments.\"BranchCode\" AS Departments_BranchCode,\n"
                     + "     Branches.\"BranchName\" AS Branches_BranchName\n"
                     + "FROM\n"
@@ -361,12 +361,14 @@ public class LoginPage extends javax.swing.JFrame {
                 String subDepartmentCode = rsetGetLoginDetails.getString("Employees_SUB_DEPARTMENT_CODE");
                 String departmentName = rsetGetLoginDetails.getString("Departments_DepartmentName");
                 String subDepartmentName = rsetGetLoginDetails.getString("SubDepartments_SUB_DEPARTMENT_NAME");
+                String employeeCode = rsetGetLoginDetails.getString("Employees_EMPLOYEE_CODE");
                 if (dbPassword.equals(password)) {
                     IndexPage.user = textUserName.getText().trim();
                     IndexPage.departmentCode = departmentCode;
                     IndexPage.subDepartmentCode = subDepartmentCode;
                     IndexPage.departmentName = departmentName;
                     IndexPage.subDepartmentName = subDepartmentName;
+                    IndexPage.employeeCode = employeeCode;
                     IndexPage mainpage = new IndexPage();
                     mainpage.setExtendedState(Frame.MAXIMIZED_BOTH);
                     mainpage.setVisible(true);
