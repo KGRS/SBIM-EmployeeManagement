@@ -402,17 +402,16 @@ public class UserLogins extends javax.swing.JInternalFrame {
 
     private void saveData(String password, String oldPassword) {
         try {
-            rowCountOfTableEmployee = tableEmployee.getRowCount();
+            selectedRowCountOfTableEmployee = tableEmployee.getSelectedRow();
             java.sql.Statement stmtItems = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            for (int i = 0; i < rowCountOfTableEmployee; i++) {
-                empCode = tableEmployee.getValueAt(i, 0).toString();
+            empCode = tableEmployee.getValueAt(selectedRowCountOfTableEmployee, 0).toString();
 
-                String ItemInsertQuery = "UPDATE [UnAndPw] SET\n"
-                        + "           [USER_PASSWORD] = '" + password + "'\n"
-                        + "           ,[USER_OLD_PASSWORD] = '" + oldPassword + "'\n"
-                        + "     WHERE EMPLOYEE_CODE = '" + empCode + "'";
-                stmtItems.execute(ItemInsertQuery);
-            }
+            String ItemInsertQuery = "UPDATE [UnAndPw] SET\n"
+                    + "           [USER_PASSWORD] = '" + password + "'\n"
+                    + "           ,[USER_OLD_PASSWORD] = '" + oldPassword + "'\n"
+                    + "     WHERE EMPLOYEE_CODE = '" + empCode + "'";
+            stmtItems.execute(ItemInsertQuery);
+
             JOptionPane.showMessageDialog(this, "'" + menuName + "' is updated.");
             Refresh();
             stmtItems.close();
