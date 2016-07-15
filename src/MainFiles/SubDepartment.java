@@ -41,6 +41,7 @@ public class SubDepartment extends javax.swing.JInternalFrame {
         panel1.setToolTipText("Press right mouse click to refresh.");
 
         LoadDepartments();
+        loadDepartmentsToCombo();
     }
 
     private void LoadDepartments() {
@@ -49,20 +50,43 @@ public class SubDepartment extends javax.swing.JInternalFrame {
             Statement stmt;
             String query;
             int rowCount = 0;
-            query = "SELECT * FROM departments ORDER BY DEPARTMENT_NAME";
+            query = "SELECT * FROM subdepartments ORDER BY SUB_DEPARTMENT_NAME";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             while (reset.next()) {
                 model_categoryTable.addRow(new Object[model_categoryTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_CODE"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("SUB_DEPARTMENT_CODE"), rowCount, 0);
+                tableViewDetails.setValueAt(reset.getString("SUB_DEPARTMENT_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("DepartmentCode"), rowCount, 1);
                 rowCount++;
             }
             reset.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
+    
+     private void loadDepartmentsToCombo() {
+        try {
+            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query = "select DepartmentCode, DepartmentName From Departments order by DepartmentName";
+            ResultSet rset = stmt.executeQuery(query);
+
+            comboDepartment.removeAllItems();
+            comboDepartment.insertItemAt("--Select--", 0);
+            int position = 1;
+            if (rset.next()) {
+                do {
+                    comboDepartment.insertItemAt(rset.getString("DepartmentCode"), position); // 
+                    position++;
+                } while (rset.next());
+            }
+            comboDepartment.setSelectedIndex(0);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
         }
     }
 
@@ -91,7 +115,7 @@ public class SubDepartment extends javax.swing.JInternalFrame {
         tableViewDetails = new javax.swing.JTable();
         txtSearch = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
-        jComboBox1 = new javax.swing.JComboBox();
+        comboDepartment = new javax.swing.JComboBox();
         lbl_category1 = new javax.swing.JLabel();
 
         setIconifiable(true);
@@ -179,7 +203,7 @@ public class SubDepartment extends javax.swing.JInternalFrame {
         panel1.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 290, 80, -1));
 
         lbl_description.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_description.setText("Sub department name");
+        lbl_description.setText("Sub Department name");
         panel1.add(lbl_description, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 140, 110, 20));
 
         lbl_subAccount.setForeground(new java.awt.Color(102, 102, 102));
@@ -232,14 +256,14 @@ public class SubDepartment extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Sub department code", "Sub department name"
+                "Sub Department code", "Sub Department name", "Department Code"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -268,11 +292,11 @@ public class SubDepartment extends javax.swing.JInternalFrame {
         panel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 170, -1));
         panel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 270, 350, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
-        panel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 60, 210, -1));
+        comboDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
+        panel1.add(comboDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 60, 210, -1));
 
         lbl_category1.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_category1.setText("Sub department code");
+        lbl_category1.setText("Sub Department code");
         panel1.add(lbl_category1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, 110, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -309,12 +333,12 @@ public class SubDepartment extends javax.swing.JInternalFrame {
             ResultSet reset;
             Statement stmt;
             String query;
-            query = "SELECT * FROM departments where DEPARTMENT_CODE = '" + CategoryCode + "'";
+            query = "SELECT * FROM subdepartments where SUB_DEPARTMENT_CODE = '" + CategoryCode + "'";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             if (reset.next()) {
-                txtDepartmentName.setText(reset.getString("DEPARTMENT_NAME"));
+                txtDepartmentName.setText(reset.getString("SUB_DEPARTMENT_NAME"));
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -348,18 +372,18 @@ public class SubDepartment extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void CheckBeforeSave() {
-        String CategoryCode = txtCode.getText().toUpperCase();
+         String CategoryCode = txtCode.getText().toUpperCase();
         String CategoryName = txtDepartmentName.getText();
         if (!CategoryCode.isEmpty() && !CategoryName.isEmpty()) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                String query = "select DEPARTMENT_CODE From departments where DEPARTMENT_CODE = '" + CategoryCode + "'";
+                String query = "select SUB_DEPARTMENT_CODE From subdepartments where SUB_DEPARTMENT_CODE = '" + CategoryCode + "'";
                 ResultSet rset = stmt.executeQuery(query);
 
                 if (rset.next()) {
-                    int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + CategoryCode + "' department details?", "Update department?", JOptionPane.YES_NO_OPTION);
+                    int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + CategoryCode + "' Sub Department details?", "Update Sub Department?", JOptionPane.YES_NO_OPTION);
                     if (x == JOptionPane.YES_OPTION) {
-                        String UpdateQuery = "update departments set DEPARTMENT_NAME = '" + CategoryName + "' where DEPARTMENT_CODE = '" + CategoryCode + "'";
+                        String UpdateQuery = "update subdepartments set SUB_DEPARTMENT_NAME = '" + CategoryName + "' where DEPARTMENT_CODE = '" + CategoryCode + "'";
                         stmt.execute(UpdateQuery);
                         JOptionPane.showMessageDialog(this, "Department details are updated.");
                         Refresh();
@@ -392,15 +416,15 @@ public class SubDepartment extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void CheckBeforeDelete() {
-        String CategoryCode = txtCode.getText();
+       String CategoryCode = txtCode.getText();
         if (!CategoryCode.isEmpty()) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                String query = "select DEPARTMENT_CODE From staff_members where DEPARTMENT_CODE = '" + CategoryCode + "'";
+                String query = "select SUB_DEPARTMENT_CODE From employees where SUB_DEPARTMENT_CODE = '" + CategoryCode + "'";
                 ResultSet rset = stmt.executeQuery(query);               
 
                 if (rset.next()) {
-                    JOptionPane.showMessageDialog(this, "This department is already used. Can't delete.", "Can't delete", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "This sub department is already used. Can't delete.", "Can't delete", JOptionPane.ERROR_MESSAGE);
                 } else if (!rset.next()) {
                     DeleteDepartment();
                 }
@@ -413,29 +437,29 @@ public class SubDepartment extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Please contact for support.");
             }
         } else if (CategoryCode.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please insert a valid department code before delete.", "Empty department code", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(this, "Please insert a valid sub department code before delete.", "Empty sub department code", JOptionPane.OK_OPTION);
             txtCode.requestFocus();
         }
     }
 
     private void DeleteDepartment() {
         String Code = txtCode.getText();
-        int x = JOptionPane.showConfirmDialog(this, "Are you sure To delete this?", "Delete department?", JOptionPane.YES_NO_OPTION);
+        int x = JOptionPane.showConfirmDialog(this, "Are you sure To delete this?", "Delete Sub Department?", JOptionPane.YES_NO_OPTION);
         if (x == JOptionPane.YES_OPTION) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                 java.sql.Statement Checkstmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-                String Checkquery = "select DEPARTMENT_CODE From departments where DEPARTMENT_CODE = '" + Code + "'";
+                String Checkquery = "select SUB_DEPARTMENT_CODE From subdepartments where SUB_DEPARTMENT_CODE = '" + Code + "'";
                 ResultSet Checkrset = Checkstmt.executeQuery(Checkquery);
 
                 if (Checkrset.next()) {
-                    String query = "delete From departments where DEPARTMENT_CODE = '" + Code + "'";
+                    String query = "delete From subdepartments where SUB_DEPARTMENT_CODE = '" + Code + "'";
                     stmt.execute(query);
-                    JOptionPane.showMessageDialog(this, "Department is deleted.");
+                    JOptionPane.showMessageDialog(this, "Sub Department is deleted.");
                     Refresh();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Invalid department code. Please insert a valid department code.", "Invalid department code", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(this, "Invalid sub department code. Please insert a valid sub department code.", "Invalid sub department code", JOptionPane.OK_OPTION);
                     txtCode.requestFocus();
                 }
 
@@ -513,9 +537,9 @@ public class SubDepartment extends javax.swing.JInternalFrame {
             RefreshTable();
 
             if (!CategoryCode.equals("")) {
-                query = "SELECT * FROM departments WHERE DEPARTMENT_CODE LIKE '" + CategoryCode + "%'";
+                query = "SELECT * FROM subdepartments WHERE SUB_DEPARTMENT_CODE LIKE '" + CategoryCode + "%'";
             } else {
-                query = "SELECT * FROM departments  WHERE DEPARTMENT_CODE LIKE '" + CategoryCode + "%'";
+                query = "SELECT * FROM subdepartments  WHERE SUB_DEPARTMENT_CODE LIKE '" + CategoryCode + "%'";
             }
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
@@ -523,8 +547,9 @@ public class SubDepartment extends javax.swing.JInternalFrame {
             while (reset.next()) {
 
                 model_categoryTable.addRow(new Object[model_categoryTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_CODE"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("SUB_DEPARTMENT_CODE"), rowCount, 0);
+                tableViewDetails.setValueAt(reset.getString("SUB_DEPARTMENT_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("DepartmentCode"), rowCount,2);
                 rowCount++;
             }
             reset.close();
@@ -611,7 +636,7 @@ public class SubDepartment extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnSave;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox comboDepartment;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbl_category;
