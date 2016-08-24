@@ -30,14 +30,14 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     private final String spliter = "--";
     private final String menuName = "Employee performance meter";
     String departmentCode, subDepartmentCode, rankForGenerate, designationCode, designationName, empCode, empFirstName, empCallingName, fixedJob, stDate, enDate;
-    int rank, rowCountOfTableEmployee, rowCountOfTableDesignationRank, rowCountOfTableRankedEmployee, selectedRowOfTableEmployee, selectedRowOfTableDesignationRank, selectedRowOfTableRankedEmployee;
+    int rank, rowCountOfTableEmployee, rowCountOfTableDesignationRank, rowCountOfTableRankedEmployee, selectedRowOfTableTimeTaken, selectedRowOfTableRawItemUsage, selectedRowOfTableJobDetails;
 
     public EmployeePerformanceMeter() {
         initComponents();
         loadDepartmentsToCombo();
 
         comboDepartment.requestFocus();
-        model_tableRankedEmployee = (DefaultTableModel) tableRankedEmployee.getModel();
+        model_tableRankedEmployee = (DefaultTableModel) tableJobDetails.getModel();
         model_TableEmployee = (DefaultTableModel) tableTimeTaken.getModel();
         model_tableDesignationRank = (DefaultTableModel) tableRawItemUsage.getModel();
         panel1.setToolTipText("Press right mouse click to refresh.");
@@ -65,7 +65,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         comboDepartment = new javax.swing.JComboBox();
         lbl_subAccount = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tableRankedEmployee = new javax.swing.JTable();
+        tableJobDetails = new javax.swing.JTable();
         ButtonViewWastageRawItems = new javax.swing.JButton();
         TextNumberOfEmpRanked = new javax.swing.JTextField();
         TextNumberOfEmpAtSubDepartment = new javax.swing.JTextField();
@@ -181,6 +181,11 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             }
         });
         tableTimeTaken.getTableHeader().setReorderingAllowed(false);
+        tableTimeTaken.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableTimeTakenMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableTimeTaken);
         if (tableTimeTaken.getColumnModel().getColumnCount() > 0) {
             tableTimeTaken.getColumnModel().getColumn(1).setPreferredWidth(100);
@@ -211,19 +216,19 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         lbl_subAccount.setText("Number of employees did wastage");
         panel1.add(lbl_subAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 320, 180, 20));
 
-        tableRankedEmployee.setModel(new javax.swing.table.DefaultTableModel(
+        tableJobDetails.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Job ID", "Start date", "Allocated time", "Taken time", "Did wastage?", "Did late?", "Email"
+                "Job ID", "Start date", "Allocated time", "Taken time", "Item allocated", "Item completed", "Did wastage?", "Did late?", "Email"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, true, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -234,11 +239,11 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableRankedEmployee.getTableHeader().setReorderingAllowed(false);
-        jScrollPane2.setViewportView(tableRankedEmployee);
-        if (tableRankedEmployee.getColumnModel().getColumnCount() > 0) {
-            tableRankedEmployee.getColumnModel().getColumn(4).setPreferredWidth(130);
-            tableRankedEmployee.getColumnModel().getColumn(5).setPreferredWidth(130);
+        tableJobDetails.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tableJobDetails);
+        if (tableJobDetails.getColumnModel().getColumnCount() > 0) {
+            tableJobDetails.getColumnModel().getColumn(6).setPreferredWidth(130);
+            tableJobDetails.getColumnModel().getColumn(7).setPreferredWidth(130);
         }
 
         panel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 357, 930, 210));
@@ -295,6 +300,11 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             }
         });
         tableRawItemUsage.getTableHeader().setReorderingAllowed(false);
+        tableRawItemUsage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableRawItemUsageMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tableRawItemUsage);
         if (tableRawItemUsage.getColumnModel().getColumnCount() > 0) {
             tableRawItemUsage.getColumnModel().getColumn(1).setPreferredWidth(100);
@@ -542,11 +552,10 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         enDate = CalendarEndDate.getText();
         fixedJob = comboBoxFixedJobs.getSelectedItem().toString();
         if (!subDepartmentCode.equals(select) && !fixedJob.equals(select) && !stDate.equals("") && !enDate.equals("")) {
-            String subDepartmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
+//            String subDepartmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
             String fixedJobIDByArray[] = comboBoxFixedJobs.getSelectedItem().toString().split(spliter);
             loadSelectedFIXED_JOB_IDLateJobs(fixedJobIDByArray[1] + "--" + fixedJobIDByArray[2], stDate, enDate);
-            LoadSelectedFIXED_JOB_ID_Wastage(fixedJobIDByArray[1] + "--" + fixedJobIDByArray[2], stDate, enDate);
-            LoadEmployeeRanks();
+            LoadSelectedFIXED_JOB_ID_Wastage(fixedJobIDByArray[1] + "--" + fixedJobIDByArray[2], stDate, enDate);            
         } else if (subDepartmentCode.equals(select) || fixedJob.equals(select) || !stDate.equals("") || enDate.equals("")) {
             JOptionPane.showMessageDialog(this, "Dates, Sub department or fixed job is not selected.", "Not selected", JOptionPane.OK_OPTION);
             comboSubDepartment.requestFocus();
@@ -572,10 +581,10 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
                     + "     INNER JOIN \"dbo\".\"Employees\" Employees ON EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" = Employees.\"EMPLOYEE_CODE\"\n"
                     + "     INNER JOIN \"dbo\".\"PLItemDifference\" PLItemDifference ON JobFinished.\"JOB_ID\" = PLItemDifference.\"JOB_ID\"\n"
                     + "WHERE\n"
-                    + "     JobFinished.\"FIXED_JOB_ID\" = '"+fixedJobIDByArray+"'\n"
+                    + "     JobFinished.\"FIXED_JOB_ID\" = '" + fixedJobIDByArray + "'\n"
                     + " AND PLItemDifference.\"IS_WASTAGE\" = 'Yes'\n"
-                    + " AND (JobFinished.\"JOB_ALLOCATED_DATE\" >= '"+startDate+"'\n"
-                    + " AND JobFinished.\"JOB_ALLOCATED_DATE\" <= '"+endDate+"')\n"
+                    + " AND (JobFinished.\"JOB_ALLOCATED_DATE\" >= '" + startDate + "'\n"
+                    + " AND JobFinished.\"JOB_ALLOCATED_DATE\" <= '" + endDate + "')\n"
                     + "GROUP BY\n"
                     + "     JobFinished.\"FIXED_JOB_ID\",\n"
                     + "     Employees.\"FIRST_NAME\",\n"
@@ -600,7 +609,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         }
     }
 
-    private void LoadEmployeeRanks() {
+    private void LoadlateJobs(String empCode) {
         try {
             model_tableRankedEmployee.setRowCount(0);
             ResultSet reset;
@@ -608,27 +617,35 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             String query;
             int rowCount = 0;
             query = "SELECT\n"
-                    + "     EmployeeDesignationTree.\"EMPLOYEE_DESIGNATION_CODE\" AS EmployeeDesignationTree_EMPLOYEE_DESIGNATION_CODE,\n"
-                    + "     EmployeeDesignation.\"EMPLOYEE_DESIGNATION_NAME\" AS EmployeeDesignation_EMPLOYEE_DESIGNATION_NAME,\n"
-                    + "     EmployeeTree.\"EMPLOYEE_CODE\" AS EmployeeTree_EMPLOYEE_CODE,\n"
-                    + "     EmployeeTree.\"RANK_CODE\" AS EmployeeTree_RANK_CODE,\n"
-                    + "     Employees.\"FIRST_NAME\" AS Employees_FIRST_NAME,\n"
-                    + "     Employees.\"CALL_NAME\" AS Employees_CALL_NAME\n"
+//                    + "     JobFinished.\"IS_LATE\" AS JobFinished_IS_LATE,\n"
+//                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" AS EmployeesAtFinishedJob_EMPLOYEE_CODE,\n"
+                    + "     EmployeesAtFinishedJob.\"JOB_ID\" AS EmployeesAtFinishedJob_JOB_ID,\n"
+                    + "     JobFinished.\"JOB_ALLOCATED_DATE\" AS JobFinished_JOB_ALLOCATED_DATE,\n"
+                    + "     JobFinished.\"ALLOCATED_TIME\" AS JobFinished_ALLOCATED_TIME,\n"
+                    + "     JobFinished.\"TAKEN_TIME\" AS JobFinished_TAKEN_TIME,\n"
+                    + "     JobFinished.\"ITEM_COUNT\" AS JobFinished_ITEM_COUNT,\n"
+                    + "     JobFinished.\"ITEM_COUNT_COMPLETED\" AS JobFinished_ITEM_COUNT_COMPLETED,\n"
+                    + "     JobFinished.\"IS_LATE\" AS JobFinished_IS_LATE,\n"
+                    + "     PLItemDifference.\"IS_WASTAGE\" AS PLItemDifference_IS_WASTAGE\n"
                     + "FROM\n"
-                    + "     \"dbo\".\"EmployeeDesignation\" EmployeeDesignation INNER JOIN \"dbo\".\"EmployeeDesignationTree\" EmployeeDesignationTree ON EmployeeDesignation.\"EMPLOYEE_DESIGNATION_CODE\" = EmployeeDesignationTree.\"EMPLOYEE_DESIGNATION_CODE\"\n"
-                    + "     INNER JOIN \"dbo\".\"EmployeeTree\" EmployeeTree ON EmployeeDesignationTree.\"RANK_CODE\" = EmployeeTree.\"RANK_CODE\"\n"
-                    + "     INNER JOIN \"dbo\".\"Employees\" Employees ON EmployeeTree.\"EMPLOYEE_CODE\" = Employees.\"EMPLOYEE_CODE\"";
+                    + "     \"dbo\".\"EmployeesAtFinishedJob\" EmployeesAtFinishedJob INNER JOIN \"dbo\".\"JobFinished\" JobFinished ON EmployeesAtFinishedJob.\"JOB_ID\" = JobFinished.\"JOB_ID\"\n"
+                    + "     INNER JOIN \"dbo\".\"PLItemDifference\" PLItemDifference ON JobFinished.\"JOB_ID\" = PLItemDifference.\"JOB_ID\"\n"
+                    + "WHERE\n"
+                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" = '"+empCode+"' AND JobFinished.\"IS_LATE\" = 'Yes' ORDER BY EmployeesAtFinishedJob.\"JOB_ID\"";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             while (reset.next()) {
                 model_tableRankedEmployee.addRow(new Object[model_tableRankedEmployee.getColumnCount()]);
-                tableRankedEmployee.setValueAt(reset.getString("EmployeeTree_RANK_CODE"), rowCount, 0);
-                tableRankedEmployee.setValueAt(reset.getString("EmployeeDesignationTree_EMPLOYEE_DESIGNATION_CODE"), rowCount, 1);
-                tableRankedEmployee.setValueAt(reset.getString("EmployeeDesignation_EMPLOYEE_DESIGNATION_NAME"), rowCount, 2);
-                tableRankedEmployee.setValueAt(reset.getString("EmployeeTree_EMPLOYEE_CODE"), rowCount, 3);
-                tableRankedEmployee.setValueAt(reset.getString("Employees_FIRST_NAME"), rowCount, 4);
-                tableRankedEmployee.setValueAt(reset.getString("Employees_CALL_NAME"), rowCount, 5);
+                tableJobDetails.setValueAt(reset.getString("EmployeesAtFinishedJob_JOB_ID"), rowCount, 0);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_JOB_ALLOCATED_DATE"), rowCount, 1);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_ALLOCATED_TIME"), rowCount, 2);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_TAKEN_TIME"), rowCount, 3);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_ITEM_COUNT"), rowCount, 4);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_ITEM_COUNT_COMPLETED"), rowCount, 5);
+                tableJobDetails.setValueAt(reset.getString("PLItemDifference_IS_WASTAGE"), rowCount, 6);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_IS_LATE"), rowCount, 7);
+                tableJobDetails.setValueAt("No", rowCount, 8);
                 rowCount++;
             }
             reset.close();
@@ -639,6 +656,53 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         }
     }
 
+    private void LoadWastageJobs(String empCode) {
+        try {
+            model_tableRankedEmployee.setRowCount(0);
+            ResultSet reset;
+            Statement stmt;
+            String query;
+            int rowCount = 0;
+            query = "SELECT\n"
+//                    + "     JobFinished.\"IS_LATE\" AS JobFinished_IS_LATE,\n"
+//                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" AS EmployeesAtFinishedJob_EMPLOYEE_CODE,\n"
+                    + "     EmployeesAtFinishedJob.\"JOB_ID\" AS EmployeesAtFinishedJob_JOB_ID,\n"
+                    + "     JobFinished.\"JOB_ALLOCATED_DATE\" AS JobFinished_JOB_ALLOCATED_DATE,\n"
+                    + "     JobFinished.\"ALLOCATED_TIME\" AS JobFinished_ALLOCATED_TIME,\n"
+                    + "     JobFinished.\"TAKEN_TIME\" AS JobFinished_TAKEN_TIME,\n"
+                    + "     JobFinished.\"ITEM_COUNT\" AS JobFinished_ITEM_COUNT,\n"
+                    + "     JobFinished.\"ITEM_COUNT_COMPLETED\" AS JobFinished_ITEM_COUNT_COMPLETED,\n"
+                    + "     JobFinished.\"IS_LATE\" AS JobFinished_IS_LATE,\n"
+                    + "     PLItemDifference.\"IS_WASTAGE\" AS PLItemDifference_IS_WASTAGE\n"
+                    + "FROM\n"
+                    + "     \"dbo\".\"EmployeesAtFinishedJob\" EmployeesAtFinishedJob INNER JOIN \"dbo\".\"JobFinished\" JobFinished ON EmployeesAtFinishedJob.\"JOB_ID\" = JobFinished.\"JOB_ID\"\n"
+                    + "     INNER JOIN \"dbo\".\"PLItemDifference\" PLItemDifference ON JobFinished.\"JOB_ID\" = PLItemDifference.\"JOB_ID\"\n"
+                    + "WHERE\n"
+                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" = '"+empCode+"' AND PLItemDifference.\"IS_WASTAGE\" = 'Yes' ORDER BY EmployeesAtFinishedJob.\"JOB_ID\"";
+            stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            reset = stmt.executeQuery(query);
+
+            while (reset.next()) {
+                model_tableRankedEmployee.addRow(new Object[model_tableRankedEmployee.getColumnCount()]);
+                tableJobDetails.setValueAt(reset.getString("EmployeesAtFinishedJob_JOB_ID"), rowCount, 0);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_JOB_ALLOCATED_DATE"), rowCount, 1);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_ALLOCATED_TIME"), rowCount, 2);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_TAKEN_TIME"), rowCount, 3);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_ITEM_COUNT"), rowCount, 4);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_ITEM_COUNT_COMPLETED"), rowCount, 5);
+                tableJobDetails.setValueAt(reset.getString("PLItemDifference_IS_WASTAGE"), rowCount, 6);
+                tableJobDetails.setValueAt(reset.getString("JobFinished_IS_LATE"), rowCount, 7);
+                tableJobDetails.setValueAt("No", rowCount, 8);
+                rowCount++;
+            }
+            reset.close();
+            countItemsInSecondTable();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please contact for support.");
+        }
+    }
+    
     private void RefreshDesignationRankTable() {
         try {
             int row = model_tableDesignationRank.getRowCount();
@@ -658,10 +722,10 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_panel1MouseClicked
 
     private void FirstCheckBeforeAddToSecondTable() {
-        selectedRowOfTableEmployee = tableTimeTaken.getSelectedRow();
-        selectedRowOfTableDesignationRank = tableRawItemUsage.getSelectedRow();
-        empCode = tableTimeTaken.getValueAt(selectedRowOfTableEmployee, 0).toString();
-        rankForGenerate = tableRawItemUsage.getValueAt(selectedRowOfTableDesignationRank, 0).toString();
+        selectedRowOfTableTimeTaken = tableTimeTaken.getSelectedRow();
+        selectedRowOfTableRawItemUsage = tableRawItemUsage.getSelectedRow();
+        empCode = tableTimeTaken.getValueAt(selectedRowOfTableTimeTaken, 0).toString();
+        rankForGenerate = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 0).toString();
         Object[] CheckItemAlreadyAdded = CheckItemAlreadyAdded(empCode, rankForGenerate);
         if ((Boolean) CheckItemAlreadyAdded[0]) {
             JOptionPane.showMessageDialog(this, "Employee is already added.", "Already added.", JOptionPane.OK_OPTION);
@@ -688,14 +752,14 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     }
 
     private void AddToSecondTable(String empCode) {
-        selectedRowOfTableEmployee = tableTimeTaken.getSelectedRow();
-        selectedRowOfTableDesignationRank = tableRawItemUsage.getSelectedRow();
+        selectedRowOfTableTimeTaken = tableTimeTaken.getSelectedRow();
+        selectedRowOfTableRawItemUsage = tableRawItemUsage.getSelectedRow();
         try {
-            rankForGenerate = tableRawItemUsage.getValueAt(selectedRowOfTableDesignationRank, 0).toString();
-            designationCode = tableRawItemUsage.getValueAt(selectedRowOfTableDesignationRank, 1).toString();
-            designationName = tableRawItemUsage.getValueAt(selectedRowOfTableDesignationRank, 2).toString();
-            empFirstName = tableTimeTaken.getValueAt(selectedRowOfTableEmployee, 1).toString();
-            empCallingName = tableTimeTaken.getValueAt(selectedRowOfTableEmployee, 3).toString();
+            rankForGenerate = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 0).toString();
+            designationCode = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 1).toString();
+            designationName = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 2).toString();
+            empFirstName = tableTimeTaken.getValueAt(selectedRowOfTableTimeTaken, 1).toString();
+            empCallingName = tableTimeTaken.getValueAt(selectedRowOfTableTimeTaken, 3).toString();
 
             model_tableRankedEmployee.addRow(new Object[]{rankForGenerate, designationCode, designationName, empCode, empFirstName, empCallingName});
             countItemsInSecondTable();
@@ -715,15 +779,15 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameIconified
 
     private void ButtonViewWastageRawItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonViewWastageRawItemsActionPerformed
-        selectedRowOfTableRankedEmployee = tableRankedEmployee.getSelectedRowCount();
-        if (selectedRowOfTableRankedEmployee == 1) {
+        selectedRowOfTableJobDetails = tableJobDetails.getSelectedRowCount();
+        if (selectedRowOfTableJobDetails == 1) {
             int x = JOptionPane.showConfirmDialog(this, "Are you sure To remove this employee?", "Remove employee?", JOptionPane.YES_NO_OPTION);
             if (x == JOptionPane.YES_OPTION) {
-                int i = tableRankedEmployee.getSelectedRow();
+                int i = tableJobDetails.getSelectedRow();
                 model_tableRankedEmployee.removeRow(i);
                 countItemsInSecondTable();
             }
-        } else if (selectedRowOfTableRankedEmployee != 1) {
+        } else if (selectedRowOfTableJobDetails != 1) {
             JOptionPane.showMessageDialog(this, "Employee is not selected.", "Not selected.", JOptionPane.OK_OPTION);
         }
     }//GEN-LAST:event_ButtonViewWastageRawItemsActionPerformed
@@ -766,6 +830,19 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
 
+    private void tableTimeTakenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableTimeTakenMouseClicked
+        tableRawItemUsage.setSelectionMode(0);
+        selectedRowOfTableTimeTaken = tableTimeTaken.getSelectedRow();
+        empCode = tableTimeTaken.getValueAt(selectedRowOfTableTimeTaken, 0).toString();
+        LoadlateJobs(empCode);
+    }//GEN-LAST:event_tableTimeTakenMouseClicked
+
+    private void tableRawItemUsageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableRawItemUsageMouseClicked
+        selectedRowOfTableRawItemUsage = tableRawItemUsage.getSelectedRow();
+        empCode = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 0).toString();
+        LoadWastageJobs(empCode);
+    }//GEN-LAST:event_tableRawItemUsageMouseClicked
+
     protected Object[] CheckIfStudentAlreadyAdded(String studntFromBtch) {
         int rowCount = model_tableRankedEmployee.getRowCount();
         Object[] data = new Object[2];
@@ -783,7 +860,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     }
 
     private void CheckBeforeSave() {
-        int RowCount = tableRankedEmployee.getRowCount();
+        int RowCount = tableJobDetails.getRowCount();
         if (RowCount <= 0) {
             JOptionPane.showMessageDialog(this, "Employees are not available at table.", "No employees", JOptionPane.OK_OPTION);
         } else if (RowCount > 0) {
@@ -812,11 +889,11 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
 
     private void saveData() {
         try {
-            rowCountOfTableRankedEmployee = tableRankedEmployee.getRowCount();
+            rowCountOfTableRankedEmployee = tableJobDetails.getRowCount();
             java.sql.Statement stmtItems = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             for (int i = 0; i < rowCountOfTableRankedEmployee; i++) {
-                rankForGenerate = tableRankedEmployee.getValueAt(i, 0).toString();
-                empCode = tableRankedEmployee.getValueAt(i, 3).toString();
+                rankForGenerate = tableJobDetails.getValueAt(i, 0).toString();
+                empCode = tableJobDetails.getValueAt(i, 3).toString();
 
                 String ItemInsertQuery = "INSERT INTO [EmployeeTree]\n"
                         + "           ([EMPLOYEE_CODE]\n"
@@ -913,7 +990,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbl_subAccount1;
     private javax.swing.JLabel lbl_subAccount3;
     private javax.swing.JPanel panel1;
-    private javax.swing.JTable tableRankedEmployee;
+    private javax.swing.JTable tableJobDetails;
     private javax.swing.JTable tableRawItemUsage;
     private javax.swing.JTable tableTimeTaken;
     // End of variables declaration//GEN-END:variables
