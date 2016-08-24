@@ -6,7 +6,6 @@ package MainFiles;
 
 import Transactions.UserLogins;
 import Transactions.DesignationTree;
-import reports.Attachements;
 import Transactions.EmployeeTree;
 import Transactions.UserPrivilege;
 import com.jtattoo.plaf.smart.SmartLookAndFeel;
@@ -40,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import reports.EmployeePerformanceMeter;
 
 /**
  *
@@ -70,7 +70,7 @@ public class IndexPage extends javax.swing.JFrame {
     public static UserPrivilege userPrivilege = null;
     public static UserLogins userLogins = null;
 
-    public static Attachements attachments = null;
+    public static EmployeePerformanceMeter employeePerformanceMeter = null;
 
     public IndexPage() {
 
@@ -168,7 +168,7 @@ public class IndexPage extends javax.swing.JFrame {
         MenuUserLogin = new javax.swing.JMenuItem();
         menuUserPrivilege = new javax.swing.JMenuItem();
         TabMenuReports = new javax.swing.JMenu();
-        MenuStockReports = new javax.swing.JMenuItem();
+        menuItemEmployeePerformanceMeter = new javax.swing.JMenuItem();
         MenuReports = new javax.swing.JMenuItem();
         TabMenuTools = new javax.swing.JMenu();
         MenuNotifications = new javax.swing.JMenuItem();
@@ -466,13 +466,13 @@ public class IndexPage extends javax.swing.JFrame {
         TabMenuReports.setText("Reports");
         TabMenuReports.setPreferredSize(new java.awt.Dimension(80, 19));
 
-        MenuStockReports.setText("Attachments");
-        MenuStockReports.addActionListener(new java.awt.event.ActionListener() {
+        menuItemEmployeePerformanceMeter.setText("Employee performance meter");
+        menuItemEmployeePerformanceMeter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MenuStockReportsActionPerformed(evt);
+                menuItemEmployeePerformanceMeterActionPerformed(evt);
             }
         });
-        TabMenuReports.add(MenuStockReports);
+        TabMenuReports.add(menuItemEmployeePerformanceMeter);
 
         MenuReports.setText("Reports");
         MenuReports.addActionListener(new java.awt.event.ActionListener() {
@@ -1156,18 +1156,18 @@ private void TabMenuMainFilesActionPerformed(java.awt.event.ActionEvent evt) {//
         }
     }//GEN-LAST:event_SubMenuGreenLanternActionPerformed
 
-    private void MenuStockReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuStockReportsActionPerformed
-        if (attachments != null) {
-            if (!attachments.isVisible()) {
-                attachments.setVisible(true);
+    private void menuItemEmployeePerformanceMeterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEmployeePerformanceMeterActionPerformed
+        if (employeePerformanceMeter != null) {
+            if (!employeePerformanceMeter.isVisible()) {
+                employeePerformanceMeter.setVisible(true);
             }
         } else {
-            attachments = new Attachements();
-            dskPane_RightPanel.add(attachments);
-            attachments.setVisible(true);
+            employeePerformanceMeter = new EmployeePerformanceMeter();
+            dskPane_RightPanel.add(employeePerformanceMeter);
+            employeePerformanceMeter.setVisible(true);
         }
 
-    }//GEN-LAST:event_MenuStockReportsActionPerformed
+    }//GEN-LAST:event_menuItemEmployeePerformanceMeterActionPerformed
 
     private void MenuAdminSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuAdminSettingsActionPerformed
         JOptionPane.showMessageDialog(this, "This form is still under developing.\n We "
@@ -1389,7 +1389,6 @@ private void TabMenuMainFilesActionPerformed(java.awt.event.ActionEvent evt) {//
     private javax.swing.JMenuItem MenuNotifications;
     public static javax.swing.JMenu MenuPersonalization;
     public static javax.swing.JMenuItem MenuReports;
-    private javax.swing.JMenuItem MenuStockReports;
     private javax.swing.JMenuItem MenuUserLogin;
     private javax.swing.JPanel PanelCompanyLogo;
     private javax.swing.JMenuItem SubMenuAssassinsCreed;
@@ -1432,6 +1431,7 @@ private void TabMenuMainFilesActionPerformed(java.awt.event.ActionEvent evt) {//
     public static javax.swing.JLabel labelSubDepartmentCode;
     private javax.swing.JMenuItem menuEmployeeDesignation;
     private javax.swing.JMenuItem menuEmployeeTree;
+    private javax.swing.JMenuItem menuItemEmployeePerformanceMeter;
     public static javax.swing.JMenuItem menuSubDepartment;
     private javax.swing.JMenuItem menuUserPrivilege;
     private javax.swing.JMenuBar mnBar_menuBar;
