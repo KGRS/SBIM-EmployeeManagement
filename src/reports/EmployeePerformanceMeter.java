@@ -7,6 +7,7 @@ package reports;
 import static MainFiles.IndexPage.employeePerformanceMeter;
 import OtherDialogs.ViewWastageRowItems;
 import db.ConnectSql;
+import functions.SendEMails;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
@@ -34,7 +35,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     private final String spliter = "--";
     private final String menuName = "Employee performance meter";
     String departmentCode, subDepartmentCode, rankForGenerate, designationCode, designationName, empCode, empFirstName, empCallingName, fixedJob, stDate, enDate, jobID;
-    int rank, rowCountOfTableEmployee, rowCountOfTableWastage, rowCountOfTableRankedEmployee, selectedRowOfTableTimeTaken, selectedRowOfTableRawItemUsage, selectedRowOfTableJobDetails, selectedRowCountOfTableJobDetails;
+    int rank, rowCountOfTableEmployee, rowCountOfTableWastage, rowCountOfTableRankedEmployee, selectedRowOfTableTimeTaken, selectedRowOfTableRawItemUsage, selectedRowOfTableJobDetails, selectedRowCountOfTableJobDetails, selectedRowCountOfTableWastage;
 
     public EmployeePerformanceMeter() {
         initComponents();
@@ -611,6 +612,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        int RowCount = tableJobDetails.getRowCount();
         CheckBeforeSave();
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -824,7 +826,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             String productItemIdByArray[] = comboBoxFixedJobs.getSelectedItem().toString().split(spliter);
             if (didWastage.equals("Yes")) {
                 new ViewWastageRowItems(this, jobID, productItemIdByArray[3]).setVisible(true);
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(this, "Wastage is not happened.", "Not happened.", JOptionPane.OK_OPTION);
             }
         } else if (selectedRowCountOfTableJobDetails != 1) {
@@ -906,24 +908,34 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         } else if (RowCount > 0) {
             int x = JOptionPane.showConfirmDialog(this, "Are you sure to send emails to these employees?", "Send e-mail?", JOptionPane.YES_NO_OPTION);
             if (x == JOptionPane.YES_OPTION) {
-                sendEmail();
+                selectedRowCountOfTableWastage = tableRawItemUsage.getRowCount();
+                if (selectedRowCountOfTableWastage == 1) {
+                    selectedRowOfTableRawItemUsage = tableRawItemUsage.getSelectedRow();
+                    empCode = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 0).toString();
+                    sendEmail(empCode);
+                }
             }
         }
     }
 
-    private void sendEmail() {
+    private void sendEmail(String empCode) {
         String SENT_TO_EMP;
+        int itemCompleted, itemAllocated, itemDifference;
         int RowCount = tableJobDetails.getRowCount();
         String subDepartmentID[] = comboSubDepartment.getSelectedItem().toString().split("--");
         String fixedJobCode[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
         String fixedJobName[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
+        String plItem[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
         for (int i = 0; i < RowCount; i++) {
-            empCode = tableJobDetails.getValueAt(i, 0).toString();
-            SENT_TO_EMP = tableJobDetails.getValueAt(i, 4).toString();
-
+            jobID = tableJobDetails.getValueAt(i, 0).toString();
+            stDate = tableJobDetails.getValueAt(i, 1).toString();
+            SENT_TO_EMP = tableJobDetails.getValueAt(i, 8).toString();
+            itemAllocated = Integer.parseInt(tableJobDetails.getValueAt(i, 4).toString());
+            itemCompleted = Integer.parseInt(tableJobDetails.getValueAt(i, 5).toString());
+            itemDifference = itemAllocated - itemCompleted;
             if (SENT_TO_EMP.equals("No")) {
-//                SendMail sm = new SendMail();
-//                sm.groupAllocationEmail(studentID, groupID[1], eventCode[1], eventName[0]);
+                SendEMails sm = new SendEMails();
+                sm.notifyAboutWastageOfCompleteJobsToSupervisourByEmail(empCode, jobID, itemDifference, itemAllocated, itemCompleted, plItem[3]);
             }
         }
     }
