@@ -5,6 +5,7 @@
 package reports;
 
 import static MainFiles.IndexPage.employeePerformanceMeter;
+import OtherDialogs.ViewWastageRowItems;
 import db.ConnectSql;
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
@@ -14,9 +15,12 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -29,12 +33,13 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     private final DefaultTableModel model_TableEmployee;
     private final String spliter = "--";
     private final String menuName = "Employee performance meter";
-    String departmentCode, subDepartmentCode, rankForGenerate, designationCode, designationName, empCode, empFirstName, empCallingName, fixedJob, stDate, enDate;
-    int rank, rowCountOfTableEmployee, rowCountOfTableDesignationRank, rowCountOfTableRankedEmployee, selectedRowOfTableTimeTaken, selectedRowOfTableRawItemUsage, selectedRowOfTableJobDetails;
+    String departmentCode, subDepartmentCode, rankForGenerate, designationCode, designationName, empCode, empFirstName, empCallingName, fixedJob, stDate, enDate, jobID;
+    int rank, rowCountOfTableEmployee, rowCountOfTableWastage, rowCountOfTableRankedEmployee, selectedRowOfTableTimeTaken, selectedRowOfTableRawItemUsage, selectedRowOfTableJobDetails, selectedRowCountOfTableJobDetails;
 
     public EmployeePerformanceMeter() {
         initComponents();
         loadDepartmentsToCombo();
+        cmbAtTableAt8();
 
         comboDepartment.requestFocus();
         model_tableRankedEmployee = (DefaultTableModel) tableJobDetails.getModel();
@@ -60,18 +65,11 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         btnSave = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableTimeTaken = new javax.swing.JTable();
         comboDepartment = new javax.swing.JComboBox();
-        lbl_subAccount = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableJobDetails = new javax.swing.JTable();
         ButtonViewWastageRawItems = new javax.swing.JButton();
-        TextNumberOfEmpRanked = new javax.swing.JTextField();
-        TextNumberOfEmpAtSubDepartment = new javax.swing.JTextField();
         comboSubDepartment = new javax.swing.JComboBox();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tableRawItemUsage = new javax.swing.JTable();
         lbl_accountType2 = new javax.swing.JLabel();
         comboBoxFixedJobs = new javax.swing.JComboBox();
         lbl_subAccount3 = new javax.swing.JLabel();
@@ -79,7 +77,16 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         lbl_description = new javax.swing.JLabel();
         lbl_accountType = new javax.swing.JLabel();
         CalendarEndDate = new org.sourceforge.jcalendarbutton.JCalendarButton();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableTimeTaken = new javax.swing.JTable();
         lbl_subAccount1 = new javax.swing.JLabel();
+        TextNumberOfEmpAtSubDepartment = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableRawItemUsage = new javax.swing.JTable();
+        lbl_subAccount = new javax.swing.JLabel();
+        TextNumberOfEmpRanked = new javax.swing.JTextField();
 
         setIconifiable(true);
         setPreferredSize(new java.awt.Dimension(989, 661));
@@ -157,44 +164,6 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         });
         panel1.add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 590, 80, -1));
 
-        tableTimeTaken.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Employee code", "First name", "Surname", "No of jobs"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tableTimeTaken.getTableHeader().setReorderingAllowed(false);
-        tableTimeTaken.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableTimeTakenMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(tableTimeTaken);
-        if (tableTimeTaken.getColumnModel().getColumnCount() > 0) {
-            tableTimeTaken.getColumnModel().getColumn(1).setPreferredWidth(100);
-            tableTimeTaken.getColumnModel().getColumn(2).setPreferredWidth(200);
-            tableTimeTaken.getColumnModel().getColumn(3).setPreferredWidth(100);
-        }
-
-        panel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 450, 140));
-
         comboDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
         comboDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
@@ -211,10 +180,6 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             }
         });
         panel1.add(comboDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 20, 300, 20));
-
-        lbl_subAccount.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_subAccount.setText("Number of employees did wastage");
-        panel1.add(lbl_subAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 320, 180, 20));
 
         tableJobDetails.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -256,14 +221,6 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         });
         panel1.add(ButtonViewWastageRawItems, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 590, 170, -1));
 
-        TextNumberOfEmpRanked.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        TextNumberOfEmpRanked.setEnabled(false);
-        panel1.add(TextNumberOfEmpRanked, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 320, 70, -1));
-
-        TextNumberOfEmpAtSubDepartment.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        TextNumberOfEmpAtSubDepartment.setEnabled(false);
-        panel1.add(TextNumberOfEmpAtSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 320, 70, -1));
-
         comboSubDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
         comboSubDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
@@ -275,44 +232,6 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             }
         });
         panel1.add(comboSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 20, 260, -1));
-
-        tableRawItemUsage.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Employee code", "First name", "Surname", "No of jobs"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tableRawItemUsage.getTableHeader().setReorderingAllowed(false);
-        tableRawItemUsage.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableRawItemUsageMouseClicked(evt);
-            }
-        });
-        jScrollPane3.setViewportView(tableRawItemUsage);
-        if (tableRawItemUsage.getColumnModel().getColumnCount() > 0) {
-            tableRawItemUsage.getColumnModel().getColumn(1).setPreferredWidth(100);
-            tableRawItemUsage.getColumnModel().getColumn(2).setPreferredWidth(200);
-            tableRawItemUsage.getColumnModel().getColumn(3).setPreferredWidth(100);
-        }
-
-        panel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(502, 160, 450, 140));
 
         lbl_accountType2.setForeground(new java.awt.Color(102, 102, 102));
         lbl_accountType2.setText("Department *");
@@ -328,7 +247,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
             }
         });
-        panel1.add(comboBoxFixedJobs, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 60, 300, -1));
+        panel1.add(comboBoxFixedJobs, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 60, 380, -1));
 
         lbl_subAccount3.setForeground(new java.awt.Color(102, 102, 102));
         lbl_subAccount3.setText("Sub department *");
@@ -366,9 +285,150 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         });
         panel1.add(CalendarEndDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 100, 120, -1));
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null, "Employees notify for late jobs", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(102, 102, 102)), "Employees notify for late jobs")); // NOI18N
+
+        tableTimeTaken.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Employee code", "First name", "Surname", "No of jobs"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableTimeTaken.getTableHeader().setReorderingAllowed(false);
+        tableTimeTaken.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableTimeTakenMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableTimeTaken);
+        if (tableTimeTaken.getColumnModel().getColumnCount() > 0) {
+            tableTimeTaken.getColumnModel().getColumn(1).setPreferredWidth(100);
+            tableTimeTaken.getColumnModel().getColumn(2).setPreferredWidth(200);
+            tableTimeTaken.getColumnModel().getColumn(3).setPreferredWidth(100);
+        }
+
         lbl_subAccount1.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_subAccount1.setText("Number of employees exceed given time");
-        panel1.add(lbl_subAccount1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 320, 210, 20));
+        lbl_subAccount1.setText("Number of employees notify for late jobs");
+
+        TextNumberOfEmpAtSubDepartment.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        TextNumberOfEmpAtSubDepartment.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 134, Short.MAX_VALUE)
+                        .addComponent(lbl_subAccount1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(TextNumberOfEmpAtSubDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_subAccount1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TextNumberOfEmpAtSubDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35))
+        );
+
+        panel1.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 450, 190));
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Employess notify for wastage")));
+
+        tableRawItemUsage.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Employee code", "First name", "Surname", "No of jobs"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableRawItemUsage.getTableHeader().setReorderingAllowed(false);
+        tableRawItemUsage.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableRawItemUsageMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tableRawItemUsage);
+        if (tableRawItemUsage.getColumnModel().getColumnCount() > 0) {
+            tableRawItemUsage.getColumnModel().getColumn(1).setPreferredWidth(100);
+            tableRawItemUsage.getColumnModel().getColumn(2).setPreferredWidth(200);
+            tableRawItemUsage.getColumnModel().getColumn(3).setPreferredWidth(100);
+        }
+
+        lbl_subAccount.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_subAccount.setText("Number of employees did wastage");
+
+        TextNumberOfEmpRanked.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        TextNumberOfEmpRanked.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(lbl_subAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(TextNumberOfEmpRanked, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_subAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TextNumberOfEmpRanked, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        panel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 150, 460, 190));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -385,6 +445,14 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cmbAtTableAt8() {
+        TableColumn AuthColumn = tableJobDetails.getColumnModel().getColumn(8);
+        JComboBox comboBox = new JComboBox();
+        comboBox.addItem("Yes");
+        comboBox.addItem("No");
+        AuthColumn.setCellEditor(new DefaultCellEditor(comboBox));
+    }
 
     private void loadDepartmentsToCombo() {
         try {
@@ -555,7 +623,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
 //            String subDepartmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
             String fixedJobIDByArray[] = comboBoxFixedJobs.getSelectedItem().toString().split(spliter);
             loadSelectedFIXED_JOB_IDLateJobs(fixedJobIDByArray[1] + "--" + fixedJobIDByArray[2], stDate, enDate);
-            LoadSelectedFIXED_JOB_ID_Wastage(fixedJobIDByArray[1] + "--" + fixedJobIDByArray[2], stDate, enDate);            
+            LoadSelectedFIXED_JOB_ID_Wastage(fixedJobIDByArray[1] + "--" + fixedJobIDByArray[2], stDate, enDate);
         } else if (subDepartmentCode.equals(select) || fixedJob.equals(select) || !stDate.equals("") || enDate.equals("")) {
             JOptionPane.showMessageDialog(this, "Dates, Sub department or fixed job is not selected.", "Not selected", JOptionPane.OK_OPTION);
             comboSubDepartment.requestFocus();
@@ -617,8 +685,8 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             String query;
             int rowCount = 0;
             query = "SELECT\n"
-//                    + "     JobFinished.\"IS_LATE\" AS JobFinished_IS_LATE,\n"
-//                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" AS EmployeesAtFinishedJob_EMPLOYEE_CODE,\n"
+                    //                    + "     JobFinished.\"IS_LATE\" AS JobFinished_IS_LATE,\n"
+                    //                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" AS EmployeesAtFinishedJob_EMPLOYEE_CODE,\n"
                     + "     EmployeesAtFinishedJob.\"JOB_ID\" AS EmployeesAtFinishedJob_JOB_ID,\n"
                     + "     JobFinished.\"JOB_ALLOCATED_DATE\" AS JobFinished_JOB_ALLOCATED_DATE,\n"
                     + "     JobFinished.\"ALLOCATED_TIME\" AS JobFinished_ALLOCATED_TIME,\n"
@@ -631,7 +699,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
                     + "     \"dbo\".\"EmployeesAtFinishedJob\" EmployeesAtFinishedJob INNER JOIN \"dbo\".\"JobFinished\" JobFinished ON EmployeesAtFinishedJob.\"JOB_ID\" = JobFinished.\"JOB_ID\"\n"
                     + "     INNER JOIN \"dbo\".\"PLItemDifference\" PLItemDifference ON JobFinished.\"JOB_ID\" = PLItemDifference.\"JOB_ID\"\n"
                     + "WHERE\n"
-                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" = '"+empCode+"' AND JobFinished.\"IS_LATE\" = 'Yes' ORDER BY EmployeesAtFinishedJob.\"JOB_ID\"";
+                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" = '" + empCode + "' AND JobFinished.\"IS_LATE\" = 'Yes' ORDER BY EmployeesAtFinishedJob.\"JOB_ID\"";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
@@ -664,8 +732,8 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             String query;
             int rowCount = 0;
             query = "SELECT\n"
-//                    + "     JobFinished.\"IS_LATE\" AS JobFinished_IS_LATE,\n"
-//                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" AS EmployeesAtFinishedJob_EMPLOYEE_CODE,\n"
+                    //                    + "     JobFinished.\"IS_LATE\" AS JobFinished_IS_LATE,\n"
+                    //                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" AS EmployeesAtFinishedJob_EMPLOYEE_CODE,\n"
                     + "     EmployeesAtFinishedJob.\"JOB_ID\" AS EmployeesAtFinishedJob_JOB_ID,\n"
                     + "     JobFinished.\"JOB_ALLOCATED_DATE\" AS JobFinished_JOB_ALLOCATED_DATE,\n"
                     + "     JobFinished.\"ALLOCATED_TIME\" AS JobFinished_ALLOCATED_TIME,\n"
@@ -678,7 +746,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
                     + "     \"dbo\".\"EmployeesAtFinishedJob\" EmployeesAtFinishedJob INNER JOIN \"dbo\".\"JobFinished\" JobFinished ON EmployeesAtFinishedJob.\"JOB_ID\" = JobFinished.\"JOB_ID\"\n"
                     + "     INNER JOIN \"dbo\".\"PLItemDifference\" PLItemDifference ON JobFinished.\"JOB_ID\" = PLItemDifference.\"JOB_ID\"\n"
                     + "WHERE\n"
-                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" = '"+empCode+"' AND PLItemDifference.\"IS_WASTAGE\" = 'Yes' ORDER BY EmployeesAtFinishedJob.\"JOB_ID\"";
+                    + "     EmployeesAtFinishedJob.\"EMPLOYEE_CODE\" = '" + empCode + "' AND PLItemDifference.\"IS_WASTAGE\" = 'Yes' ORDER BY EmployeesAtFinishedJob.\"JOB_ID\"";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
@@ -702,7 +770,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Please contact for support.");
         }
     }
-    
+
     private void RefreshDesignationRankTable() {
         try {
             int row = model_tableDesignationRank.getRowCount();
@@ -721,19 +789,6 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_panel1MouseClicked
 
-    private void FirstCheckBeforeAddToSecondTable() {
-        selectedRowOfTableTimeTaken = tableTimeTaken.getSelectedRow();
-        selectedRowOfTableRawItemUsage = tableRawItemUsage.getSelectedRow();
-        empCode = tableTimeTaken.getValueAt(selectedRowOfTableTimeTaken, 0).toString();
-        rankForGenerate = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 0).toString();
-        Object[] CheckItemAlreadyAdded = CheckItemAlreadyAdded(empCode, rankForGenerate);
-        if ((Boolean) CheckItemAlreadyAdded[0]) {
-            JOptionPane.showMessageDialog(this, "Employee is already added.", "Already added.", JOptionPane.OK_OPTION);
-        } else {
-            AddToSecondTable(empCode);
-        }
-    }
-
     protected Object[] CheckItemAlreadyAdded(String ItemFromFirstTable, String secondItemFromFirstTable) {
         int rowCount = model_tableRankedEmployee.getRowCount();
         Object[] data = new Object[2];
@@ -751,25 +806,6 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         return data;
     }
 
-    private void AddToSecondTable(String empCode) {
-        selectedRowOfTableTimeTaken = tableTimeTaken.getSelectedRow();
-        selectedRowOfTableRawItemUsage = tableRawItemUsage.getSelectedRow();
-        try {
-            rankForGenerate = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 0).toString();
-            designationCode = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 1).toString();
-            designationName = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 2).toString();
-            empFirstName = tableTimeTaken.getValueAt(selectedRowOfTableTimeTaken, 1).toString();
-            empCallingName = tableTimeTaken.getValueAt(selectedRowOfTableTimeTaken, 3).toString();
-
-            model_tableRankedEmployee.addRow(new Object[]{rankForGenerate, designationCode, designationName, empCode, empFirstName, empCallingName});
-            countItemsInSecondTable();
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
-
     private void countItemsInSecondTable() {
         TextNumberOfEmpRanked.setText(model_tableRankedEmployee.getRowCount() + "");
     }
@@ -779,16 +815,20 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameIconified
 
     private void ButtonViewWastageRawItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonViewWastageRawItemsActionPerformed
-        selectedRowOfTableJobDetails = tableJobDetails.getSelectedRowCount();
-        if (selectedRowOfTableJobDetails == 1) {
-            int x = JOptionPane.showConfirmDialog(this, "Are you sure To remove this employee?", "Remove employee?", JOptionPane.YES_NO_OPTION);
-            if (x == JOptionPane.YES_OPTION) {
-                int i = tableJobDetails.getSelectedRow();
-                model_tableRankedEmployee.removeRow(i);
-                countItemsInSecondTable();
+        selectedRowCountOfTableJobDetails = tableJobDetails.getSelectedRowCount();
+        String didWastage;
+        if (selectedRowCountOfTableJobDetails == 1) {
+            selectedRowOfTableJobDetails = tableJobDetails.getSelectedRow();
+            jobID = tableJobDetails.getValueAt(selectedRowOfTableJobDetails, 0).toString();
+            didWastage = tableJobDetails.getValueAt(selectedRowOfTableJobDetails, 6).toString();
+            String productItemIdByArray[] = comboBoxFixedJobs.getSelectedItem().toString().split(spliter);
+            if (didWastage.equals("Yes")) {
+                new ViewWastageRowItems(this, jobID, productItemIdByArray[3]).setVisible(true);
+            }else{
+                JOptionPane.showMessageDialog(this, "Wastage is not happened.", "Not happened.", JOptionPane.OK_OPTION);
             }
-        } else if (selectedRowOfTableJobDetails != 1) {
-            JOptionPane.showMessageDialog(this, "Employee is not selected.", "Not selected.", JOptionPane.OK_OPTION);
+        } else if (selectedRowCountOfTableJobDetails != 1) {
+            JOptionPane.showMessageDialog(this, "Job is not selected.", "Not selected.", JOptionPane.OK_OPTION);
         }
     }//GEN-LAST:event_ButtonViewWastageRawItemsActionPerformed
 
@@ -864,53 +904,27 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         if (RowCount <= 0) {
             JOptionPane.showMessageDialog(this, "Employees are not available at table.", "No employees", JOptionPane.OK_OPTION);
         } else if (RowCount > 0) {
-            int x = JOptionPane.showConfirmDialog(this, "Are you sure to allocate ranks to these employees?", "Save?", JOptionPane.YES_NO_OPTION);
+            int x = JOptionPane.showConfirmDialog(this, "Are you sure to send emails to these employees?", "Send e-mail?", JOptionPane.YES_NO_OPTION);
             if (x == JOptionPane.YES_OPTION) {
-                deleteExsistsRecordsBeforeSave();
+                sendEmail();
             }
         }
     }
 
-    private void deleteExsistsRecordsBeforeSave() {
-        try {
-            java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "delete From EmployeeTree";
-            stmt.execute(query);
-            stmt.close();
-            saveData();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        } catch (HeadlessException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        }
-    }
+    private void sendEmail() {
+        String SENT_TO_EMP;
+        int RowCount = tableJobDetails.getRowCount();
+        String subDepartmentID[] = comboSubDepartment.getSelectedItem().toString().split("--");
+        String fixedJobCode[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
+        String fixedJobName[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
+        for (int i = 0; i < RowCount; i++) {
+            empCode = tableJobDetails.getValueAt(i, 0).toString();
+            SENT_TO_EMP = tableJobDetails.getValueAt(i, 4).toString();
 
-    private void saveData() {
-        try {
-            rowCountOfTableRankedEmployee = tableJobDetails.getRowCount();
-            java.sql.Statement stmtItems = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            for (int i = 0; i < rowCountOfTableRankedEmployee; i++) {
-                rankForGenerate = tableJobDetails.getValueAt(i, 0).toString();
-                empCode = tableJobDetails.getValueAt(i, 3).toString();
-
-                String ItemInsertQuery = "INSERT INTO [EmployeeTree]\n"
-                        + "           ([EMPLOYEE_CODE]\n"
-                        + "           ,[RANK_CODE])\n"
-                        + "     VALUES\n"
-                        + "           ('" + empCode + "'\n"
-                        + "           ,'" + rankForGenerate + "')";
-                stmtItems.execute(ItemInsertQuery);
+            if (SENT_TO_EMP.equals("No")) {
+//                SendMail sm = new SendMail();
+//                sm.groupAllocationEmail(studentID, groupID[1], eventCode[1], eventName[0]);
             }
-            JOptionPane.showMessageDialog(this, "'" + menuName + "' is updated.");
-            Refresh();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(this, "Please contact for support.");
         }
     }
 
@@ -931,11 +945,15 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             buttonView.setEnabled(true);
             comboDepartment.setSelectedItem(select);
             comboSubDepartment.setSelectedItem(select);
+            comboBoxFixedJobs.setSelectedItem(select);
 
             TextNumberOfEmpRanked.setText("0");
             TextNumberOfEmpAtSubDepartment.setText("0");
 
             model_tableDesignationRank.setRowCount(0);
+
+            CalendarStartDate.setText("");
+            CalendarEndDate.setText("");
 
             try {
                 int rowi = model_TableEmployee.getRowCount();
@@ -979,6 +997,8 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox comboBoxFixedJobs;
     private javax.swing.JComboBox comboDepartment;
     private javax.swing.JComboBox comboSubDepartment;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
