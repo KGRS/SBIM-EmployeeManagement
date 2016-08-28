@@ -348,6 +348,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void CheckBeforeSave() {
+        //aaaa
         String CategoryCode = txtCode.getText().toUpperCase();
         String CategoryName = txtDepartmentName.getText();
         if (!CategoryCode.isEmpty() && !CategoryName.isEmpty()) {
