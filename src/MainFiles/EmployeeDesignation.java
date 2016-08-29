@@ -40,23 +40,24 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         model_categoryTable = (DefaultTableModel) tableViewDetails.getModel();
         panel1.setToolTipText("Press right mouse click to refresh.");
 
-        LoadDepartments();
+        LoadDesignations();
     }
 
-    private void LoadDepartments() {
+    private void LoadDesignations() {
         try {
             ResultSet reset;
             Statement stmt;
             String query;
             int rowCount = 0;
-            query = "SELECT * FROM departments ORDER BY DEPARTMENT_NAME";
+            query = "SELECT * FROM EmployeeDesignation ORDER BY EMPLOYEE_DESIGNATION_NAME";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             while (reset.next()) {
                 model_categoryTable.addRow(new Object[model_categoryTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_CODE"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_DESIGNATION_CODE"), rowCount, 0);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_DESIGNATION_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("IS_SUPERVISING"), rowCount, 2);
                 rowCount++;
             }
             reset.close();
@@ -79,7 +80,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         panel1 = new javax.swing.JPanel();
         lbl_category = new javax.swing.JLabel();
         txtCode = new javax.swing.JTextField();
-        txtDepartmentName = new javax.swing.JTextField();
+        txtDesignationName = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         lbl_description = new javax.swing.JLabel();
@@ -95,7 +96,8 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         IsSupervising = new javax.swing.JComboBox();
 
         setIconifiable(true);
-        setTitle("Employee designation");
+        setTitle("Employee Designation");
+        setToolTipText("");
         setPreferredSize(new java.awt.Dimension(895, 365));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
@@ -126,7 +128,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         panel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl_category.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_category.setText("Designation code");
+        lbl_category.setText("Designation Code");
         panel1.add(lbl_category, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 60, 110, 20));
 
         txtCode.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -144,20 +146,20 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         });
         panel1.add(txtCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 60, 210, 20));
 
-        txtDepartmentName.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtDesignationName.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txtDepartmentNameFocusGained(evt);
+                txtDesignationNameFocusGained(evt);
             }
         });
-        txtDepartmentName.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtDesignationName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtDepartmentNameKeyPressed(evt);
+                txtDesignationNameKeyPressed(evt);
             }
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtDepartmentNameKeyReleased(evt);
+                txtDesignationNameKeyReleased(evt);
             }
         });
-        panel1.add(txtDepartmentName, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 100, 210, 20));
+        panel1.add(txtDesignationName, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 100, 210, 20));
 
         btnSave.setMnemonic('s');
         btnSave.setText("Save");
@@ -183,7 +185,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         panel1.add(lbl_description, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 140, 110, 20));
 
         lbl_subAccount.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_subAccount.setText("Search designation by");
+        lbl_subAccount.setText("Search Designation by");
         panel1.add(lbl_subAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 140, 20));
 
         btnExit.setMnemonic('e');
@@ -232,14 +234,14 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Designation code", "Designation name"
+                "Designation code", "Designation name", "Is Supervising"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -269,7 +271,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         panel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 270, 350, -1));
 
         lbl_description1.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_description1.setText("Designation name");
+        lbl_description1.setText("Designation Name");
         panel1.add(lbl_description1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, 110, 20));
 
         IsSupervising.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No", "Yes" }));
@@ -297,7 +299,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String text = txtCode.getText();
             if (!text.isEmpty()) {
-                txtDepartmentName.requestFocus();
+                txtDesignationName.requestFocus();
                 LoadAtCodes();
             }
         }
@@ -309,12 +311,13 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
             ResultSet reset;
             Statement stmt;
             String query;
-            query = "SELECT * FROM departments where DEPARTMENT_CODE = '" + CategoryCode + "'";
+            query = "SELECT * FROM EmployeeDesignation where EMPLOYEE_DESIGNATION_CODE = '" + CategoryCode + "'";
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
 
             if (reset.next()) {
-                txtDepartmentName.setText(reset.getString("DEPARTMENT_NAME"));
+                txtDesignationName.setText(reset.getString("EMPLOYEE_DESIGNATION_NAME"));
+                IsSupervising.setSelectedItem("IS_SUPERVISING");
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -326,22 +329,22 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         ValidateFields.CheckForCodes(txtCode);
     }//GEN-LAST:event_txtCodeKeyReleased
 
-    private void txtDepartmentNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDepartmentNameFocusGained
-        txtDepartmentName.selectAll();
-    }//GEN-LAST:event_txtDepartmentNameFocusGained
+    private void txtDesignationNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDesignationNameFocusGained
+        txtDesignationName.selectAll();
+    }//GEN-LAST:event_txtDesignationNameFocusGained
 
-    private void txtDepartmentNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDepartmentNameKeyPressed
+    private void txtDesignationNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDesignationNameKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String text = txtDepartmentName.getText();
+            String text = txtDesignationName.getText();
             if (!text.isEmpty()) {
                 btnSave.requestFocus();
             }
         }
-    }//GEN-LAST:event_txtDepartmentNameKeyPressed
+    }//GEN-LAST:event_txtDesignationNameKeyPressed
 
-    private void txtDepartmentNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDepartmentNameKeyReleased
-        ValidateFields.CheckForOtherFields(txtDepartmentName);
-    }//GEN-LAST:event_txtDepartmentNameKeyReleased
+    private void txtDesignationNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDesignationNameKeyReleased
+        ValidateFields.CheckForOtherFields(txtDesignationName);
+    }//GEN-LAST:event_txtDesignationNameKeyReleased
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         CheckBeforeSave();
@@ -350,28 +353,29 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
     private void CheckBeforeSave() {
         //aaaa
         String CategoryCode = txtCode.getText().toUpperCase();
-        String CategoryName = txtDepartmentName.getText();
+        String CategoryName = txtDesignationName.getText();
+        String Supervising = IsSupervising.getSelectedItem().toString();
         if (!CategoryCode.isEmpty() && !CategoryName.isEmpty()) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                String query = "select DEPARTMENT_CODE From departments where DEPARTMENT_CODE = '" + CategoryCode + "'";
+                String query = "select EMPLOYEE_DESIGNATION_CODE From EmployeeDesignation where EMPLOYEE_DESIGNATION_CODE = '" + CategoryCode + "'";
                 ResultSet rset = stmt.executeQuery(query);
 
                 if (rset.next()) {
-                    int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + CategoryCode + "' department details?", "Update department?", JOptionPane.YES_NO_OPTION);
+                    int x = JOptionPane.showConfirmDialog(this, "Are you sure to change the '" + CategoryCode + "' Employee Designation details?", "Update Employee Designation?", JOptionPane.YES_NO_OPTION);
                     if (x == JOptionPane.YES_OPTION) {
-                        String UpdateQuery = "update departments set DEPARTMENT_NAME = '" + CategoryName + "' where DEPARTMENT_CODE = '" + CategoryCode + "'";
+                        String UpdateQuery = "update EmployeeDesignation set EMPLOYEE_DESIGNATION_NAME = '" + CategoryName + "',IS_SUPERVISING = '"+ Supervising +"' where EMPLOYEE_DESIGNATION_CODE = '" + CategoryCode + "'";
                         stmt.execute(UpdateQuery);
-                        JOptionPane.showMessageDialog(this, "Department details are updated.");
+                        JOptionPane.showMessageDialog(this, "Employee Designation details are updated.");
                         Refresh();
                     } else if (x == JOptionPane.NO_OPTION) {
                         txtCode.requestFocus();
                     }
 
                 } else if (!rset.next()) {
-                    String UpdateQuery = "insert into departments (DEPARTMENT_CODE, DEPARTMENT_NAME) values ( '" + CategoryCode + "','" + CategoryName + "') ";
+                    String UpdateQuery = "insert into EmployeeDesignation (EMPLOYEE_DESIGNATION_CODE, EMPLOYEE_DESIGNATION_NAME, IS_SUPERVISING) values ( '" + CategoryCode + "','" + CategoryName + "','"+ Supervising +"') ";
                     stmt.execute(UpdateQuery);
-                    JOptionPane.showMessageDialog(this, "New department is saved.");
+                    JOptionPane.showMessageDialog(this, "New Employee Designation is saved.");
                     Refresh();
                 }
                 rset.close();
@@ -397,13 +401,13 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         if (!CategoryCode.isEmpty()) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-                String query = "select DEPARTMENT_CODE From staff_members where DEPARTMENT_CODE = '" + CategoryCode + "'";
+                String query = "select EMPLOYEE_DESIGNATION_CODE From EmployeeDesignationTree where EMPLOYEE_DESIGNATION_CODE = '" + CategoryCode + "'";
                 ResultSet rset = stmt.executeQuery(query);               
 
                 if (rset.next()) {
-                    JOptionPane.showMessageDialog(this, "This department is already used. Can't delete.", "Can't delete", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "This Employee Designation is already used. Can't delete.", "Can't delete", JOptionPane.ERROR_MESSAGE);
                 } else if (!rset.next()) {
-                    DeleteDepartment();
+                    DeleteDesignation();
                 }
 
             } catch (SQLException ex) {
@@ -414,29 +418,29 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "Please contact for support.");
             }
         } else if (CategoryCode.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please insert a valid department code before delete.", "Empty department code", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(this, "Please insert a valid Employee Designation code before delete.", "Empty department code", JOptionPane.OK_OPTION);
             txtCode.requestFocus();
         }
     }
 
-    private void DeleteDepartment() {
+    private void DeleteDesignation() {
         String Code = txtCode.getText();
-        int x = JOptionPane.showConfirmDialog(this, "Are you sure To delete this?", "Delete department?", JOptionPane.YES_NO_OPTION);
+        int x = JOptionPane.showConfirmDialog(this, "Are you sure To delete this?", "Delete Employee Designation?", JOptionPane.YES_NO_OPTION);
         if (x == JOptionPane.YES_OPTION) {
             try {
                 java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
                 java.sql.Statement Checkstmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-                String Checkquery = "select DEPARTMENT_CODE From departments where DEPARTMENT_CODE = '" + Code + "'";
+                String Checkquery = "select EMPLOYEE_DESIGNATION_CODE From EmployeeDesignation where EMPLOYEE_DESIGNATION_CODE = '" + Code + "'";
                 ResultSet Checkrset = Checkstmt.executeQuery(Checkquery);
 
                 if (Checkrset.next()) {
-                    String query = "delete From departments where DEPARTMENT_CODE = '" + Code + "'";
+                    String query = "delete From EmployeeDesignation where EMPLOYEE_DESIGNATION_CODE = '" + Code + "'";
                     stmt.execute(query);
-                    JOptionPane.showMessageDialog(this, "Department is deleted.");
+                    JOptionPane.showMessageDialog(this, "Employee Designation is deleted.");
                     Refresh();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Invalid department code. Please insert a valid department code.", "Invalid department code", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(this, "Invalid Employee Designation code. Please insert a valid Employee Designation code.", "Invalid Employee Designation code", JOptionPane.OK_OPTION);
                     txtCode.requestFocus();
                 }
 
@@ -488,13 +492,15 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_rBtnNameKeyPressed
 
     private void tableViewDetailsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableViewDetailsMouseClicked
-        String Code, Name;
+        String Code, Name, Supervisor;
 
         Code = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 0).toString();
-        Name = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 1).toString();        
+        Name = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 1).toString();   
+        Supervisor = tableViewDetails.getValueAt(tableViewDetails.getSelectedRow(), 2).toString();
 
         txtCode.setText(Code);
-        txtDepartmentName.setText(Name);
+        txtDesignationName.setText(Name);
+        IsSupervising.setSelectedItem(Supervisor);
     }//GEN-LAST:event_tableViewDetailsMouseClicked
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
@@ -514,9 +520,9 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
             RefreshTable();
 
             if (!CategoryCode.equals("")) {
-                query = "SELECT * FROM departments WHERE DEPARTMENT_CODE LIKE '" + CategoryCode + "%'";
+                query = "SELECT * FROM EmployeeDesignation WHERE EMPLOYEE_DESIGNATION_CODE LIKE '" + CategoryCode + "%'";
             } else {
-                query = "SELECT * FROM departments  WHERE DEPARTMENT_CODE LIKE '" + CategoryCode + "%'";
+                query = "SELECT * FROM EmployeeDesignation  WHERE EMPLOYEE_DESIGNATION_CODE LIKE '" + CategoryCode + "%'";
             }
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
@@ -524,8 +530,8 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
             while (reset.next()) {
 
                 model_categoryTable.addRow(new Object[model_categoryTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_CODE"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_DESIGNATION_CODE"), rowCount, 0);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_DESIGNATION_NAME"), rowCount, 1);
                 rowCount++;
             }
             reset.close();
@@ -544,9 +550,9 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
             RefreshTable();
 
             if (!CategoryName.equals("")) {
-                query = "SELECT * FROM departments WHERE DEPARTMENT_NAME LIKE '%" + CategoryName + "%'";
+                query = "SELECT * FROM EmployeeDesignation WHERE EMPLOYEE_DESIGNATION_NAME LIKE '%" + CategoryName + "%'";
             } else {
-                query = "SELECT * FROM departments  WHERE DEPARTMENT_NAME LIKE '%" + CategoryName + "%'";
+                query = "SELECT * FROM EmployeeDesignation  WHERE EMPLOYEE_DESIGNATION_NAME LIKE '%" + CategoryName + "%'";
             }
             stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             reset = stmt.executeQuery(query);
@@ -554,8 +560,8 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
             while (reset.next()) {
 
                 model_categoryTable.addRow(new Object[model_categoryTable.getColumnCount()]);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_CODE"), rowCount, 0);
-                tableViewDetails.setValueAt(reset.getString("DEPARTMENT_NAME"), rowCount, 1);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_DESIGNATION_CODE"), rowCount, 0);
+                tableViewDetails.setValueAt(reset.getString("EMPLOYEE_DESIGNATION_NAME"), rowCount, 1);
                 rowCount++;
             }
             reset.close();
@@ -590,7 +596,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
     private void Refresh() {
         RefreshTableAndLoadAgain();
         txtCode.setText("");
-        txtDepartmentName.setText("");
+        txtDesignationName.setText("");
         txtSearch.setText("");
     }
 
@@ -600,7 +606,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
             for (int j = 0; j < row; j++) {
                 model_categoryTable.removeRow(0);
             }
-            LoadDepartments();
+            LoadDesignations();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(this, "Please contact for support.");
@@ -624,7 +630,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton rBtnName;
     private javax.swing.JTable tableViewDetails;
     private javax.swing.JTextField txtCode;
-    private javax.swing.JTextField txtDepartmentName;
+    private javax.swing.JTextField txtDesignationName;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 
