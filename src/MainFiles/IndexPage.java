@@ -39,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import reports.DepartmentWiseEmployeeReports;
 import reports.EmployeePerformanceMeter;
 
 /**
@@ -71,6 +72,7 @@ public class IndexPage extends javax.swing.JFrame {
     public static UserLogins userLogins = null;
 
     public static EmployeePerformanceMeter employeePerformanceMeter = null;
+    public static DepartmentWiseEmployeeReports departmentWiseEmployeeReports = null;
 
     public IndexPage() {
 
@@ -899,8 +901,18 @@ private void TabMenuMainFilesActionPerformed(java.awt.event.ActionEvent evt) {//
     }//GEN-LAST:event_SubMenuWinActionPerformed
 
     private void MenuReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuReportsActionPerformed
-        JOptionPane.showMessageDialog(this, "This form is still under developing.\n We "
-                + "promise to you to provide this feature as soon as possiable.");
+//        JOptionPane.showMessageDialog(this, "This form is still under developing.\n We "
+//                + "promise to you to provide this feature as soon as possiable.");
+        
+        if (departmentWiseEmployeeReports != null) {
+            if (!departmentWiseEmployeeReports.isVisible()) {
+                departmentWiseEmployeeReports.setVisible(true);
+            }
+        } else {
+            departmentWiseEmployeeReports = new DepartmentWiseEmployeeReports();
+            dskPane_RightPanel.add(departmentWiseEmployeeReports);
+            departmentWiseEmployeeReports.setVisible(true);
+        }
     }//GEN-LAST:event_MenuReportsActionPerformed
 
     private void MenuEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuEmployeeActionPerformed
