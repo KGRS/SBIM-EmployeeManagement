@@ -32,17 +32,17 @@ import net.sf.jasperreports.view.JasperViewer;
  *
  * @author Ravindu
  */
-public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
+public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFrame {
 
     private final String select = "--Select--";
     private final String spliter = "--";
     private final String projectPath = System.getProperty("user.dir");
-    private final String menuName = "Department wise employee reports";
+    private final String menuName = "Best employee - Department wise";
 
     /**
      * Creates new form StockReports
      */
-    public DepartmentWiseEmployeeReports() {
+    public BestEmployeeDepartmentWiseReports() {
         initComponents();
         Refresh();
         loadEmployeesToCombo();
@@ -54,6 +54,8 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
 
         ImageIcon internalBackGround = new ImageIcon(projectPath + "/pictures/DefaultBackgrounds/InternalFrames/GrayGradient.png");
         backgroundLabel.setIcon(internalBackGround);
+        rBtnMainCategory.setVisible(false);
+        cmbEmployees.setVisible(false);
     }
 
     /**
@@ -81,6 +83,10 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
         rBtnItemOrderCode = new javax.swing.JRadioButton();
         rBtnItemOrderName = new javax.swing.JRadioButton();
         labelIcon = new javax.swing.JLabel();
+        lbl_description2 = new javax.swing.JLabel();
+        CalendarButtonStartDate = new org.sourceforge.jcalendarbutton.JCalendarButton();
+        lbl_description1 = new javax.swing.JLabel();
+        CalendarButtonEndDate = new org.sourceforge.jcalendarbutton.JCalendarButton();
         backgroundLabel = new javax.swing.JLabel();
 
         setIconifiable(true);
@@ -120,7 +126,7 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
                 btnRefreshActionPerformed(evt);
             }
         });
-        panel1.add(btnRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 470, 80, -1));
+        panel1.add(btnRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 460, 80, -1));
 
         btnExit.setMnemonic('e');
         btnExit.setText("Exit");
@@ -134,7 +140,7 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
                 btnExitKeyPressed(evt);
             }
         });
-        panel1.add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 470, 80, -1));
+        panel1.add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 460, 80, -1));
 
         ButtonPreview.setText("Preview");
         ButtonPreview.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +148,7 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
                 ButtonPreviewActionPerformed(evt);
             }
         });
-        panel1.add(ButtonPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 470, 80, -1));
+        panel1.add(ButtonPreview, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 460, 80, -1));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
@@ -214,7 +220,7 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
         });
         jPanel1.add(CheckBoxAllItems, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 170, -1));
 
-        panel1.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 490, 430));
+        panel1.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 490, 330));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
@@ -224,28 +230,50 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
         rBtnItemOrderCode.setBackground(new java.awt.Color(255, 255, 255));
         buttonGroup2.add(rBtnItemOrderCode);
         rBtnItemOrderCode.setForeground(new java.awt.Color(102, 102, 102));
-        rBtnItemOrderCode.setText("Total raw item wastage - Employee wise");
+        rBtnItemOrderCode.setText("Best employee for time management - Department wise - Order by name");
         rBtnItemOrderCode.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rBtnItemOrderCodeActionPerformed(evt);
             }
         });
-        jPanel2.add(rBtnItemOrderCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 360, -1));
+        jPanel2.add(rBtnItemOrderCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 380, -1));
 
         rBtnItemOrderName.setBackground(new java.awt.Color(255, 255, 255));
         buttonGroup2.add(rBtnItemOrderName);
         rBtnItemOrderName.setForeground(new java.awt.Color(102, 102, 102));
-        rBtnItemOrderName.setText("Total raw item wastage - Department wise");
+        rBtnItemOrderName.setText("Best employee for raw item usage - Department wise - Order by name");
         rBtnItemOrderName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rBtnItemOrderNameActionPerformed(evt);
             }
         });
-        jPanel2.add(rBtnItemOrderName, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, 360, -1));
+        jPanel2.add(rBtnItemOrderName, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, 380, -1));
         jPanel2.add(labelIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 440, 290));
 
         panel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 20, 480, 430));
-        panel1.add(backgroundLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 1020, 500));
+
+        lbl_description2.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_description2.setText("Start date");
+        panel1.add(lbl_description2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, 70, 20));
+
+        CalendarButtonStartDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                CalendarButtonStartDatePropertyChange(evt);
+            }
+        });
+        panel1.add(CalendarButtonStartDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 50, 120, 20));
+
+        lbl_description1.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_description1.setText("End date");
+        panel1.add(lbl_description1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 50, 70, 20));
+
+        CalendarButtonEndDate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                CalendarButtonEndDatePropertyChange(evt);
+            }
+        });
+        panel1.add(CalendarButtonEndDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 50, 120, 20));
+        panel1.add(backgroundLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 1020, 490));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -255,9 +283,7 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 2, Short.MAX_VALUE))
+            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
         );
 
         pack();
@@ -426,6 +452,25 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
         departmentWiseEmployeeReports.toFront();
     }//GEN-LAST:event_formInternalFrameIconified
 
+    private void CalendarButtonStartDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_CalendarButtonStartDatePropertyChange
+        if (evt.getNewValue() instanceof Date) {
+            Date RecievedDate = (Date) evt.getNewValue();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            CalendarButtonStartDate.setText(format.format(RecievedDate));
+            CalendarButtonEndDate.requestFocus();
+            buttonGroup1.clearSelection();
+        }
+    }//GEN-LAST:event_CalendarButtonStartDatePropertyChange
+
+    private void CalendarButtonEndDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_CalendarButtonEndDatePropertyChange
+        if (evt.getNewValue() instanceof Date) {
+            Date RecievedDate = (Date) evt.getNewValue();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            CalendarButtonEndDate.setText(format.format(RecievedDate));
+            buttonGroup1.clearSelection();
+        }
+    }//GEN-LAST:event_CalendarButtonEndDatePropertyChange
+
     private void PrintStockReport() {
         Connection sqlcon = ConnectSql.conn;
 //        String Date = IndexPage.LabelDate.getText();
@@ -468,6 +513,8 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonPreview;
+    private org.sourceforge.jcalendarbutton.JCalendarButton CalendarButtonEndDate;
+    private org.sourceforge.jcalendarbutton.JCalendarButton CalendarButtonStartDate;
     private javax.swing.JCheckBox CheckBoxAllItems;
     private javax.swing.JLabel backgroundLabel;
     private javax.swing.JButton btnExit;
@@ -479,6 +526,8 @@ public class DepartmentWiseEmployeeReports extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel labelIcon;
+    private javax.swing.JLabel lbl_description1;
+    private javax.swing.JLabel lbl_description2;
     private javax.swing.JPanel panel1;
     private javax.swing.JRadioButton rBtnItemOrderCode;
     private javax.swing.JRadioButton rBtnItemOrderName;

@@ -39,7 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
-import reports.DepartmentWiseEmployeeReports;
+import reports.BestEmployeeDepartmentWiseReports;
 import reports.EmployeePerformanceMeter;
 
 /**
@@ -72,7 +72,7 @@ public class IndexPage extends javax.swing.JFrame {
     public static UserLogins userLogins = null;
 
     public static EmployeePerformanceMeter employeePerformanceMeter = null;
-    public static DepartmentWiseEmployeeReports departmentWiseEmployeeReports = null;
+    public static BestEmployeeDepartmentWiseReports departmentWiseEmployeeReports = null;
 
     public IndexPage() {
 
@@ -909,7 +909,7 @@ private void TabMenuMainFilesActionPerformed(java.awt.event.ActionEvent evt) {//
                 departmentWiseEmployeeReports.setVisible(true);
             }
         } else {
-            departmentWiseEmployeeReports = new DepartmentWiseEmployeeReports();
+            departmentWiseEmployeeReports = new BestEmployeeDepartmentWiseReports();
             dskPane_RightPanel.add(departmentWiseEmployeeReports);
             departmentWiseEmployeeReports.setVisible(true);
         }
