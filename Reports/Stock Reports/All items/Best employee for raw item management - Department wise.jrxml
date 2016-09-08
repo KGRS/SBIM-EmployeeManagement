@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="54fab8e8-f45a-4b34-81db-b52d21fd8734">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="154"/>
+	<property name="ireport.x" value="152"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataStore"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value="ZGJvLiJNYWluQ2F0ZWdvcnkiIEFTICwyOSwyLDFlNTc0YTJjLWI5MDUtNGZiYi04MTk3LTFhNzU1 ZTkwNWRlMTtkYm8uIkl0ZW1zIiAsNTMwLDIsMTIwY2E1OTgtMTY4OC00MDMwLTljOGQtNzljYTY2 YzhiNTY1O2Riby4iQ2xpZW50Q29tcGFueSIgLDIwLDIxNSwxNTEwYmI5ZS01ZTkwLTQ3OWItYTlm Yi01MzAyNDVmNjYyZGM7"/>
@@ -10,55 +10,82 @@
 	</parameter>
 	<parameter name="Logo" class="java.lang.String"/>
 	<parameter name="Code" class="java.lang.String"/>
+	<parameter name="Start_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="End_Date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT
+     COUNT(EmployeesAtFinishedJob."EMPLOYEE_CODE") AS JobCount,
      ClientCompany."Companyname" AS ClientCompany_Companyname,
      ClientCompany."Address" AS ClientCompany_Address,
      ClientCompany."Email" AS ClientCompany_Email,
-     Items."ItemName" AS Items_ItemName,
-     Items."PurchasePrice" AS Items_PurchasePrice,
-     Items."Quantity" AS Items_Quantity,
-     Items."UnitPurchase" AS Items_UnitPurchase,
-     Items."Visibility" AS Items_Visibility,
      ClientCompany."Telephone1" AS ClientCompany_Telephone1,
      ClientCompany."Telephone2" AS ClientCompany_Telephone2,
      ClientCompany."VATRegistrationNo" AS ClientCompany_VATRegistrationNo,
      ClientCompany."Web" AS ClientCompany_Web,
      ClientCompany."Fax" AS ClientCompany_Fax,
-     ItemsAtDepartments."ItemCode" AS ItemsAtDepartments_ItemCode,
-     ItemsAtDepartments."DepartmentCode" AS ItemsAtDepartments_DepartmentCode,
-     ItemsAtDepartments."Quantity" AS ItemsAtDepartments_Quantity,
-     Departments."DepartmentName" AS Departments_DepartmentName
+     Employees."FIRST_NAME" AS Employees_FIRST_NAME,
+     JobFinished."IS_LATE" AS JobFinished_IS_LATE,
+     JobFinished."JOB_ALLOCATED_DATE" AS JobFinished_JOB_ALLOCATED_DATE,
+     JobFinished."JOB_FINISHED_DATE" AS JobFinished_JOB_FINISHED_DATE,
+     Employees."ACTIVE" AS Employees_ACTIVE,
+     PLItemDifference."IS_WASTAGE" AS PLItemDifference_IS_WASTAGE,
+     JobFinished."FIXED_JOB_ID" AS JobFinished_FIXED_JOB_ID,
+     Employees."SUR_NAME" AS Employees_SUR_NAME,
+     EmployeesAtFinishedJob."EMPLOYEE_CODE" AS EmployeesAtFinishedJob_EMPLOYEE_CODE
 FROM
-     "dbo"."Items" Items INNER JOIN "dbo"."ItemsAtDepartments" ItemsAtDepartments ON Items."ItemCode" = ItemsAtDepartments."ItemCode"
-     INNER JOIN "dbo"."Departments" Departments ON ItemsAtDepartments."DepartmentCode" = Departments."DepartmentCode",
+     "dbo"."Employees" Employees INNER JOIN "dbo"."EmployeesAtFinishedJob" EmployeesAtFinishedJob ON Employees."EMPLOYEE_CODE" = EmployeesAtFinishedJob."EMPLOYEE_CODE"
+     INNER JOIN "dbo"."JobFinished" JobFinished ON EmployeesAtFinishedJob."JOB_ID" = JobFinished."JOB_ID"
+     INNER JOIN "dbo"."PLItemDifference" PLItemDifference ON JobFinished."JOB_ID" = PLItemDifference."JOB_ID",
      "dbo"."ClientCompany" ClientCompany
 WHERE
-     Items."Visibility" = 'Yes'
- AND ItemsAtDepartments."DepartmentCode" = $P{Code}
+     Employees."ACTIVE" = 'Yes'
+ AND JobFinished."FIXED_JOB_ID" = $P{Code}
+ AND PLItemDifference."IS_WASTAGE" = 'Yes'
+ AND (JobFinished."JOB_ALLOCATED_DATE" >= $P{Start_Date}
+ AND JobFinished."JOB_ALLOCATED_DATE" <= $P{End_Date})
+GROUP BY
+     JobFinished."FIXED_JOB_ID",
+     EmployeesAtFinishedJob."EMPLOYEE_CODE",
+     JobFinished."IS_LATE",
+     Employees."FIRST_NAME",
+     ClientCompany."Companyname",
+     ClientCompany."Address",
+     ClientCompany."Telephone1",
+     ClientCompany."Telephone2",
+     ClientCompany."Fax",
+     ClientCompany."Email",
+     ClientCompany."Web",
+     ClientCompany."VATRegistrationNo",
+     JobFinished."JOB_ALLOCATED_DATE",
+     JobFinished."JOB_FINISHED_DATE",
+     Employees."ACTIVE",
+     PLItemDifference."IS_WASTAGE",
+     Employees."SUR_NAME"
 ORDER BY
-     Items."ItemName" ASC]]>
+     EmployeesAtFinishedJob."EMPLOYEE_CODE" ASC]]>
 	</queryString>
+	<field name="JobCount" class="java.lang.Integer"/>
 	<field name="ClientCompany_Companyname" class="java.lang.String"/>
 	<field name="ClientCompany_Address" class="java.lang.String"/>
 	<field name="ClientCompany_Email" class="java.lang.String"/>
-	<field name="Items_ItemName" class="java.lang.String"/>
-	<field name="Items_PurchasePrice" class="java.lang.Double"/>
-	<field name="Items_Quantity" class="java.lang.Double"/>
-	<field name="Items_UnitPurchase" class="java.lang.String"/>
-	<field name="Items_Visibility" class="java.lang.String"/>
 	<field name="ClientCompany_Telephone1" class="java.lang.String"/>
 	<field name="ClientCompany_Telephone2" class="java.lang.String"/>
 	<field name="ClientCompany_VATRegistrationNo" class="java.lang.String"/>
 	<field name="ClientCompany_Web" class="java.lang.String"/>
 	<field name="ClientCompany_Fax" class="java.lang.String"/>
-	<field name="ItemsAtDepartments_ItemCode" class="java.lang.String"/>
-	<field name="ItemsAtDepartments_DepartmentCode" class="java.lang.String"/>
-	<field name="ItemsAtDepartments_Quantity" class="java.lang.Double"/>
-	<field name="Departments_DepartmentName" class="java.lang.String"/>
-	<variable name="TotalValue" class="java.lang.Double" calculation="Sum">
-		<variableExpression><![CDATA[$F{Items_PurchasePrice}*$F{Items_Quantity}]]></variableExpression>
-	</variable>
+	<field name="Employees_FIRST_NAME" class="java.lang.String"/>
+	<field name="JobFinished_IS_LATE" class="java.lang.String"/>
+	<field name="JobFinished_JOB_ALLOCATED_DATE" class="java.lang.String"/>
+	<field name="JobFinished_JOB_FINISHED_DATE" class="java.lang.String"/>
+	<field name="Employees_ACTIVE" class="java.lang.String"/>
+	<field name="PLItemDifference_IS_WASTAGE" class="java.lang.String"/>
+	<field name="JobFinished_FIXED_JOB_ID" class="java.lang.String"/>
+	<field name="Employees_SUR_NAME" class="java.lang.String"/>
+	<field name="EmployeesAtFinishedJob_EMPLOYEE_CODE" class="java.lang.String"/>
 	<background>
 		<band/>
 	</background>
@@ -127,11 +154,11 @@ ORDER BY
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="bc9d1c30-4ace-4090-b7c0-0e285a9988c8" x="89" y="25" width="284" height="24" forecolor="#000000"/>
+				<reportElement uuid="bc9d1c30-4ace-4090-b7c0-0e285a9988c8" x="89" y="25" width="285" height="24" forecolor="#000000"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Monospaced" size="10" isBold="true"/>
+					<font fontName="Monospaced" size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Item list order by code - Department wise]]></text>
+				<text><![CDATA[Best employee for raw item management - Sub department and fixed job wise - Order by name]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="1871f2ce-87e2-4110-b066-eba0858ab820" x="89" y="4" width="275" height="21" forecolor="#000000"/>
@@ -145,25 +172,18 @@ ORDER BY
 				<imageExpression><![CDATA[$P{Logo}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement uuid="becd98a3-cf75-46b4-974f-11042683e6b6" mode="Transparent" x="89" y="50" width="90" height="14" forecolor="#000000" backcolor="#000000"/>
+				<reportElement uuid="130c59f9-829c-4181-b1f0-472ade5c9b4a" mode="Transparent" x="89" y="65" width="90" height="14" forecolor="#000000" backcolor="#000000"/>
 				<textElement>
-					<font fontName="Monospaced" size="9" isBold="true" isPdfEmbedded="false"/>
+					<font fontName="Monospaced" size="8" isBold="true" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Department =]]></text>
+				<text><![CDATA[Fixed job id =]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="d0173739-4ad5-41c2-970f-602cdbc59494" x="181" y="50" width="98" height="14"/>
+				<reportElement uuid="3b980e00-c349-436b-adea-88cbefe0e350" x="179" y="65" width="195" height="14"/>
 				<textElement>
 					<font fontName="Monospaced" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ItemsAtDepartments_DepartmentCode}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="e6560e7b-533e-47b7-92df-fbdf25bcfccb" x="280" y="50" width="126" height="14"/>
-				<textElement>
-					<font fontName="Monospaced" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{Departments_DepartmentName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{Code}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -173,46 +193,32 @@ ORDER BY
 	<columnHeader>
 		<band height="32">
 			<staticText>
-				<reportElement uuid="98d41247-81c7-4404-bdfb-02c04d34fca2" mode="Transparent" x="474" y="3" width="78" height="14" forecolor="#000000" backcolor="#000000"/>
+				<reportElement uuid="98d41247-81c7-4404-bdfb-02c04d34fca2" mode="Transparent" x="460" y="3" width="92" height="26" forecolor="#000000" backcolor="#000000"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font fontName="Monospaced" size="9" isBold="true" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Amount]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="58296fd7-600a-4883-b841-09d0a7f14559" mode="Transparent" x="407" y="3" width="55" height="26" forecolor="#000000" backcolor="#000000"/>
-				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="Monospaced" size="9" isBold="true" isPdfEmbedded="false"/>
-				</textElement>
-				<text><![CDATA[Purchase price]]></text>
+				<text><![CDATA[No of job notify as wastage]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="330f6f08-34df-40a0-9c08-154f1b78a040" mode="Transparent" x="2" y="3" width="60" height="26" forecolor="#000000" backcolor="#000000"/>
 				<textElement>
 					<font fontName="Monospaced" size="9" isBold="true" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Item Code]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="612fcc1a-88dc-4057-8950-699b271c3f79" mode="Transparent" x="284" y="3" width="50" height="26" forecolor="#000000" backcolor="#000000"/>
-				<textElement textAlignment="Right">
-					<font fontName="Monospaced" size="9" isBold="true" isPdfEmbedded="false"/>
-				</textElement>
-				<text><![CDATA[Quantity]]></text>
+				<text><![CDATA[Employee Code]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="7eee8662-e606-47ab-bdd3-27affd48435d" mode="Transparent" x="89" y="3" width="108" height="26" forecolor="#000000" backcolor="#000000"/>
 				<textElement>
 					<font fontName="Monospaced" size="9" isBold="true" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Item Name]]></text>
+				<text><![CDATA[Employee First Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="17db1273-5a9f-4c0c-bfd6-40c234eb2a43" mode="Transparent" x="345" y="3" width="52" height="26" forecolor="#000000" backcolor="#000000"/>
-				<textElement textAlignment="Right">
+				<reportElement uuid="17db1273-5a9f-4c0c-bfd6-40c234eb2a43" mode="Transparent" x="290" y="3" width="116" height="26" forecolor="#000000" backcolor="#000000"/>
+				<textElement>
 					<font fontName="Monospaced" size="9" isBold="true" isPdfEmbedded="false"/>
 				</textElement>
-				<text><![CDATA[Purchase unit]]></text>
+				<text><![CDATA[Employee Sur Name]]></text>
 			</staticText>
 			<line>
 				<reportElement uuid="c3f11f2a-7067-488b-bfda-d805c913f6d1" x="2" y="-4" width="550" height="1" forecolor="#CCCCCC"/>
@@ -226,42 +232,28 @@ ORDER BY
 				<textElement>
 					<font fontName="Monospaced" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ItemsAtDepartments_ItemCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{EmployeesAtFinishedJob_EMPLOYEE_CODE}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="a4c6264b-beac-4bdc-967b-bf93a5ec17b2" x="89" y="1" width="195" height="12"/>
 				<textElement>
 					<font fontName="Monospaced" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{Items_ItemName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Employees_FIRST_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7062752a-ba87-4e38-a4fc-b0d75fd75085" x="345" y="1" width="52" height="12"/>
-				<textElement textAlignment="Right">
+				<reportElement uuid="7062752a-ba87-4e38-a4fc-b0d75fd75085" x="290" y="1" width="154" height="12"/>
+				<textElement>
 					<font fontName="Monospaced" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{Items_UnitPurchase}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement uuid="e30c3c05-9d17-4449-aa54-0aa4d68b6d18" x="407" y="1" width="55" height="12"/>
-				<textElement textAlignment="Right">
-					<font fontName="Monospaced" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{Items_PurchasePrice}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.000">
-				<reportElement uuid="f8afafef-a52b-4485-a556-cfcaace51f7a" x="284" y="1" width="50" height="12"/>
-				<textElement textAlignment="Right">
-					<font fontName="Monospaced" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{ItemsAtDepartments_Quantity}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{Employees_SUR_NAME}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement uuid="04dd1979-c5fe-443b-89e3-ac79b56280d0" x="477" y="1" width="75" height="12"/>
 				<textElement textAlignment="Right">
 					<font fontName="Monospaced" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{Items_PurchasePrice}*$F{ItemsAtDepartments_Quantity})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{JobCount}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement uuid="553e0134-379b-4083-a51d-008243bfd6e7" x="0" y="14" width="552" height="1" forecolor="#999999"/>
@@ -316,24 +308,7 @@ ORDER BY
 		</band>
 	</pageFooter>
 	<lastPageFooter>
-		<band height="25">
-			<textField pattern="#,##0.00">
-				<reportElement uuid="0f9e2976-29c0-4230-9e4e-835dacdc821e" x="477" y="3" width="76" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Monospaced" size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{TotalValue}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement uuid="d04285bf-8184-4b79-9290-e4f4f9ce7fe0" x="477" y="18" width="76" height="1"/>
-			</line>
-			<line>
-				<reportElement uuid="bc025c09-469d-4a4b-bd73-d8538175086e" x="477" y="21" width="76" height="1"/>
-			</line>
-			<line>
-				<reportElement uuid="814212cc-195b-46cf-a902-6e495b0df911" x="477" y="1" width="75" height="1"/>
-			</line>
-		</band>
+		<band height="25"/>
 	</lastPageFooter>
 	<summary>
 		<band/>

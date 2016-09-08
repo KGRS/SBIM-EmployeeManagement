@@ -45,7 +45,6 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
     public BestEmployeeDepartmentWiseReports() {
         initComponents();
         Refresh();
-        loadEmployeesToCombo();
         loadDepartmetns();
 
         this.setTitle(menuName);
@@ -53,9 +52,7 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         labelIcon.setIcon(DefaultBackGround);
 
         ImageIcon internalBackGround = new ImageIcon(projectPath + "/pictures/DefaultBackgrounds/InternalFrames/GrayGradient.png");
-        backgroundLabel.setIcon(internalBackGround);
-        rBtnMainCategory.setVisible(false);
-        cmbEmployees.setVisible(false);
+        backgroundLabel.setIcon(internalBackGround);                
     }
 
     /**
@@ -74,14 +71,14 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         btnExit = new javax.swing.JButton();
         ButtonPreview = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        cmbEmployees = new javax.swing.JComboBox();
+        comboBoxFixedJobs = new javax.swing.JComboBox();
         rBtnItemType = new javax.swing.JRadioButton();
-        comboDepartment = new javax.swing.JComboBox();
-        rBtnMainCategory = new javax.swing.JRadioButton();
+        comboSubDepartment = new javax.swing.JComboBox();
         CheckBoxAllItems = new javax.swing.JCheckBox();
+        lbl_description3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        rBtnItemOrderCode = new javax.swing.JRadioButton();
-        rBtnItemOrderName = new javax.swing.JRadioButton();
+        rBtnItemBestTime = new javax.swing.JRadioButton();
+        rBtnItemBestUsage = new javax.swing.JRadioButton();
         labelIcon = new javax.swing.JLabel();
         lbl_description2 = new javax.swing.JLabel();
         CalendarButtonStartDate = new org.sourceforge.jcalendarbutton.JCalendarButton();
@@ -154,27 +151,27 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        cmbEmployees.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
-        cmbEmployees.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+        comboBoxFixedJobs.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
+        comboBoxFixedJobs.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                cmbEmployeesPopupMenuWillBecomeInvisible(evt);
+                comboBoxFixedJobsPopupMenuWillBecomeInvisible(evt);
             }
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
             }
         });
-        cmbEmployees.addKeyListener(new java.awt.event.KeyAdapter() {
+        comboBoxFixedJobs.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                cmbEmployeesKeyPressed(evt);
+                comboBoxFixedJobsKeyPressed(evt);
             }
         });
-        jPanel1.add(cmbEmployees, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 120, 280, 20));
+        jPanel1.add(comboBoxFixedJobs, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 120, 280, 20));
 
         rBtnItemType.setBackground(new java.awt.Color(255, 255, 255));
         buttonGroup1.add(rBtnItemType);
         rBtnItemType.setForeground(new java.awt.Color(102, 102, 102));
-        rBtnItemType.setText("Department");
+        rBtnItemType.setText("Sub department");
         rBtnItemType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rBtnItemTypeActionPerformed(evt);
@@ -182,33 +179,22 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         });
         jPanel1.add(rBtnItemType, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 120, -1));
 
-        comboDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
-        comboDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+        comboSubDepartment.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Select--" }));
+        comboSubDepartment.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
-                comboDepartmentPopupMenuWillBecomeInvisible(evt);
+                comboSubDepartmentPopupMenuWillBecomeInvisible(evt);
             }
             public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
             }
         });
-        comboDepartment.addKeyListener(new java.awt.event.KeyAdapter() {
+        comboSubDepartment.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                comboDepartmentKeyPressed(evt);
+                comboSubDepartmentKeyPressed(evt);
             }
         });
-        jPanel1.add(comboDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, 280, 20));
-
-        rBtnMainCategory.setBackground(new java.awt.Color(255, 255, 255));
-        buttonGroup1.add(rBtnMainCategory);
-        rBtnMainCategory.setForeground(new java.awt.Color(102, 102, 102));
-        rBtnMainCategory.setText("Employee");
-        rBtnMainCategory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rBtnMainCategoryActionPerformed(evt);
-            }
-        });
-        jPanel1.add(rBtnMainCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 120, -1));
+        jPanel1.add(comboSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, 280, 20));
 
         CheckBoxAllItems.setBackground(new java.awt.Color(255, 255, 255));
         CheckBoxAllItems.setForeground(new java.awt.Color(102, 102, 102));
@@ -220,6 +206,10 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         });
         jPanel1.add(CheckBoxAllItems, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 170, -1));
 
+        lbl_description3.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_description3.setText("Fixed job/ Process");
+        jPanel1.add(lbl_description3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 100, 20));
+
         panel1.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 490, 330));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -227,27 +217,22 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         jPanel2.setPreferredSize(new java.awt.Dimension(480, 380));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        rBtnItemOrderCode.setBackground(new java.awt.Color(255, 255, 255));
-        buttonGroup2.add(rBtnItemOrderCode);
-        rBtnItemOrderCode.setForeground(new java.awt.Color(102, 102, 102));
-        rBtnItemOrderCode.setText("Best employee for time management - Department wise - Order by name");
-        rBtnItemOrderCode.addActionListener(new java.awt.event.ActionListener() {
+        rBtnItemBestTime.setBackground(new java.awt.Color(255, 255, 255));
+        buttonGroup2.add(rBtnItemBestTime);
+        rBtnItemBestTime.setForeground(new java.awt.Color(102, 102, 102));
+        rBtnItemBestTime.setText("Best employee for time management - Sub department and fixed job wise");
+        rBtnItemBestTime.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rBtnItemOrderCodeActionPerformed(evt);
+                rBtnItemBestTimeActionPerformed(evt);
             }
         });
-        jPanel2.add(rBtnItemOrderCode, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 380, -1));
+        jPanel2.add(rBtnItemBestTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 390, -1));
 
-        rBtnItemOrderName.setBackground(new java.awt.Color(255, 255, 255));
-        buttonGroup2.add(rBtnItemOrderName);
-        rBtnItemOrderName.setForeground(new java.awt.Color(102, 102, 102));
-        rBtnItemOrderName.setText("Best employee for raw item usage - Department wise - Order by name");
-        rBtnItemOrderName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rBtnItemOrderNameActionPerformed(evt);
-            }
-        });
-        jPanel2.add(rBtnItemOrderName, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, 380, -1));
+        rBtnItemBestUsage.setBackground(new java.awt.Color(255, 255, 255));
+        buttonGroup2.add(rBtnItemBestUsage);
+        rBtnItemBestUsage.setForeground(new java.awt.Color(102, 102, 102));
+        rBtnItemBestUsage.setText("Best employee for raw item usage - Sub department and fixed job wise");
+        jPanel2.add(rBtnItemBestUsage, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, 380, -1));
         jPanel2.add(labelIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 440, 290));
 
         panel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 20, 480, 430));
@@ -289,22 +274,23 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loadEmployeesToCombo() {
+    private void loadFixJobsToCombo() {
         try {
+            String departmentCodeByArray[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
             java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "select FIRST_NAME, SUR_NAME, EMPLOYEE_CODE From Employees order by FIRST_NAME";
+            String query = "select JOB_FIXED_NAME, JOB_FIXED_ID, PRODUCT_LEVEL_ITEM_CODE From JobFixed WHERE SUB_DEPARTMENT_CODE = '" + departmentCodeByArray[1] + "' order by JOB_FIXED_NAME";
             ResultSet rset = stmt.executeQuery(query);
 
-            cmbEmployees.removeAllItems();
-            cmbEmployees.insertItemAt("--Select--", 0);
+            comboBoxFixedJobs.removeAllItems();
+            comboBoxFixedJobs.insertItemAt("--Select--", 0);
             int position = 1;
             if (rset.next()) {
                 do {
-                    cmbEmployees.insertItemAt(rset.getString("FIRST_NAME") + "--" + rset.getString("SUR_NAME") + "--" + rset.getString("EMPLOYEE_CODE"), position); // 
+                    comboBoxFixedJobs.insertItemAt(rset.getString("JOB_FIXED_NAME") + "--" + rset.getString("JOB_FIXED_ID") + "--" + rset.getString("PRODUCT_LEVEL_ITEM_CODE"), position); // 
                     position++;
                 } while (rset.next());
             }
-            cmbEmployees.setSelectedIndex(0);
+            comboBoxFixedJobs.setSelectedIndex(0);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", ERROR);
@@ -314,19 +300,19 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
     private void loadDepartmetns() {
         try {
             java.sql.Statement stmt = ConnectSql.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query = "select DepartmentCode, DepartmentName From Departments order by DepartmentName";
+            String query = "select SUB_DEPARTMENT_CODE, SUB_DEPARTMENT_NAME From subdepartments order by SUB_DEPARTMENT_NAME";
             ResultSet rset = stmt.executeQuery(query);
 
-            comboDepartment.removeAllItems();
-            comboDepartment.insertItemAt(select, 0);
+            comboSubDepartment.removeAllItems();
+            comboSubDepartment.insertItemAt(select, 0);
             int position = 1;
             if (rset.next()) {
                 do {
-                    comboDepartment.insertItemAt(rset.getString("DepartmentName") + spliter + rset.getString("DepartmentCode"), position); // 
+                    comboSubDepartment.insertItemAt(rset.getString("SUB_DEPARTMENT_NAME") + spliter + rset.getString("SUB_DEPARTMENT_CODE"), position); // 
                     position++;
                 } while (rset.next());
             }
-            comboDepartment.setSelectedIndex(0);
+            comboSubDepartment.setSelectedIndex(0);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -338,17 +324,15 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void Refresh() {
-        cmbEmployees.setSelectedItem(select);
-        comboDepartment.setSelectedItem(select);
+        comboBoxFixedJobs.setSelectedItem(select);
+        comboSubDepartment.setSelectedItem(select);
 
         CheckBoxAllItems.setSelected(true);
         CheckBoxAllItems.setEnabled(true);
-
-        rBtnMainCategory.setEnabled(false);
         rBtnItemType.setEnabled(false);
 
-        cmbEmployees.setEnabled(false);
-        comboDepartment.setEnabled(false);
+        comboBoxFixedJobs.setEnabled(false);
+        comboSubDepartment.setEnabled(false);
 
         buttonGroup1.clearSelection();
     }
@@ -376,74 +360,66 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         }
     }//GEN-LAST:event_panel1MouseClicked
 
-    private void cmbEmployeesPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cmbEmployeesPopupMenuWillBecomeInvisible
+    private void comboBoxFixedJobsPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_comboBoxFixedJobsPopupMenuWillBecomeInvisible
         // TODO add your handling code here:
-    }//GEN-LAST:event_cmbEmployeesPopupMenuWillBecomeInvisible
+    }//GEN-LAST:event_comboBoxFixedJobsPopupMenuWillBecomeInvisible
 
-    private void cmbEmployeesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbEmployeesKeyPressed
+    private void comboBoxFixedJobsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_comboBoxFixedJobsKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cmbEmployeesKeyPressed
+    }//GEN-LAST:event_comboBoxFixedJobsKeyPressed
 
-    private void rBtnItemOrderCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnItemOrderCodeActionPerformed
+    private void rBtnItemBestTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnItemBestTimeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rBtnItemOrderCodeActionPerformed
-
-    private void rBtnItemOrderNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnItemOrderNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rBtnItemOrderNameActionPerformed
+    }//GEN-LAST:event_rBtnItemBestTimeActionPerformed
 
     private void rBtnItemTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnItemTypeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rBtnItemTypeActionPerformed
 
-    private void comboDepartmentPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_comboDepartmentPopupMenuWillBecomeInvisible
-        // TODO add your handling code here:
-    }//GEN-LAST:event_comboDepartmentPopupMenuWillBecomeInvisible
+    private void comboSubDepartmentPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
+        if (!comboSubDepartment.getSelectedItem().equals(select)) {
+            loadFixJobsToCombo();
+        }
+    }//GEN-LAST:event_comboSubDepartmentPopupMenuWillBecomeInvisible
 
-    private void comboDepartmentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_comboDepartmentKeyPressed
+    private void comboSubDepartmentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_comboSubDepartmentKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_comboDepartmentKeyPressed
-
-    private void rBtnMainCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rBtnMainCategoryActionPerformed
-        RefreshCombo();
-        CheckBoxAllItems.setSelected(false);
-        CheckBoxAllItems.setEnabled(false);
-    }//GEN-LAST:event_rBtnMainCategoryActionPerformed
+    }//GEN-LAST:event_comboSubDepartmentKeyPressed
 
     private void CheckBoxAllItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckBoxAllItemsActionPerformed
         if (CheckBoxAllItems.isSelected()) {
-            cmbEmployees.setSelectedItem(select);
-            comboDepartment.setSelectedItem(select);
+            comboBoxFixedJobs.setSelectedItem(select);
+            comboSubDepartment.setSelectedItem(select);
 
-            cmbEmployees.setEnabled(false);
-            comboDepartment.setEnabled(false);
+            comboBoxFixedJobs.setEnabled(false);
+            comboSubDepartment.setEnabled(false);
 
 //            rBtnMainCategory.setSelected(false);
-            rBtnMainCategory.setEnabled(false);
+//            rBtnMainCategory.setEnabled(false);
             rBtnItemType.setEnabled(false);
 
         } else if (!CheckBoxAllItems.isSelected()) {
-            cmbEmployees.setSelectedItem(select);
-            comboDepartment.setSelectedItem(select);
+            comboBoxFixedJobs.setSelectedItem(select);
+            comboSubDepartment.setSelectedItem(select);
 
-            cmbEmployees.setEnabled(true);
-            comboDepartment.setEnabled(true);
-            rBtnMainCategory.setEnabled(true);
+            comboBoxFixedJobs.setEnabled(true);
+            comboSubDepartment.setEnabled(true);
+//            rBtnMainCategory.setEnabled(true);
             rBtnItemType.setEnabled(true);
 
         }
     }//GEN-LAST:event_CheckBoxAllItemsActionPerformed
 
     private void RefreshCombo() {
-        cmbEmployees.setSelectedItem(select);
-        comboDepartment.setSelectedItem(select);
+        comboBoxFixedJobs.setSelectedItem(select);
+        comboSubDepartment.setSelectedItem(select);
     }
 
     private void ButtonPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPreviewActionPerformed
 //        if (!rBtnItemOrderName.isSelected() || !rBtnItemOrderCode.isSelected() || !rBtnItemMinium.isSelected() || !rBtnItemMaximum.isSelected() || !rBtnItemZeroQtyName.isSelected() || !rBtnItemZeroQtyCode.isSelected() || !rBtnItemNotVisible.isSelected()) {
 //            JOptionPane.showMessageDialog(this, "please select a report.", "Not seleted", JOptionPane.OK_OPTION);
 //        } else 
-        if (rBtnItemOrderName.isSelected() || rBtnItemOrderCode.isSelected()) {
+        if (rBtnItemBestUsage.isSelected() || rBtnItemBestTime.isSelected()) {
             PrintStockReport();
         }
     }//GEN-LAST:event_ButtonPreviewActionPerformed
@@ -473,17 +449,22 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
 
     private void PrintStockReport() {
         Connection sqlcon = ConnectSql.conn;
-//        String Date = IndexPage.LabelDate.getText();
-        String departmentID[] = comboDepartment.getSelectedItem().toString().split(spliter);
+        String StartDate = CalendarButtonStartDate.getText();
+        String EndDate = CalendarButtonEndDate.getText();
+//        String subDepartmentID[] = comboSubDepartment.getSelectedItem().toString().split(spliter);
+        String JOB_FIXED_ID[] = comboBoxFixedJobs.getSelectedItem().toString().split(spliter);
+        String passedJOB_FIXED_ID = JOB_FIXED_ID[1]+spliter+JOB_FIXED_ID[2];
         String PathToLogo = projectPath + "/pictures/Logo/ClientLogo.jpg";
-        if (rBtnItemOrderName.isSelected()) {
+        if (rBtnItemBestUsage.isSelected()) {
             try {
                 Map map = new HashMap();
                 map.put("User", IndexPage.user.trim());
                 map.put("Logo", PathToLogo);
-                map.put("Code", departmentID[1]);
+                map.put("Code", passedJOB_FIXED_ID);
+                map.put("Start_Date", StartDate);
+                map.put("End_Date", EndDate);
 
-                String Report = "Item list order by name - Department wise.jrxml";
+                String Report = "Best employee for raw item management - Department wise.jrxml";
                 JasperDesign jasperdesigns = JRXmlLoader.load(projectPath + "/Reports/Stock Reports/All items/" + Report);
                 JasperReport jasperreport = JasperCompileManager.compileReport(jasperdesigns);
                 JasperPrint jasperprint = JasperFillManager.fillReport(jasperreport, map, sqlcon);
@@ -492,14 +473,17 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 JOptionPane.showMessageDialog(this, "Please contact for support.");
             }
-        } else if (rBtnItemOrderCode.isSelected()) {
+        } else if (rBtnItemBestTime.isSelected()) {
             try {
                 Map map = new HashMap();
                 map.put("User", IndexPage.user.trim());
                 map.put("Logo", PathToLogo);
-                map.put("Code", departmentID[1]);
+                map.put("Code", passedJOB_FIXED_ID);
+//                map.put("Code2", subDepartmentID[1]);
+                map.put("Start_Date", StartDate);
+                map.put("End_Date", EndDate);
 
-                String Report = "Item list order by code - Department wise.jrxml";
+                String Report = "Best employee for time management - Department wise.jrxml";
                 JasperDesign jasperdesigns = JRXmlLoader.load(projectPath + "/Reports/Stock Reports/All items/" + Report);
                 JasperReport jasperreport = JasperCompileManager.compileReport(jasperdesigns);
                 JasperPrint jasperprint = JasperFillManager.fillReport(jasperreport, map, sqlcon);
@@ -521,17 +505,17 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
     private javax.swing.JButton btnRefresh;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JComboBox cmbEmployees;
-    private javax.swing.JComboBox comboDepartment;
+    private javax.swing.JComboBox comboBoxFixedJobs;
+    private javax.swing.JComboBox comboSubDepartment;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel labelIcon;
     private javax.swing.JLabel lbl_description1;
     private javax.swing.JLabel lbl_description2;
+    private javax.swing.JLabel lbl_description3;
     private javax.swing.JPanel panel1;
-    private javax.swing.JRadioButton rBtnItemOrderCode;
-    private javax.swing.JRadioButton rBtnItemOrderName;
+    private javax.swing.JRadioButton rBtnItemBestTime;
+    private javax.swing.JRadioButton rBtnItemBestUsage;
     private javax.swing.JRadioButton rBtnItemType;
-    private javax.swing.JRadioButton rBtnMainCategory;
     // End of variables declaration//GEN-END:variables
 }
