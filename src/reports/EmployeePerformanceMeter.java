@@ -909,7 +909,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             int x = JOptionPane.showConfirmDialog(this, "Are you sure to send emails to these employees?", "Send e-mail?", JOptionPane.YES_NO_OPTION);
             if (x == JOptionPane.YES_OPTION) {
                 selectedRowCountOfTableWastage = tableRawItemUsage.getRowCount();
-                if (selectedRowCountOfTableWastage == 1) {
+                if (selectedRowCountOfTableWastage >= 1) {
                     selectedRowOfTableRawItemUsage = tableRawItemUsage.getSelectedRow();
                     empCode = tableRawItemUsage.getValueAt(selectedRowOfTableRawItemUsage, 0).toString();
                     sendEmail(empCode);
@@ -922,9 +922,9 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         String SENT_TO_EMP;
         int itemCompleted, itemAllocated, itemDifference;
         int RowCount = tableJobDetails.getRowCount();
-        String subDepartmentID[] = comboSubDepartment.getSelectedItem().toString().split("--");
-        String fixedJobCode[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
-        String fixedJobName[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
+//        String subDepartmentID[] = comboSubDepartment.getSelectedItem().toString().split("--");
+//        String fixedJobCode[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
+//        String fixedJobName[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
         String plItem[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
         for (int i = 0; i < RowCount; i++) {
             jobID = tableJobDetails.getValueAt(i, 0).toString();
@@ -933,7 +933,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             itemAllocated = Integer.parseInt(tableJobDetails.getValueAt(i, 4).toString());
             itemCompleted = Integer.parseInt(tableJobDetails.getValueAt(i, 5).toString());
             itemDifference = itemAllocated - itemCompleted;
-            if (SENT_TO_EMP.equals("No")) {
+            if (SENT_TO_EMP.equals("Yes")) {
                 SendEMails sm = new SendEMails();
                 sm.notifyAboutWastageOfCompleteJobsToSupervisourByEmail(empCode, jobID, itemDifference, itemAllocated, itemCompleted, plItem[3]);
             }
