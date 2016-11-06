@@ -3,11 +3,7 @@
  * and open the template in the editor.
  */
 
-/*
- * GRNItemSearch.java
- *
- * Created on Mar 15, 2013, 8:07:57 AM
- */
+
 package OtherDialogs;
 
 import reports.EmployeePerformanceMeter;
@@ -20,22 +16,14 @@ import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Ravindu
- */
+
 public class ViewWastageRowItems extends javax.swing.JDialog {
 
     private final DefaultTableModel model_ItemTable;
     private EmployeePerformanceMeter employeePerformanceMeter = null;
     private final String projectPath = System.getProperty("user.dir");
 
-    /**
-     * Creates new form GRNItemSearch
-     *
-     * @param objectCommonWriteNotes
-     * @param jobID
-     */
+   
     public ViewWastageRowItems(Object objectCommonWriteNotes, String jobID, String productItemIdByArray) {
         super();
         initComponents();

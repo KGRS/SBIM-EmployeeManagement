@@ -23,10 +23,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-/**
- *
- * @author Ravindu
- */
+
 public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
 
     private final String select = "--Select--";
@@ -922,9 +919,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
         String SENT_TO_EMP;
         int itemCompleted, itemAllocated, itemDifference;
         int RowCount = tableJobDetails.getRowCount();
-//        String subDepartmentID[] = comboSubDepartment.getSelectedItem().toString().split("--");
-//        String fixedJobCode[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
-//        String fixedJobName[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
+
         String plItem[] = comboBoxFixedJobs.getSelectedItem().toString().split("--");
         for (int i = 0; i < RowCount; i++) {
             jobID = tableJobDetails.getValueAt(i, 0).toString();
@@ -935,7 +930,7 @@ public class EmployeePerformanceMeter extends javax.swing.JInternalFrame {
             itemDifference = itemAllocated - itemCompleted;
             if (SENT_TO_EMP.equals("Yes")) {
                 SendEMails sm = new SendEMails();
-                sm.notifyAboutWastageOfCompleteJobsToSupervisourByEmail(empCode, jobID, itemDifference, itemAllocated, itemCompleted, plItem[3]);
+                sm.notifyAboutWastageOfCompleteJobsByEmail(empCode, jobID, itemDifference, itemAllocated, itemCompleted, plItem[3]);
             }
         }
     }

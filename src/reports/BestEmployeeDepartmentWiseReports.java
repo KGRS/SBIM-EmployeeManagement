@@ -28,10 +28,7 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
-/**
- *
- * @author Ravindu
- */
+
 public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFrame {
 
     private final String select = "--Select--";
@@ -46,7 +43,7 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         initComponents();
         Refresh();
         loadDepartmetns();
-
+        //CheckBoxAllItems.setVisible(false);
         this.setTitle(menuName);
         ImageIcon DefaultBackGround = new ImageIcon(projectPath + "/pictures/InternalFrameIcons/Reports/StockReports.jpg");
         labelIcon.setIcon(DefaultBackGround);
@@ -74,7 +71,6 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         comboBoxFixedJobs = new javax.swing.JComboBox();
         rBtnItemType = new javax.swing.JRadioButton();
         comboSubDepartment = new javax.swing.JComboBox();
-        CheckBoxAllItems = new javax.swing.JCheckBox();
         lbl_description3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         rBtnItemBestTime = new javax.swing.JRadioButton();
@@ -195,16 +191,6 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
             }
         });
         jPanel1.add(comboSubDepartment, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 80, 280, 20));
-
-        CheckBoxAllItems.setBackground(new java.awt.Color(255, 255, 255));
-        CheckBoxAllItems.setForeground(new java.awt.Color(102, 102, 102));
-        CheckBoxAllItems.setText("All items");
-        CheckBoxAllItems.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CheckBoxAllItemsActionPerformed(evt);
-            }
-        });
-        jPanel1.add(CheckBoxAllItems, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 170, -1));
 
         lbl_description3.setForeground(new java.awt.Color(102, 102, 102));
         lbl_description3.setText("Fixed job/ Process");
@@ -327,12 +313,12 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
         comboBoxFixedJobs.setSelectedItem(select);
         comboSubDepartment.setSelectedItem(select);
 
-        CheckBoxAllItems.setSelected(true);
-        CheckBoxAllItems.setEnabled(true);
-        rBtnItemType.setEnabled(false);
+//        CheckBoxAllItems.setSelected(true);
+//        CheckBoxAllItems.setEnabled(true);
+//        rBtnItemType.setEnabled(false);
 
-        comboBoxFixedJobs.setEnabled(false);
-        comboSubDepartment.setEnabled(false);
+//        comboBoxFixedJobs.setEnabled(false);
+//        comboSubDepartment.setEnabled(false);
 
         buttonGroup1.clearSelection();
     }
@@ -385,30 +371,6 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
     private void comboSubDepartmentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_comboSubDepartmentKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_comboSubDepartmentKeyPressed
-
-    private void CheckBoxAllItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckBoxAllItemsActionPerformed
-        if (CheckBoxAllItems.isSelected()) {
-            comboBoxFixedJobs.setSelectedItem(select);
-            comboSubDepartment.setSelectedItem(select);
-
-            comboBoxFixedJobs.setEnabled(false);
-            comboSubDepartment.setEnabled(false);
-
-//            rBtnMainCategory.setSelected(false);
-//            rBtnMainCategory.setEnabled(false);
-            rBtnItemType.setEnabled(false);
-
-        } else if (!CheckBoxAllItems.isSelected()) {
-            comboBoxFixedJobs.setSelectedItem(select);
-            comboSubDepartment.setSelectedItem(select);
-
-            comboBoxFixedJobs.setEnabled(true);
-            comboSubDepartment.setEnabled(true);
-//            rBtnMainCategory.setEnabled(true);
-            rBtnItemType.setEnabled(true);
-
-        }
-    }//GEN-LAST:event_CheckBoxAllItemsActionPerformed
 
     private void RefreshCombo() {
         comboBoxFixedJobs.setSelectedItem(select);
@@ -499,7 +461,6 @@ public class BestEmployeeDepartmentWiseReports extends javax.swing.JInternalFram
     private javax.swing.JButton ButtonPreview;
     private org.sourceforge.jcalendarbutton.JCalendarButton CalendarButtonEndDate;
     private org.sourceforge.jcalendarbutton.JCalendarButton CalendarButtonStartDate;
-    private javax.swing.JCheckBox CheckBoxAllItems;
     private javax.swing.JLabel backgroundLabel;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnRefresh;

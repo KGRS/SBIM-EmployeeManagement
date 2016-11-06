@@ -3,11 +3,7 @@
  * and open the template in the editor.
  */
 
-/*
- * LoginPage.java
- *
- * Created on Feb 24, 2011, 4:03:49 PM
- */
+
 package MainFiles;
 
 import db.ConnectSql;
@@ -29,10 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-/**
- *
- * @author Ravindu
- */
+
 public class LoginPage extends javax.swing.JFrame {
 
     public static String SysDate; //[1011, 599]
@@ -51,7 +44,7 @@ public class LoginPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
 
-        //[255,255,255] , [0,204,255]
+        
         initComponents();
 
         int PanelX = jPanel1.getWidth();

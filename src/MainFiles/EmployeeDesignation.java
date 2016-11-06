@@ -17,10 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Ravindu
- */
+
 public class EmployeeDesignation extends javax.swing.JInternalFrame {
 
     private final String select = "--Select--";
@@ -88,12 +85,12 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         btnExit = new javax.swing.JButton();
         rBtnCode = new javax.swing.JRadioButton();
         rBtnName = new javax.swing.JRadioButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableViewDetails = new javax.swing.JTable();
         txtSearch = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         lbl_description1 = new javax.swing.JLabel();
         IsSupervising = new javax.swing.JComboBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableViewDetails = new javax.swing.JTable();
 
         setIconifiable(true);
         setTitle("Employee Designation");
@@ -229,6 +226,21 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         });
         panel1.add(rBtnName, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 20, 60, -1));
 
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchKeyReleased(evt);
+            }
+        });
+        panel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 170, -1));
+        panel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 270, 350, -1));
+
+        lbl_description1.setForeground(new java.awt.Color(102, 102, 102));
+        lbl_description1.setText("Designation Name");
+        panel1.add(lbl_description1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, 110, 20));
+
+        IsSupervising.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No", "Yes" }));
+        panel1.add(IsSupervising, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, 110, -1));
+
         tableViewDetails.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -260,22 +272,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tableViewDetails);
 
-        panel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, 250));
-
-        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtSearchKeyReleased(evt);
-            }
-        });
-        panel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 170, -1));
-        panel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 270, 350, -1));
-
-        lbl_description1.setForeground(new java.awt.Color(102, 102, 102));
-        lbl_description1.setText("Designation Name");
-        panel1.add(lbl_description1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 100, 110, 20));
-
-        IsSupervising.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No", "Yes" }));
-        panel1.add(IsSupervising, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, 110, -1));
+        panel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 420, 340));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -285,7 +282,7 @@ public class EmployeeDesignation extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();

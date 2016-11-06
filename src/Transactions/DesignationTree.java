@@ -16,10 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author DigitalForce™
- */
+
 public class DesignationTree extends javax.swing.JInternalFrame {
 
     private final String select = "--Select--";

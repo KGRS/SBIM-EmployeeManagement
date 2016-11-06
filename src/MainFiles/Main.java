@@ -1,10 +1,7 @@
 package MainFiles;
 
 import db.ConnectSql;
-/**
- *
- * @author Ravindu
- */
+
 public class Main {
 
     public static String user;

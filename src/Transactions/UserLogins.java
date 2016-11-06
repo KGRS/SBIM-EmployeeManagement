@@ -16,10 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Ravindu
- */
+
 public class UserLogins extends javax.swing.JInternalFrame {
 
     private final DefaultTableModel model_TableEmployee;

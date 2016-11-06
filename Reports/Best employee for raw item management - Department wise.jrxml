@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="54fab8e8-f45a-4b34-81db-b52d21fd8734">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="24"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataStore"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value="ZGJvLiJNYWluQ2F0ZWdvcnkiIEFTICwyOSwyLDFlNTc0YTJjLWI5MDUtNGZiYi04MTk3LTFhNzU1 ZTkwNWRlMTtkYm8uIkl0ZW1zIiAsNTMwLDIsMTIwY2E1OTgtMTY4OC00MDMwLTljOGQtNzljYTY2 YzhiNTY1O2Riby4iQ2xpZW50Q29tcGFueSIgLDIwLDIxNSwxNTEwYmI5ZS01ZTkwLTQ3OWItYTlm Yi01MzAyNDVmNjYyZGM7"/>
@@ -28,6 +28,9 @@
      ClientCompany."Web" AS ClientCompany_Web,
      ClientCompany."Fax" AS ClientCompany_Fax,
      Employees."FIRST_NAME" AS Employees_FIRST_NAME,
+     JobFinished."IS_LATE" AS JobFinished_IS_LATE,
+     JobFinished."JOB_ALLOCATED_DATE" AS JobFinished_JOB_ALLOCATED_DATE,
+     JobFinished."JOB_FINISHED_DATE" AS JobFinished_JOB_FINISHED_DATE,
      Employees."ACTIVE" AS Employees_ACTIVE,
      PLItemDifference."IS_WASTAGE" AS PLItemDifference_IS_WASTAGE,
      JobFinished."FIXED_JOB_ID" AS JobFinished_FIXED_JOB_ID,
@@ -47,6 +50,7 @@ WHERE
 GROUP BY
      EmployeesAtFinishedJob."EMPLOYEE_CODE",
      JobFinished."FIXED_JOB_ID",
+     JobFinished."IS_LATE",
      Employees."FIRST_NAME",
      ClientCompany."Companyname",
      ClientCompany."Address",
@@ -56,6 +60,8 @@ GROUP BY
      ClientCompany."Email",
      ClientCompany."Web",
      ClientCompany."VATRegistrationNo",
+     JobFinished."JOB_ALLOCATED_DATE",
+     JobFinished."JOB_FINISHED_DATE",
      Employees."ACTIVE",
      PLItemDifference."IS_WASTAGE",
      Employees."SUR_NAME"
@@ -72,6 +78,9 @@ ORDER BY
 	<field name="ClientCompany_Web" class="java.lang.String"/>
 	<field name="ClientCompany_Fax" class="java.lang.String"/>
 	<field name="Employees_FIRST_NAME" class="java.lang.String"/>
+	<field name="JobFinished_IS_LATE" class="java.lang.String"/>
+	<field name="JobFinished_JOB_ALLOCATED_DATE" class="java.lang.String"/>
+	<field name="JobFinished_JOB_FINISHED_DATE" class="java.lang.String"/>
 	<field name="Employees_ACTIVE" class="java.lang.String"/>
 	<field name="PLItemDifference_IS_WASTAGE" class="java.lang.String"/>
 	<field name="JobFinished_FIXED_JOB_ID" class="java.lang.String"/>
@@ -182,7 +191,7 @@ ORDER BY
 		<band/>
 	</pageHeader>
 	<columnHeader>
-		<band height="34">
+		<band height="32">
 			<staticText>
 				<reportElement uuid="98d41247-81c7-4404-bdfb-02c04d34fca2" mode="Transparent" x="460" y="3" width="92" height="26" forecolor="#000000" backcolor="#000000"/>
 				<textElement textAlignment="Right" verticalAlignment="Top">
@@ -226,14 +235,14 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{EmployeesAtFinishedJob_EMPLOYEE_CODE}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="a4c6264b-beac-4bdc-967b-bf93a5ec17b2" x="89" y="1" width="108" height="12"/>
+				<reportElement uuid="a4c6264b-beac-4bdc-967b-bf93a5ec17b2" x="89" y="1" width="195" height="12"/>
 				<textElement>
 					<font fontName="Monospaced" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Employees_FIRST_NAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7062752a-ba87-4e38-a4fc-b0d75fd75085" x="197" y="1" width="111" height="12"/>
+				<reportElement uuid="7062752a-ba87-4e38-a4fc-b0d75fd75085" x="290" y="1" width="154" height="12"/>
 				<textElement>
 					<font fontName="Monospaced" size="8"/>
 				</textElement>

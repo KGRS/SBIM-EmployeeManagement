@@ -17,10 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Ravindu
- */
+
 public class Department extends javax.swing.JInternalFrame {
 
     private final String select = "--Select--";
@@ -157,6 +154,11 @@ public class Department extends javax.swing.JInternalFrame {
         lbl_category.setText("Department code");
         panel1.add(lbl_category, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 60, 110, 20));
 
+        txtCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCodeActionPerformed(evt);
+            }
+        });
         txtCode.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtCodeFocusGained(evt);
@@ -713,6 +715,10 @@ public class Department extends javax.swing.JInternalFrame {
     private void formInternalFrameIconified(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameIconified
         department.toFront();
     }//GEN-LAST:event_formInternalFrameIconified
+
+    private void txtCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodeActionPerformed
 
     private void Refresh() {
         RefreshTableAndLoadAgain();
